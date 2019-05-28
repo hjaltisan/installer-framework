@@ -79,7 +79,7 @@ COPY . c:\src\ifw
 WORKDIR c:\src\ifw
 
 RUN C:\BuildTools\VC\Auxiliary\Build\vcvarsall.bat x86 10.0.17134.0 `
- && C:\build\qt5\bin\qmake.exe -r `
+ && C:\build\qt5\bin\qmake.exe `
  && jom `
  && jom install
 
