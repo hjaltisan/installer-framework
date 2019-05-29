@@ -83,16 +83,13 @@ RUN C:\BuildTools\VC\Auxiliary\Build\vcvarsall.bat x86 10.0.17134.0 `
  && jom `
  && jom install
 
-#RUN nmake
-# && jom install
+RUN echo "##teamcity[blockClosed name='qt5-ifw-build']"
 
-#RUN echo "##teamcity[blockClosed name='qt5-ifw-build']"
+FROM microsoft/windowsservercore:1803 AS runner
 
-#FROM microsoft/windowsservercore:1803 AS runner
-
-#COPY --from=builder C:\build\qt5 C:\build\qt5
+COPY --from=builder C:\build\qt5 C:\build\qt5
 
 # Installer configuration location
-#VOLUME C:\src\installer
+VOLUME C:\src\installer
 
-#ENTRYPOINT c:\build\qt5\binarycreator.exe -f -v -c c:\src\installer\config\config.xml -p c:\src\installer\packages C:\src\installer\installer.exe
+ENTRYPOINT c:\build\qt5\binarycreator.exe -f -v -c c:\src\installer\config\config.xml -p c:\src\installer\packages C:\src\installer\installer.exe
