@@ -92,4 +92,4 @@ COPY --from=builder C:\build\qt5 C:\build\qt5
 # Installer configuration location
 VOLUME C:\src\installer
 
-ENTRYPOINT c:\build\qt5\binarycreator.exe -f -v -c c:\src\installer\config\config.xml -p c:\src\installer\packages C:\src\installer\installer.exe
+ENTRYPOINT c:\build\qt5\bin\binarycreator.exe -f -v -c c:\src\installer\config\config.xml -p c:\src\installer\packages C:\src\installer\installer.exe
