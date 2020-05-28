@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -66,6 +66,14 @@ class INSTALLER_EXPORT Component : public QObject, public ComponentModelHelper
 public:
     explicit Component(PackageManagerCore *core);
     ~Component();
+
+    enum UnstableError {
+        DepencyToUnstable = 0,
+        ShaMismatch,
+        ScriptLoadingFailed,
+        MissingDependency
+    };
+    Q_ENUM(UnstableError)
 
     struct SortingPriorityLessThan
     {
@@ -183,7 +191,7 @@ public:
     Q_INVOKABLE bool componentChangeRequested();
 
     bool isUnstable() const;
-    void setUnstable(PackageManagerCore::UnstableError error, const QString &errorMessage = QString());
+    void setUnstable(Component::UnstableError error, const QString &errorMessage = QString());
 
     bool isVirtual() const;
     bool isSelected() const;

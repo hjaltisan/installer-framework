@@ -148,6 +148,16 @@ static double calcProgress(qint64 done, qint64 total)
 */
 
 /*!
+    \fn FileDownloader::downloadCompleted()
+    This signal is emitted when downloading a file ends.
+*/
+
+/*!
+    \fn FileDownloader::downloadAborted(const QString &errorMessage)
+    This signal is emitted when downloading a file is aborted with \a errorMessage.
+*/
+
+/*!
     \fn FileDownloader::estimatedDownloadTime(int seconds)
     This signal is emitted with the estimated download time in \a seconds.
 */
@@ -424,7 +434,7 @@ void KDUpdater::FileDownloader::stopDownloadDeadlineTimer()
 }
 
 /*!
-    Sets the download into a paused state.
+    Sets the download into a \a paused state.
 */
 void KDUpdater::FileDownloader::setDownloadPaused(bool paused)
 {
@@ -432,7 +442,7 @@ void KDUpdater::FileDownloader::setDownloadPaused(bool paused)
 }
 
 /*!
-    Gets the download paused state.
+    Returns the download paused state.
 */
 bool KDUpdater::FileDownloader::isDownloadPaused()
 {
@@ -440,7 +450,7 @@ bool KDUpdater::FileDownloader::isDownloadPaused()
 }
 
 /*!
-    Sets the download into a paused state.
+    Sets the download into a \a resumed state.
 */
 void KDUpdater::FileDownloader::setDownloadResumed(bool resumed)
 {
@@ -448,7 +458,7 @@ void KDUpdater::FileDownloader::setDownloadResumed(bool resumed)
 }
 
 /*!
-    Gets the download resumed state.
+    Returns the download resumed state.
 */
 bool KDUpdater::FileDownloader::isDownloadResumed()
 {
@@ -481,7 +491,7 @@ void KDUpdater::FileDownloader::clearBytesDownloadedBeforeResume()
 }
 
 /*!
-    Updates the amount of bytes downloaded before download resume.
+    Updates the amount of \a bytes downloaded before download resumes.
 */
 void KDUpdater::FileDownloader::updateBytesDownloadedBeforeResume(qint64 bytes)
 {
@@ -804,7 +814,7 @@ void KDUpdater::LocalFileDownloader::doDownload()
     if (!d->source->open(QFile::ReadOnly)) {
         onError();
         setDownloadAborted(tr("Cannot open file \"%1\" for reading: %2").arg(QFileInfo(localFile)
-            .fileName(), d->source->errorString()));
+            .fileName(), d->source ? d->source->errorString() : tr("File not found")));
         return;
     }
 
@@ -1565,7 +1575,7 @@ void KDUpdater::HttpDownloader::onSslErrors(QNetworkReply* reply, const QList<QS
             errorString += QLatin1String(", ");
         errorString += error.errorString();
     }
-    qDebug() << errorString;
+    qCWarning(QInstaller::lcInstallerInstallLog) << errorString;
 
     const QStringList arguments = QCoreApplication::arguments();
     if (arguments.contains(QLatin1String("--script")) || arguments.contains(QLatin1String("Script"))

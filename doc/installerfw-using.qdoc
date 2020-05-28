@@ -11,8 +11,8 @@
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see http://www.qt.io/terms-conditions. For further
-** information use the contact form at http://www.qt.io/contact-us.
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
 **
 ** GNU Free Documentation License Usage
 ** Alternatively, this file may be used under the terms of the GNU Free
@@ -20,7 +20,7 @@
 ** Foundation and appearing in the file included in the packaging of
 ** this file. Please review the following information to ensure
 ** the GNU Free Documentation License version 1.3 requirements
-** will be met: http://www.gnu.org/copyleft/fdl.html.
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
@@ -71,7 +71,7 @@
 
     \image ifw-user-flow-installing.png "Installation workflow"
 
-    This section uses the \e {Your Application Installer} example run on OS X
+    This section uses the \e {Your Application Installer} example run on macOS
     to illustrate the default workflow for end users. The installers have the
     native look and feel on each supported desktop platform, and therefore they
     look and feel different when run on Linux and Windows.
@@ -188,7 +188,7 @@
     \image ifw-user-flow-adding.png "Add components workflow"
 
     This section uses the \e {Maintenance Tool} installed by the Qt 5 installer
-    run on OS X as an example implementation of how end users can add components
+    run on macOS as an example implementation of how end users can add components
     after the initial installation. The Maintenance Tool contains the package
     manager, updater, and uninstaller.
 
@@ -244,7 +244,7 @@
 
     \image ifw-user-flow-removing.png "Remove components workflow"
 
-    This section uses the Qt 5 Maintenance Tool run on OS X as an example
+    This section uses the Qt 5 Maintenance Tool run on macOS as an example
     implementation of how end users can remove all or selected components.
 
     \section1 Removing All Components
@@ -297,7 +297,7 @@
 
     \image ifw-user-flow-updating.png "Updating workflow"
 
-    This section uses the Qt 5 Maintenance Tool run on OS X as an example
+    This section uses the Qt 5 Maintenance Tool run on macOS as an example
     implementation of how end users can update installed components.
 
     \section1 Starting Updater

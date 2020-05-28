@@ -68,6 +68,13 @@ static void printUsage()
 
     std::cout << "  -v|--verbose              Verbose output" << std::endl;
 
+    std::cout << "  --unite-metadata          Combine all metadata into one 7z. This speeds up metadata " << std::endl;
+    std::cout << "                            download phase. Creates also metadata 7z per component for " << std::endl;
+    std::cout << "                            backward compatibility." << std::endl;
+
+    std::cout << "  --unite-metadata-only     Combine all metadata into one 7z. This speeds up metadata " << std::endl;
+    std::cout << "                            download phase." << std::endl;
+
     std::cout << std::endl;
     std::cout << "Example:" << std::endl;
     std::cout << "  " << appName << " -p ../examples/packages repository/"
@@ -99,6 +106,8 @@ int main(int argc, char** argv)
         QInstallerTools::FilterType filterType = QInstallerTools::Exclude;
         bool remove = false;
         bool updateExistingRepositoryWithNewComponents = false;
+        bool createUnitedMetadata = false;
+        bool createOnlyUnitedMetadata = false;
 
         //TODO: use a for loop without removing values from args like it is in binarycreator.cpp
         //for (QStringList::const_iterator it = args.begin(); it != args.end(); ++it) {
@@ -176,7 +185,14 @@ int main(int argc, char** argv)
             } else if (args.first() == QLatin1String("-r") || args.first() == QLatin1String("--remove")) {
                 remove = true;
                 args.removeFirst();
-            } else {
+            } else if (args.first() == QLatin1String("--unite-metadata")) {
+                createUnitedMetadata = true;
+                args.removeFirst();
+            } else if (args.first() == QLatin1String("--unite-metadata-only")) {
+                createOnlyUnitedMetadata = true;
+                args.removeFirst();
+            }
+            else {
                 printUsage();
                 return 1;
             }
@@ -246,11 +262,14 @@ int main(int argc, char** argv)
                 // remove all components that have no update (decision based on the version tag)
                 for (int i = packages.count() - 1; i >= 0; --i) {
                     const QInstallerTools::PackageInfo info = packages.at(i);
-                    if (!hash.contains(info.name))
-                        continue;   // the component is not there, keep it
 
-                    if (KDUpdater::compareVersion(info.version, hash.value(info.name).version) < 1)
+                    // check if component already exists & version did not change
+                    if (hash.contains(info.name) && KDUpdater::compareVersion(info.version, hash.value(info.name).version) < 1) {
                         packages.remove(i); // the version did not change, no need to update the component
+                        continue;
+                    }
+                    std::cout << QString::fromLatin1("Update component \"%1\" in \"%2\".")
+                        .arg(info.name, repositoryDir) << std::endl;
                 }
 
                 if (packages.isEmpty()) {
@@ -278,7 +297,8 @@ int main(int argc, char** argv)
         QInstallerTools::copyComponentData(directories, repositoryDir, &packages);
         QInstallerTools::copyMetaData(tmpMetaDir, repositoryDir, packages, QLatin1String("{AnyApplication}"),
             QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)));
-        QInstallerTools::compressMetaDirectories(tmpMetaDir, tmpMetaDir, pathToVersionMapping);
+        QInstallerTools::compressMetaDirectories(tmpMetaDir, tmpMetaDir, pathToVersionMapping,
+                                                 createUnitedMetadata, createOnlyUnitedMetadata);
 
         QDirIterator it(repositoryDir, QStringList(QLatin1String("Updates*.xml")), QDir::Files | QDir::CaseSensitive);
         while (it.hasNext()) {

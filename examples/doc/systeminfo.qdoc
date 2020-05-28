@@ -11,8 +11,8 @@
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see http://www.qt.io/terms-conditions. For further
-** information use the contact form at http://www.qt.io/contact-us.
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
 **
 ** GNU Free Documentation License Usage
 ** Alternatively, this file may be used under the terms of the GNU Free
@@ -20,7 +20,7 @@
 ** Foundation and appearing in the file included in the packaging of
 ** this file. Please review the following information to ensure
 ** the GNU Free Documentation License version 1.3 requirements
-** will be met: http://www.gnu.org/copyleft/fdl.html.
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
@@ -84,9 +84,9 @@
     \printto /\!validOs/
 
     The script uses \l{systemInfo::productType}{systemInfo.productType} to differentiate
-    between Windows, OS X, and individual Linux distributions.
+    between Windows, macOS, and individual Linux distributions.
 
-    For OS X and Windows, the script checks the operating system kernel version.
+    For macOS and Windows, the script checks the operating system kernel version.
     For a mapping of kernel to operating system versions, see
     \l{http://en.wikipedia.org/wiki/Darwin_%28operating_system%29}{Darwin} and
     \l{http://en.wikipedia.org/wiki/Windows_NT}{Windows NT}.
@@ -95,7 +95,7 @@
     the specific distribution and version the binaries are presumably built for,
     the installer shows a warning in a modal dialog, but allows installation.
 
-    If the Windows or OS X version is too old, though, the script calls the \c cancelInstaller()
+    If the Windows or macOS version is too old, though, the script calls the \c cancelInstaller()
     helper function to prevent an actual installation:
 
     \printuntil /\}/

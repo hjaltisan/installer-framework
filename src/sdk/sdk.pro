@@ -98,12 +98,9 @@ HEADERS += \
            tabcontroller.h \
            installerbasecommons.h \
            settingsdialog.h \
-           console.h \
            sdkapp.h \
-           updatechecker.h \
-           installerbase.h \
-           constants.h \
-           commandlineparser.h
+           commandlineinterface.h \
+           installerbase.h
 
 SOURCES = \
           main.cpp \
@@ -111,15 +108,12 @@ SOURCES = \
           tabcontroller.cpp \
           installerbasecommons.cpp \
           settingsdialog.cpp \
-          updatechecker.cpp \
-          commandlineparser.cpp
+          commandlineinterface.cpp
 
 win32 {
     # Use our own manifest file
     CONFIG -= embed_manifest_exe
     RC_FILE = installerbase.rc
-
-    SOURCES += console_win.cpp
 }
 
 macx:include(../../no_app_bundle.pri)

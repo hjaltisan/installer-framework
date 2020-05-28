@@ -31,6 +31,7 @@
 #include "qinstallerglobal.h"
 #include "repository.h"
 #include "repositorycategory.h"
+#include "globals.h"
 
 #include <QtCore/QFileInfo>
 #include <QtCore/QStringList>
@@ -84,12 +85,13 @@ static void raiseError(QXmlStreamReader &reader, const QString &error, Settings:
     } else {
         QFile *xmlFile = qobject_cast<QFile*>(reader.device());
         if (xmlFile) {
-            qWarning().noquote().nospace()
+            qCWarning(QInstaller::lcInstallerInstallLog).noquote().nospace()
                     << "Ignoring following settings reader error in " << xmlFile->fileName()
                                  << ", line " << reader.lineNumber() << ", column " << reader.columnNumber()
                                  << ": " << error;
         } else {
-            qWarning("Ignoring following settings reader error: %s", qPrintable(error));
+            qCWarning(QInstaller::lcInstallerInstallLog) << "Ignoring following settings reader error: "
+                << qPrintable(error);
         }
     }
 }
@@ -168,7 +170,7 @@ static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefaul
                 }
             }
             if (displayName && !displayName->isEmpty())
-                repo.setArchiveName(*displayName);
+                repo.setCategoryName(*displayName);
             set.insert(repo);
         } else if (reader.name() == QLatin1String("Tooltip")) {
             *tooltip = reader.readElementText();
@@ -287,6 +289,7 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
                 << scRunProgram << scRunProgramArguments << scRunProgramDescription
                 << scDependsOnLocalInstallerBinary
                 << scAllowSpaceInPath << scAllowNonAsciiCharacters << scDisableAuthorizationFallback
+                << scDisableCommandLineInterface
                 << scWizardStyle << scStyleSheet << scTitleColor
                 << scWizardDefaultWidth << scWizardDefaultHeight
                 << scRepositorySettingsPageVisible << scTargetConfigurationFile
@@ -472,7 +475,7 @@ QString Settings::installerWindowIcon() const
 
 QString Settings::systemIconSuffix() const
 {
-#if defined(Q_OS_OSX)
+#if defined(Q_OS_MACOS)
     return QLatin1String(".icns");
 #elif defined(Q_OS_WIN)
     return QLatin1String(".ico");
@@ -565,6 +568,11 @@ bool Settings::disableAuthorizationFallback() const
     return d->m_data.value(scDisableAuthorizationFallback, false).toBool();
 }
 
+bool Settings::disableCommandLineInterface() const
+{
+    return d->m_data.value(scDisableCommandLineInterface, false).toBool();
+}
+
 bool Settings::dependsOnLocalInstallerBinary() const
 {
     return d->m_data.value(scDependsOnLocalInstallerBinary).toBool();
@@ -616,10 +624,44 @@ void Settings::addDefaultRepositories(const QSet<Repository> &repositories)
         d->m_data.insertMulti(scRepositories, QVariant().fromValue(repository));
 }
 
+void Settings::setRepositoryCategories(const QSet<RepositoryCategory> &repositories)
+{
+    d->m_data.remove(scRepositoryCategories);
+    addRepositoryCategories(repositories);
+}
+
 void Settings::addRepositoryCategories(const QSet<RepositoryCategory> &repositories)
 {
     foreach (const RepositoryCategory &repository, repositories)
         d->m_data.insertMulti(scRepositoryCategories, QVariant().fromValue(repository));
+}
+
+Settings::Update Settings::updateRepositoryCategories(const RepoHash &updates)
+{
+    if (updates.isEmpty())
+        return Settings::NoUpdatesApplied;
+
+    QSet<RepositoryCategory> categories = repositoryCategories();
+    QList<RepositoryCategory> categoriesList = categories.values();
+    QPair<Repository, Repository> updateValues = updates.value(QLatin1String("replace"));
+
+    bool update = false;
+
+    foreach (RepositoryCategory category, categoriesList) {
+        QSet<Repository> repositories = category.repositories();
+        if (repositories.contains(updateValues.first)) {
+            update = true;
+            repositories.remove(updateValues.first);
+            repositories.insert(updateValues.second);
+            category.setRepositories(repositories, true);
+            categoriesList.replace(categoriesList.indexOf(category), category);
+        }
+    }
+    if (update) {
+        categories = categoriesList.toSet();
+        setRepositoryCategories(categories);
+    }
+    return update ? Settings::UpdatesApplied : Settings::NoUpdatesApplied;
 }
 
 static bool apply(const RepoHash &updates, QHash<QUrl, Repository> *reposToUpdate)
@@ -832,7 +874,7 @@ void Settings::setSaveDefaultRepositories(bool save)
 QString Settings::repositoryCategoryDisplayName() const
 {
     QString displayName = d->m_data.value(QLatin1String(scRepositoryCategoryDisplayName)).toString();
-    return displayName.isEmpty() ? tr("Show package categories") : displayName;
+    return displayName.isEmpty() ? tr("Select Package Categories") : displayName;
 }
 
 void Settings::setRepositoryCategoryDisplayName(const QString& name)

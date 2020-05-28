@@ -37,6 +37,7 @@
 
 #include <QTreeView>
 #include <QLabel>
+#include <QScrollArea>
 #include <QPushButton>
 #include <QGroupBox>
 #include <QProgressBar>
@@ -46,6 +47,8 @@
 #include <QHeaderView>
 #include <QStandardPaths>
 #include <QFileDialog>
+#include <QStackedLayout>
+#include <QStackedWidget>
 
 namespace QInstaller {
 
@@ -61,28 +64,28 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
 {
     m_treeView->setObjectName(QLatin1String("ComponentsTreeView"));
 
-    connect(m_allModel, SIGNAL(checkStateChanged(QInstaller::ComponentModel::ModelState)), this,
-        SLOT(onModelStateChanged(QInstaller::ComponentModel::ModelState)));
-    connect(m_updaterModel, SIGNAL(checkStateChanged(QInstaller::ComponentModel::ModelState)),
-        this, SLOT(onModelStateChanged(QInstaller::ComponentModel::ModelState)));
+    QVBoxLayout *descriptionVLayout = new QVBoxLayout;
+    descriptionVLayout->setObjectName(QLatin1String("DescriptionLayout"));
 
-    m_descriptionVLayout = new QVBoxLayout;
-    m_descriptionVLayout->setObjectName(QLatin1String("DescriptionLayout"));
+    QScrollArea *descriptionScrollArea = new QScrollArea(q);
+    descriptionScrollArea->setWidgetResizable(true);
+    descriptionScrollArea->setFrameShape(QFrame::NoFrame);
+    descriptionScrollArea->setObjectName(QLatin1String("DescriptionScrollArea"));
 
     m_descriptionLabel = new QLabel(q);
     m_descriptionLabel->setWordWrap(true);
+    m_descriptionLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    m_descriptionLabel->setOpenExternalLinks(true);
     m_descriptionLabel->setObjectName(QLatin1String("ComponentDescriptionLabel"));
-    m_descriptionVLayout->addWidget(m_descriptionLabel);
+    m_descriptionLabel->setAlignment(Qt::AlignTop);
+    descriptionScrollArea->setWidget(m_descriptionLabel);
+    descriptionVLayout->addWidget(descriptionScrollArea);
 
     m_sizeLabel = new QLabel(q);
+    m_sizeLabel->setMargin(5);
     m_sizeLabel->setWordWrap(true);
     m_sizeLabel->setObjectName(QLatin1String("ComponentSizeLabel"));
-    m_descriptionVLayout->addWidget(m_sizeLabel);
-    m_descriptionVLayout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::MinimumExpanding,
-        QSizePolicy::MinimumExpanding));
-
-    m_treeViewVLayout = new QVBoxLayout;
-    m_treeViewVLayout->setObjectName(QLatin1String("TreeviewLayout"));
+    descriptionVLayout->addWidget(m_sizeLabel);
 
     QHBoxLayout *buttonHLayout = new QHBoxLayout;
     m_checkDefault = new QPushButton;
@@ -120,28 +123,47 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     m_uncheckAll->setText(ComponentSelectionPage::tr("&Deselect All"));
     buttonHLayout->addWidget(m_uncheckAll);
 
-    m_treeViewVLayout->addLayout(buttonHLayout);
-
-    m_metadataProgressLabel = new QLabel();
-    m_metadataProgressLabel->hide();
-    m_treeViewVLayout->addWidget(m_metadataProgressLabel);
-
-    m_progressBar = new QProgressBar();
+    QWidget *progressStackedWidget = new QWidget();
+    QVBoxLayout *metaLayout = new QVBoxLayout(progressStackedWidget);
+    m_metadataProgressLabel = new QLabel(progressStackedWidget);
+    m_progressBar = new QProgressBar(progressStackedWidget);
     m_progressBar->setRange(0, 0);
-    m_progressBar->hide();
     m_progressBar->setObjectName(QLatin1String("CompressedInstallProgressBar"));
-    m_treeViewVLayout->addWidget(m_progressBar);
+    metaLayout->addSpacing(20);
+    metaLayout->addWidget(m_metadataProgressLabel);
+    metaLayout->addWidget(m_progressBar);
+    metaLayout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding));
+
+    QVBoxLayout *treeViewVLayout = new QVBoxLayout;
+    treeViewVLayout->setObjectName(QLatin1String("TreeviewLayout"));
+    treeViewVLayout->addWidget(m_treeView, 3);
+
+    QWidget *mainStackedWidget = new QWidget();
+    m_mainGLayout = new QGridLayout(mainStackedWidget);
+    m_mainGLayout->addLayout(buttonHLayout, 0, 1);
+    m_mainGLayout->addLayout(treeViewVLayout, 1, 1);
+    m_mainGLayout->addLayout(descriptionVLayout, 1, 2);
+    m_mainGLayout->setColumnStretch(1, 3);
+    m_mainGLayout->setColumnStretch(2, 2);
+
+    m_stackedLayout = new QStackedLayout(q);
+    m_stackedLayout->addWidget(mainStackedWidget);
+    m_stackedLayout->addWidget(progressStackedWidget);
+    m_stackedLayout->setCurrentIndex(0);
+
+    connect(m_allModel, SIGNAL(checkStateChanged(QInstaller::ComponentModel::ModelState)), this,
+        SLOT(onModelStateChanged(QInstaller::ComponentModel::ModelState)));
+    connect(m_updaterModel, SIGNAL(checkStateChanged(QInstaller::ComponentModel::ModelState)),
+        this, SLOT(onModelStateChanged(QInstaller::ComponentModel::ModelState)));
 
     connect(m_core, SIGNAL(metaJobProgress(int)), this, SLOT(onProgressChanged(int)));
     connect(m_core, SIGNAL(metaJobInfoMessage(QString)), this, SLOT(setMessage(QString)));
     connect(m_core, &PackageManagerCore::metaJobTotalProgress, this,
             &ComponentSelectionPagePrivate::setTotalProgress);
 
-    m_treeViewVLayout->addWidget(m_treeView, 3);
-
-    m_mainHLayout = new QHBoxLayout(q);
-    m_mainHLayout->addLayout(m_treeViewVLayout, 3);
-    m_mainHLayout->addLayout(m_descriptionVLayout, 2);
+    // force a recalculation of components to install to keep the state correct
+    connect(q, &ComponentSelectionPage::left,
+            m_core, &PackageManagerCore::clearComponentsToInstallCalculated);
 
 #ifdef INSTALLCOMPRESSED
     allowCompressedRepositoryInstall();
@@ -188,12 +210,13 @@ void ComponentSelectionPagePrivate::setupCategoryLayout()
         return;
     m_categoryWidget = new QWidget();
     QVBoxLayout *vLayout = new QVBoxLayout;
+    vLayout->setContentsMargins(0, 0, 0, 0);
     m_categoryWidget->setLayout(vLayout);
     m_categoryGroupBox = new QGroupBox(q);
     m_categoryGroupBox->setTitle(m_core->settings().repositoryCategoryDisplayName());
     m_categoryGroupBox->setObjectName(QLatin1String("CategoryGroupBox"));
     QVBoxLayout *categoryLayout = new QVBoxLayout(m_categoryGroupBox);
-    QPushButton *fetchCategoryButton = new QPushButton(tr("Refresh"));
+    QPushButton *fetchCategoryButton = new QPushButton(tr("Filter"));
     fetchCategoryButton->setObjectName(QLatin1String("FetchCategoryButton"));
     connect(fetchCategoryButton, &QPushButton::clicked, this,
             &ComponentSelectionPagePrivate::fetchRepositoryCategories);
@@ -208,11 +231,11 @@ void ComponentSelectionPagePrivate::setupCategoryLayout()
         checkBox->setToolTip(repository.tooltip());
         categoryLayout->addWidget(checkBox);
     }
+    categoryLayout->addWidget(fetchCategoryButton);
 
     vLayout->addWidget(m_categoryGroupBox);
-    vLayout->addWidget(fetchCategoryButton);
     vLayout->addStretch();
-    m_mainHLayout->insertWidget(0, m_categoryWidget);
+    m_mainGLayout->addWidget(m_categoryWidget, 1, 0);
 }
 
 void ComponentSelectionPagePrivate::showCategoryLayout(bool show)
@@ -290,8 +313,15 @@ void ComponentSelectionPagePrivate::currentSelectedChanged(const QModelIndex &cu
         return;
 
     m_sizeLabel->setText(QString());
-    m_descriptionLabel->setText(m_currentModel->data(m_currentModel->index(current.row(),
-        ComponentModelHelper::NameColumn, current.parent()), Qt::ToolTipRole).toString());
+
+    QString description = m_currentModel->data(m_currentModel->index(current.row(),
+        ComponentModelHelper::NameColumn, current.parent()), Qt::ToolTipRole).toString();
+
+    // replace {external-link}='' fields in component description with proper link tags
+    description.replace(QRegularExpression(QLatin1String("{external-link}='(.*?)'")),
+        QLatin1String("<a href=\"\\1\"><span style=\"color:#17a81a;\">\\1</span></a>"));
+
+    m_descriptionLabel->setText(description);
 
     Component *component = m_currentModel->componentFromIndex(current);
     if ((m_core->isUninstaller()) || (!component))
@@ -349,35 +379,18 @@ void ComponentSelectionPagePrivate::enableRepositoryCategory(const QString &repo
 
 void ComponentSelectionPagePrivate::updateWidgetVisibility(bool show)
 {
-    if (show) {
-        QSpacerItem *verticalSpacer2 = new QSpacerItem(0, 0, QSizePolicy::Minimum,
-                                                       QSizePolicy::Expanding);
-        m_treeViewVLayout->addSpacerItem(verticalSpacer2);
-        m_mainHLayout->removeItem(m_descriptionVLayout);
-        //Hide next button during category fetch
-        QPushButton *const b = qobject_cast<QPushButton *>(q->gui()->button(QWizard::NextButton));
-        b->setEnabled(!show);
-    } else {
-        QSpacerItem *item = m_treeViewVLayout->spacerItem();
-        m_treeViewVLayout->removeItem(item);
-        m_mainHLayout->addLayout(m_descriptionVLayout, 2);
-        //Call completeChanged() to determine if NextButton should be shown or not after category fetch.
-        q->completeChanged();
-    }
-    if (m_categoryWidget)
-        m_categoryWidget->setDisabled(show);
-    m_progressBar->setVisible(show);
-    m_metadataProgressLabel->setVisible(show);
-
-    m_treeView->setVisible(!show);
-    m_checkDefault->setVisible(!show);
-    m_checkAll->setVisible(!show);
-    m_uncheckAll->setVisible(!show);
-    m_descriptionLabel->setVisible(!show);
-    m_sizeLabel->setVisible(!show);
+    if (show)
+        m_stackedLayout->setCurrentIndex(1);
+    else
+        m_stackedLayout->setCurrentIndex(0);
 
     if (QAbstractButton *bspButton = q->gui()->button(QWizard::CustomButton2))
         bspButton->setEnabled(!show);
+
+    // In macOS 10.12 the widgets are not hidden if those are not updated immediately
+#ifdef Q_OS_MACOS
+    q->repaint();
+#endif
 }
 
 void ComponentSelectionPagePrivate::fetchRepositoryCategories()

@@ -115,12 +115,15 @@ public:
     QSet<Repository> repositories() const;
 
     QSet<Repository> defaultRepositories() const;
-    QSet<RepositoryCategory> repositoryCategories() const;
-    QMap<QString, RepositoryCategory> organizedRepositoryCategories() const;
     void setDefaultRepositories(const QSet<Repository> &repositories);
     void addDefaultRepositories(const QSet<Repository> &repositories);
-    void addRepositoryCategories(const QSet<RepositoryCategory> &repositories);
     Settings::Update updateDefaultRepositories(const RepoHash &updates);
+
+    QSet<RepositoryCategory> repositoryCategories() const;
+    QMap<QString, RepositoryCategory> organizedRepositoryCategories() const;
+    void setRepositoryCategories(const QSet<RepositoryCategory> &repositories);
+    void addRepositoryCategories(const QSet<RepositoryCategory> &repositories);
+    Settings::Update updateRepositoryCategories(const RepoHash &updates);
 
     QSet<Repository> temporaryRepositories() const;
     void setTemporaryRepositories(const QSet<Repository> &repositories, bool replace);
@@ -134,6 +137,7 @@ public:
     bool allowSpaceInPath() const;
     bool allowNonAsciiCharacters() const;
     bool disableAuthorizationFallback() const;
+    bool disableCommandLineInterface() const;
 
     bool containsValue(const QString &key) const;
     QVariant value(const QString &key, const QVariant &defaultValue = QVariant()) const;

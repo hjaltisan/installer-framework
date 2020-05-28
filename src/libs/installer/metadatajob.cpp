@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2018 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -35,6 +35,7 @@
 #include "serverauthenticationdialog.h"
 #include "settings.h"
 #include "testrepository.h"
+#include "globals.h"
 
 #include <QTemporaryDir>
 #include <QtMath>
@@ -54,10 +55,17 @@ static QUrl resolveUrl(const FileTaskResult &result, const QString &url)
 MetadataJob::MetadataJob(QObject *parent)
     : Job(parent)
     , m_core(nullptr)
-    , m_addCompressedPackages(false)
+    , m_downloadType(DownloadType::All)
     , m_downloadableChunkSize(1000)
     , m_taskNumber(0)
 {
+    QByteArray downloadableChunkSize = qgetenv("IFW_METADATA_SIZE");
+    if (!downloadableChunkSize.isEmpty()) {
+        int chunkSize = QString::fromLocal8Bit(downloadableChunkSize).toInt();
+        if (chunkSize > 0)
+            m_downloadableChunkSize = chunkSize;
+    }
+
     setCapabilities(Cancelable);
     connect(&m_xmlTask, &QFutureWatcherBase::finished, this, &MetadataJob::xmlTaskFinished);
     connect(&m_metadataTask, &QFutureWatcherBase::finished, this, &MetadataJob::metadataTaskFinished);
@@ -109,7 +117,7 @@ void MetadataJob::doStart()
         return; // We can't do anything here without core, so avoid tons of !m_core checks.
     }
     const ProductKeyCheck *const productKeyCheck = ProductKeyCheck::instance();
-    if (!m_addCompressedPackages) {
+    if (m_downloadType == DownloadType::All || m_downloadType == DownloadType::UpdatesXML) {
         emit infoMessage(this, tr("Preparing meta information download..."));
         const bool onlineInstaller = m_core->isInstaller() && !m_core->isOfflineOnly();
         if (onlineInstaller || m_core->isMaintainer()) {
@@ -134,8 +142,8 @@ void MetadataJob::doStart()
                         items.append(item);
                     }
                     else {
-                        qDebug() << "Trying to parse compressed repo as normal repository."\
-                                  "Check repository syntax.";
+                        qCWarning(QInstaller::lcInstallerInstallLog) << "Trying to parse compressed repo as "
+                            "normal repository. Check repository syntax.";
                     }
                 }
             }
@@ -183,6 +191,8 @@ void MetadataJob::startXMLTask(const QList<FileTaskItem> items)
 {
     DownloadFileTask *const xmlTask = new DownloadFileTask(items);
     xmlTask->setProxyFactory(m_core->proxyFactory());
+    connect(&m_xmlTask, &QFutureWatcher<FileTaskResult>::progressValueChanged, this,
+        &MetadataJob::progressChanged);
     m_xmlTask.setFuture(QtConcurrent::run(&DownloadFileTask::doTask, xmlTask));
 }
 
@@ -196,7 +206,7 @@ void MetadataJob::startUnzipRepositoryTask(const Repository &repo)
 {
     QTemporaryDir tempRepoDir(QDir::tempPath() + QLatin1String("/compressedRepo-XXXXXX"));
     if (!tempRepoDir.isValid()) {
-        qDebug() << "Cannot create unique temporary directory.";
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot create unique temporary directory.";
         return;
     }
     tempRepoDir.setAutoRemove(false);
@@ -292,10 +302,10 @@ void MetadataJob::xmlTaskFinished()
         if (e.type() == AuthenticationRequiredException::Type::Proxy) {
             const QNetworkProxy proxy = e.proxy();
             ProxyCredentialsDialog proxyCredentials(proxy);
-            qDebug().noquote() << e.message();
+            qCWarning(QInstaller::lcInstallerInstallLog) << e.message();
 
             if (proxyCredentials.exec() == QDialog::Accepted) {
-                qDebug() << "Retrying with new credentials ...";
+                qCDebug(QInstaller::lcInstallerInstallLog) << "Retrying with new credentials ...";
                 PackageManagerProxyFactory *factory = m_core->proxyFactory();
 
                 factory->setProxyCredentials(proxy, proxyCredentials.userName(),
@@ -307,7 +317,7 @@ void MetadataJob::xmlTaskFinished()
                 emitFinishedWithError(QInstaller::DownloadError, tr("Missing proxy credentials."));
             }
         } else if (e.type() == AuthenticationRequiredException::Type::Server) {
-            qDebug().noquote() << e.message();
+            qCWarning(QInstaller::lcInstallerInstallLog) << e.message();
             ServerAuthenticationDialog dlg(e.message(), e.taskItem());
             if (dlg.exec() == QDialog::Accepted) {
                 Repository original = e.taskItem().value(TaskRole::UserRole)
@@ -326,10 +336,21 @@ void MetadataJob::xmlTaskFinished()
                     QHash<QString, QPair<Repository, Repository> > update;
                     update.insert(QLatin1String("replace"), qMakePair(original, replacement));
 
+                    if (s.updateRepositoryCategories(update) == Settings::UpdatesApplied)
+                        qCDebug(QInstaller::lcGeneral()) << "Repository categories updated.";
+
                     if (s.updateDefaultRepositories(update) == Settings::UpdatesApplied
                         || s.updateUserRepositories(update) == Settings::UpdatesApplied) {
-                            if (m_core->isMaintainer())
+                            if (m_core->isMaintainer()) {
+                                bool gainedAdminRights = false;
+                                if (!m_core->directoryWritable(m_core->value(scTargetDir))) {
+                                    m_core->gainAdminRights();
+                                    gainedAdminRights = true;
+                                }
                                 m_core->writeMaintenanceConfigFiles();
+                                if (gainedAdminRights)
+                                    m_core->dropAdminRights();
+                            }
                     }
                 }
                 status = XmlDownloadRetry;
@@ -353,7 +374,10 @@ void MetadataJob::xmlTaskFinished()
         return;
 
     if (status == XmlDownloadSuccess) {
-        if (!fetchMetaDataPackages()) {
+        if (m_downloadType != DownloadType::UpdatesXML) {
+            if (!fetchMetaDataPackages())
+                emitFinished();
+        } else {
             emitFinished();
         }
     } else if (status == XmlDownloadRetry) {
@@ -415,7 +439,7 @@ void MetadataJob::metadataTaskFinished()
                                 .arg(item.value(TaskRole::SourceFile).toString());
                         if (m_core->settings().allowUnstableComponents()) {
                             m_shaMissmatchPackages.append(item.value(TaskRole::Name).toString());
-                            qWarning() << mismatchMessage;
+                            qCWarning(QInstaller::lcInstallerInstallLog) << mismatchMessage;
                         } else {
                             throw QInstaller::TaskException(mismatchMessage);
                         }
@@ -530,7 +554,7 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
         Metadata metadata;
         QTemporaryDir tmp(QDir::tempPath() + QLatin1String("/remoterepo-XXXXXX"));
         if (!tmp.isValid()) {
-            qDebug() << "Cannot create unique temporary directory.";
+            qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot create unique temporary directory.";
             return XmlDownloadFailure;
         }
 
@@ -540,19 +564,21 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
 
         QFile file(result.target());
         if (!file.rename(metadata.directory + QLatin1String("/Updates.xml"))) {
-            qDebug() << "Cannot rename target to Updates.xml:" << file.errorString();
+            qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot rename target to Updates.xml:"
+                << file.errorString();
             return XmlDownloadFailure;
         }
 
         if (!file.open(QIODevice::ReadOnly)) {
-            qDebug() << "Cannot open Updates.xml for reading:" << file.errorString();
+            qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot open Updates.xml for reading:"
+                << file.errorString();
             return XmlDownloadFailure;
         }
 
         QString error;
         QDomDocument doc;
         if (!doc.setContent(&file, &error)) {
-            qDebug().nospace() << "Cannot fetch a valid version of Updates.xml from repository "
+            qCWarning(QInstaller::lcInstallerInstallLog).nospace() << "Cannot fetch a valid version of Updates.xml from repository "
                                << metadata.repository.displayname() << ": " << error;
             //If there are other repositories, try to use those
             continue;
@@ -569,63 +595,61 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
         if (!checksum.isNull())
             testCheckSum = (checksum.toElement().text().toLower() == scTrue);
 
+        // If we have top level sha1 element, we have compressed all metadata inside
+        // one repository to a single 7z file. Fetch that instead of component specific
+        // meta 7z files.
+        const QDomNode sha1 = root.firstChildElement(scSHA1);
         QDomNodeList children = root.childNodes();
-        for (int i = 0; i < children.count(); ++i) {
-            const QDomElement el = children.at(i).toElement();
-            if (!el.isNull() && el.tagName() == QLatin1String("PackageUpdate")) {
-                const QDomNodeList c2 = el.childNodes();
-                QString packageName, packageVersion, packageHash;
-                bool metaFound = false;
-                for (int j = 0; j < c2.count(); ++j) {
-                    if (c2.at(j).toElement().tagName() == scName)
-                        packageName = c2.at(j).toElement().text();
-                    else if (c2.at(j).toElement().tagName() == scVersion)
-                        packageVersion = (online ? c2.at(j).toElement().text() : QString());
-                    else if ((c2.at(j).toElement().tagName() == QLatin1String("SHA1")) && testCheckSum)
-                        packageHash = c2.at(j).toElement().text();
-                    else {
-                        foreach (QString meta, metaElements) {
-                            if (c2.at(j).toElement().tagName() == meta) {
-                                metaFound = true;
-                                break;
-                            }
+        if (sha1.isNull()) {
+            bool metaFound = false;
+            for (int i = 0; i < children.count(); ++i) {
+                const QDomElement el = children.at(i).toElement();
+                if (!el.isNull() && el.tagName() == QLatin1String("PackageUpdate")) {
+                    const QDomNodeList c2 = el.childNodes();
+                    QString packageName, packageVersion, packageHash;
+                    metaFound = parsePackageUpdate(c2, packageName, packageVersion, packageHash,
+                                                   online, testCheckSum);
+
+                    //If meta element (script, licenses, etc.) is not found, no need to fetch metadata
+                    if (metaFound) {
+                        const QString repoUrl = metadata.repository.url().toString();
+                        addFileTaskItem(QString::fromLatin1("%1/%2/%3meta.7z").arg(repoUrl, packageName, packageVersion),
+                            metadata.directory + QString::fromLatin1("/%1-%2-meta.7z").arg(packageName, packageVersion),
+                            metadata, packageHash, packageName);
+                    } else {
+                        QString fileName = metadata.directory + QLatin1Char('/') + packageName;
+                        QDir directory(fileName);
+                        if (!directory.exists()) {
+                            directory.mkdir(fileName);
                         }
                     }
                 }
-
-                const QString repoUrl = metadata.repository.url().toString();
-                //If script element is not found, no need to fetch metadata
-                if (metaFound) {
-                    FileTaskItem item(QString::fromLatin1("%1/%2/%3meta.7z").arg(repoUrl, packageName,
-                        packageVersion), metadata.directory + QString::fromLatin1("/%1-%2-meta.7z")
-                        .arg(packageName, packageVersion));
-
-                    QAuthenticator authenticator;
-                    authenticator.setUser(metadata.repository.username());
-                    authenticator.setPassword(metadata.repository.password());
-
-                    item.insert(TaskRole::UserRole, metadata.directory);
-                    item.insert(TaskRole::Checksum, packageHash.toLatin1());
-                    item.insert(TaskRole::Authenticator, QVariant::fromValue(authenticator));
-                    item.insert(TaskRole::Name, packageName);
-
-                    m_packages.append(item);
-                } else {
-                    QString fileName = metadata.directory + QLatin1Char('/') + packageName;
-                    QDir directory(fileName);
-                    if (!directory.exists()) {
-                        directory.mkdir(fileName);
-                    }
-                }
             }
+        } else {
+            const QString repoUrl = metadata.repository.url().toString();
+            addFileTaskItem(QString::fromLatin1("%1/meta.7z").arg(repoUrl),
+                metadata.directory + QString::fromLatin1("/meta.7z"), metadata, sha1.toElement().text(), QString());
         }
-        if (metadata.repository.archivename().isEmpty()) {
+
+        if (metadata.repository.categoryname().isEmpty()) {
             m_metaFromDefaultRepositories.insert(metadata.directory, metadata);
         } else {
             //Hash metadata to help checking if meta for repository is already fetched
             ArchiveMetadata archiveMetadata;
             archiveMetadata.metaData = metadata;
-            m_fetchedArchive.insertMulti(metadata.repository.archivename(), archiveMetadata);
+            m_fetchedArchive.insertMulti(metadata.repository.categoryname(), archiveMetadata);
+
+            //Check if other categories have the same url (contains same metadata)
+            //so we can speed up other category fetches
+            foreach (RepositoryCategory category, m_core->settings().repositoryCategories()) {
+                if (category.displayname() != metadata.repository.categoryname()) {
+                    foreach (Repository repository, category.repositories()) {
+                        if (repository.url() == metadata.repository.url()) {
+                            m_fetchedArchive.insertMulti(category.displayname(), archiveMetadata);
+                        }
+                    }
+                }
+            }
             // Hash for faster lookups
             m_metaFromArchive.insert(metadata.directory, metadata);
         }
@@ -633,82 +657,13 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
 
         // search for additional repositories that we might need to check
         const QDomNode repositoryUpdate = root.firstChildElement(QLatin1String("RepositoryUpdate"));
-        if (repositoryUpdate.isNull())
-            continue;
-
-        QHash<QString, QPair<Repository, Repository> > repositoryUpdates;
-        children = repositoryUpdate.toElement().childNodes();
-        for (int i = 0; i < children.count(); ++i) {
-            const QDomElement el = children.at(i).toElement();
-            if (!el.isNull() && el.tagName() == QLatin1String("Repository")) {
-                const QString action = el.attribute(QLatin1String("action"));
-                if (action == QLatin1String("add")) {
-                    // add a new repository to the defaults list
-                    Repository repository(resolveUrl(result, el.attribute(QLatin1String("url"))), true);
-                    repository.setUsername(el.attribute(QLatin1String("username")));
-                    repository.setPassword(el.attribute(QLatin1String("password")));
-                    repository.setDisplayName(el.attribute(QLatin1String("displayname")));
-                    if (ProductKeyCheck::instance()->isValidRepository(repository)) {
-                        repositoryUpdates.insertMulti(action, qMakePair(repository, Repository()));
-                        qDebug() << "Repository to add:" << repository.displayname();
-                    }
-                } else if (action == QLatin1String("remove")) {
-                    // remove possible default repositories using the given server url
-                    Repository repository(resolveUrl(result, el.attribute(QLatin1String("url"))), true);
-                    repository.setDisplayName(el.attribute(QLatin1String("displayname")));
-                    repositoryUpdates.insertMulti(action, qMakePair(repository, Repository()));
-
-                    qDebug() << "Repository to remove:" << repository.displayname();
-                } else if (action == QLatin1String("replace")) {
-                    // replace possible default repositories using the given server url
-                    Repository oldRepository(resolveUrl(result, el.attribute(QLatin1String("oldUrl"))), true);
-                    Repository newRepository(resolveUrl(result, el.attribute(QLatin1String("newUrl"))), true);
-                    newRepository.setUsername(el.attribute(QLatin1String("username")));
-                    newRepository.setPassword(el.attribute(QLatin1String("password")));
-                    newRepository.setDisplayName(el.attribute(QLatin1String("displayname")));
-
-                    if (ProductKeyCheck::instance()->isValidRepository(newRepository)) {
-                        // store the new repository and the one old it replaces
-                        repositoryUpdates.insertMulti(action, qMakePair(newRepository, oldRepository));
-                        qDebug() << "Replace repository" << oldRepository.displayname() << "with"
-                            << newRepository.displayname();
-                    }
-                } else {
-                    qDebug() << "Invalid additional repositories action set in Updates.xml fetched "
-                        "from" << metadata.repository.displayname() << "line:" << el.lineNumber();
-                }
-            }
-        }
-
-        if (!repositoryUpdates.isEmpty()) {
-            Settings &s = m_core->settings();
-            const QSet<Repository> temporaries = s.temporaryRepositories();
-            // in case the temp repository introduced something new, we only want that temporary
-            if (temporaries.contains(metadata.repository)) {
-                QSet<Repository> tmpRepositories;
-                typedef QPair<Repository, Repository> RepositoryPair;
-
-                QList<RepositoryPair> values = repositoryUpdates.values(QLatin1String("add"));
-                foreach (const RepositoryPair &value, values)
-                    tmpRepositories.insert(value.first);
-
-                values = repositoryUpdates.values(QLatin1String("replace"));
-                foreach (const RepositoryPair &value, values)
-                    tmpRepositories.insert(value.first);
-
-                tmpRepositories = tmpRepositories.subtract(temporaries);
-                if (tmpRepositories.count() > 0) {
-                    s.addTemporaryRepositories(tmpRepositories, true);
-                    QFile::remove(result.target());
-                    m_metaFromDefaultRepositories.clear();
-                    return XmlDownloadRetry;
-                }
-            } else if (s.updateDefaultRepositories(repositoryUpdates) == Settings::UpdatesApplied) {
-                if (m_core->isMaintainer())
-                    m_core->writeMaintenanceConfigFiles();
-                m_metaFromDefaultRepositories.clear();
-                QFile::remove(result.target());
-                return XmlDownloadRetry;
+        if (!repositoryUpdate.isNull()) {
+            QHash<QString, QPair<Repository, Repository> > repositoryUpdates =
+                    searchAdditionalRepositories(repositoryUpdate, result, metadata);
+            if (!repositoryUpdates.isEmpty()) {
+                MetadataJob::Status status = setAdditionalRepositories(repositoryUpdates, result, metadata);
+                if (status == XmlDownloadRetry)
+                    return status;
             }
         }
     }
@@ -732,13 +687,154 @@ QSet<Repository> MetadataJob::getRepositories()
     // If repository is already fetched, do not fetch it again.
     // In updater mode, fetch always all archive repositories to get updates
     foreach (RepositoryCategory repositoryCategory, m_core->settings().repositoryCategories()) {
-        if (m_core->isUpdater() || (repositoryCategory.isEnabled() && !m_fetchedArchive.contains(repositoryCategory.displayname()))) {
-            foreach (Repository repository, repositoryCategory.repositories()) {
-                repositories.insert(repository);
+        if (m_core->isUpdater() || (repositoryCategory.isEnabled())) {
+                foreach (Repository repository, repositoryCategory.repositories()) {
+                    QHashIterator<QString, ArchiveMetadata> i(m_fetchedArchive);
+                    bool fetch = true;
+                    while (i.hasNext()) {
+                        i.next();
+                        ArchiveMetadata metaData = i.value();
+                        if (repository.url() == metaData.metaData.repository.url())
+                            fetch = false;
+                    }
+                    if (fetch)
+                        repositories.insert(repository);
+                }
             }
-        }
     }
     return repositories;
 }
 
+void MetadataJob::addFileTaskItem(const QString &source, const QString &target, const Metadata &metadata,
+                                  const QString &sha1, const QString &packageName)
+{
+    FileTaskItem item(source, target);
+    QAuthenticator authenticator;
+    authenticator.setUser(metadata.repository.username());
+    authenticator.setPassword(metadata.repository.password());
+
+    item.insert(TaskRole::UserRole, metadata.directory);
+    item.insert(TaskRole::Checksum, sha1.toLatin1());
+    item.insert(TaskRole::Authenticator, QVariant::fromValue(authenticator));
+    item.insert(TaskRole::Name, packageName);
+    m_packages.append(item);
+}
+
+bool MetadataJob::parsePackageUpdate(const QDomNodeList &c2, QString &packageName,
+                                    QString &packageVersion, QString &packageHash,
+                                    bool online, bool testCheckSum)
+{
+    bool metaFound = false;
+    for (int j = 0; j < c2.count(); ++j) {
+        const QDomElement element = c2.at(j).toElement();
+        if (element.tagName() == scName)
+            packageName = element.text();
+        else if (element.tagName() == scVersion)
+            packageVersion = (online ? element.text() : QString());
+        else if ((element.tagName() == QLatin1String("SHA1")) && testCheckSum)
+            packageHash = element.text();
+        else {
+            foreach (QString meta, metaElements) {
+                if (element.tagName() == meta) {
+                    metaFound = true;
+                    break;
+                }
+            }
+        }
+    }
+    return metaFound;
+}
+
+QHash<QString, QPair<Repository, Repository> > MetadataJob::searchAdditionalRepositories
+    (const QDomNode &repositoryUpdate, const FileTaskResult &result, const Metadata &metadata)
+{
+    QHash<QString, QPair<Repository, Repository> > repositoryUpdates;
+    const QDomNodeList children = repositoryUpdate.toElement().childNodes();
+    for (int i = 0; i < children.count(); ++i) {
+        const QDomElement el = children.at(i).toElement();
+        if (!el.isNull() && el.tagName() == QLatin1String("Repository")) {
+            const QString action = el.attribute(QLatin1String("action"));
+            if (action == QLatin1String("add")) {
+                // add a new repository to the defaults list
+                Repository repository(resolveUrl(result, el.attribute(QLatin1String("url"))), true);
+                repository.setUsername(el.attribute(QLatin1String("username")));
+                repository.setPassword(el.attribute(QLatin1String("password")));
+                repository.setDisplayName(el.attribute(QLatin1String("displayname")));
+                if (ProductKeyCheck::instance()->isValidRepository(repository)) {
+                    repositoryUpdates.insertMulti(action, qMakePair(repository, Repository()));
+                    qDebug() << "Repository to add:" << repository.displayname();
+                }
+            } else if (action == QLatin1String("remove")) {
+                // remove possible default repositories using the given server url
+                Repository repository(resolveUrl(result, el.attribute(QLatin1String("url"))), true);
+                repository.setDisplayName(el.attribute(QLatin1String("displayname")));
+                repositoryUpdates.insertMulti(action, qMakePair(repository, Repository()));
+
+                qDebug() << "Repository to remove:" << repository.displayname();
+            } else if (action == QLatin1String("replace")) {
+                // replace possible default repositories using the given server url
+                Repository oldRepository(resolveUrl(result, el.attribute(QLatin1String("oldUrl"))), true);
+                Repository newRepository(resolveUrl(result, el.attribute(QLatin1String("newUrl"))), true);
+                newRepository.setUsername(el.attribute(QLatin1String("username")));
+                newRepository.setPassword(el.attribute(QLatin1String("password")));
+                newRepository.setDisplayName(el.attribute(QLatin1String("displayname")));
+
+                if (ProductKeyCheck::instance()->isValidRepository(newRepository)) {
+                    // store the new repository and the one old it replaces
+                    repositoryUpdates.insertMulti(action, qMakePair(newRepository, oldRepository));
+                    qDebug() << "Replace repository" << oldRepository.displayname() << "with"
+                        << newRepository.displayname();
+                }
+            } else {
+                qDebug() << "Invalid additional repositories action set in Updates.xml fetched "
+                    "from" << metadata.repository.displayname() << "line:" << el.lineNumber();
+            }
+        }
+    }
+    return repositoryUpdates;
+}
+
+MetadataJob::Status MetadataJob::setAdditionalRepositories(QHash<QString, QPair<Repository, Repository> > repositoryUpdates,
+                                            const FileTaskResult &result, const Metadata& metadata)
+{
+    MetadataJob::Status status = XmlDownloadSuccess;
+    Settings &s = m_core->settings();
+    const QSet<Repository> temporaries = s.temporaryRepositories();
+    // in case the temp repository introduced something new, we only want that temporary
+    if (temporaries.contains(metadata.repository)) {
+        QSet<Repository> tmpRepositories;
+        typedef QPair<Repository, Repository> RepositoryPair;
+
+        QList<RepositoryPair> values = repositoryUpdates.values(QLatin1String("add"));
+        foreach (const RepositoryPair &value, values)
+            tmpRepositories.insert(value.first);
+
+        values = repositoryUpdates.values(QLatin1String("replace"));
+        foreach (const RepositoryPair &value, values)
+            tmpRepositories.insert(value.first);
+
+        tmpRepositories = tmpRepositories.subtract(temporaries);
+        if (tmpRepositories.count() > 0) {
+            s.addTemporaryRepositories(tmpRepositories, true);
+            QFile::remove(result.target());
+            m_metaFromDefaultRepositories.clear();
+            status = XmlDownloadRetry;
+        }
+    } else if (s.updateDefaultRepositories(repositoryUpdates) == Settings::UpdatesApplied) {
+        if (m_core->isMaintainer()) {
+            bool gainedAdminRights = false;
+            if (!m_core->directoryWritable(m_core->value(scTargetDir))) {
+                m_core->gainAdminRights();
+                gainedAdminRights = true;
+            }
+            m_core->writeMaintenanceConfigFiles();
+            if (gainedAdminRights)
+                m_core->dropAdminRights();
+        }
+        m_metaFromDefaultRepositories.clear();
+        QFile::remove(result.target());
+        status = XmlDownloadRetry;
+    }
+    return status;
+}
 }   // namespace QInstaller

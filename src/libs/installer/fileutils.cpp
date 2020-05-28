@@ -27,6 +27,7 @@
 **************************************************************************/
 #include "fileutils.h"
 
+#include "globals.h"
 #include <errors.h>
 
 #include <QtCore/QDateTime>
@@ -188,7 +189,7 @@ void QInstaller::removeFiles(const QString &path, bool ignoreErrors)
                                 QDir::toNativeSeparators(f.fileName()), f.errorString());
                     if (!ignoreErrors)
                         throw Error(errorMessage);
-                    qWarning().noquote() << errorMessage;
+                    qCWarning(QInstaller::lcInstallerInstallLog).noquote() << errorMessage;
                 }
             }
         }
@@ -231,7 +232,7 @@ void QInstaller::removeDirectory(const QString &path, bool ignoreErrors)
                                                           errnoToQString(errno));
             if (!ignoreErrors)
                 throw Error(errorMessage);
-            qWarning().noquote() << errorMessage;
+            qCWarning(QInstaller::lcInstallerInstallLog).noquote() << errorMessage;
         }
     }
 }
@@ -286,11 +287,44 @@ void QInstaller::removeSystemGeneratedFiles(const QString &path)
 {
     if (path.isEmpty())
         return;
-#if defined Q_OS_OSX
+#if defined Q_OS_MACOS
     QFile::remove(path + QLatin1String("/.DS_Store"));
 #elif defined Q_OS_WIN
     QFile::remove(path + QLatin1String("/Thumbs.db"));
 #endif
+}
+
+/*!
+    Sets permissions of file or directory specified by \a fileName to \c 644 or \c 755
+    based by the value of \a permissions.
+*/
+bool QInstaller::setDefaultFilePermissions(const QString &fileName, DefaultFilePermissions permissions)
+{
+    QFile file(fileName);
+    return setDefaultFilePermissions(&file, permissions);
+}
+
+/*!
+    Sets permissions of file or directory specified by \a file to \c 644 or \c 755
+    based by the value of \a permissions. This is effective only on Unix platforms
+    as \c setPermissions() does not manipulate ACLs. On Windows NTFS volumes this
+    only unsets the legacy read-only flag regardless of the value of \a permissions.
+*/
+bool QInstaller::setDefaultFilePermissions(QFile *file, DefaultFilePermissions permissions)
+{
+    if (!file->exists()) {
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Target" << file->fileName() << "does not exists.";
+        return false;
+    }
+    if (file->permissions() == static_cast<QFileDevice::Permission>(permissions))
+        return true;
+
+    if (!file->setPermissions(static_cast<QFileDevice::Permission>(permissions))) {
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot set default permissions for target"
+                   << file->fileName() << ":" << file->errorString();
+        return false;
+    }
+    return true;
 }
 
 void QInstaller::copyDirectoryContents(const QString &sourceDir, const QString &targetDir)
@@ -496,13 +530,14 @@ void QInstaller::setApplicationIcon(const QString &application, const QString &i
 {
     QFile iconFile(icon);
     if (!iconFile.open(QIODevice::ReadOnly)) {
-        qWarning() << "Cannot use" << icon << "as an application icon:" << iconFile.errorString();
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot use" << icon << "as an application icon:"
+            << iconFile.errorString();
         return;
     }
 
     if (QImageReader::imageFormat(icon) != "ico") {
-        qWarning() << "Cannot use" << icon << "as an application icon, unsupported format"
-                   << QImageReader::imageFormat(icon).constData();
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot use" << icon << "as an application icon, "
+            "unsupported format" << QImageReader::imageFormat(icon).constData();
         return;
     }
 
@@ -572,7 +607,7 @@ quint64 QInstaller::fileSize(const QFileInfo &info)
 
 bool QInstaller::isInBundle(const QString &path, QString *bundlePath)
 {
-#ifdef Q_OS_OSX
+#ifdef Q_OS_MACOS
     QFileInfo fi = QFileInfo(path).absoluteFilePath();
     while (!fi.isRoot()) {
         if (fi.isBundle()) {

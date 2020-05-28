@@ -96,7 +96,7 @@ static QStringList split(int index, const QString &description)
 int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
-    app.setApplicationVersion(QLatin1String("1.0.0"));
+    app.setApplicationVersion(QLatin1String("2.0.0"));
 
     QCommandLineParser parser;
     QCommandLineOption help = parser.addHelpOption();
@@ -168,7 +168,7 @@ int main(int argc, char *argv[])
     if (QInstaller::isInBundle(path, &bundlePath)) {
         path = QDir(bundlePath).filePath(QLatin1String("Contents/Resources/installer.dat"));
     }
-#ifndef Q_OS_OSX
+#ifndef Q_OS_MACOS
     QFileInfo fi = QFileInfo(path);
     bundlePath = path;
     QString tmp = QDir(fi.path()).filePath(QLatin1String("installer.dat"));
