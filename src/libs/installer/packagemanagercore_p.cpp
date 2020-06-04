@@ -598,7 +598,7 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     // Set shortcut path for command line interface, in GUI version
     // we have a separate page where the whole path is set.
 #ifdef Q_OS_WIN
-    if (m_core->isCommandLineInstance()) {
+    if (m_core->isCommandLineInstance() && m_core->isInstaller()) {
         QString startMenuPath;
         if (params.value(QLatin1String("AllUsers")) == scTrue)
             startMenuPath = m_data.value(scAllUsersStartMenuProgramsPath).toString();
@@ -2520,7 +2520,7 @@ bool PackageManagerCorePrivate::calculateComponentsAndRun()
     return success;
 }
 
-bool PackageManagerCorePrivate::acceptLicenseAgreements()
+bool PackageManagerCorePrivate::acceptLicenseAgreements() const
 {
     // Always skip for uninstaller
     if (isUninstaller())
@@ -2548,7 +2548,7 @@ bool PackageManagerCorePrivate::acceptLicenseAgreements()
     return true;
 }
 
-bool PackageManagerCorePrivate::askUserAcceptLicense(const QString &name, const QString &content)
+bool PackageManagerCorePrivate::askUserAcceptLicense(const QString &name, const QString &content) const
 {
     qCDebug(QInstaller::lcInstallerInstallLog) << "You must accept "
         "the terms contained in the following license agreement "
