@@ -89,6 +89,7 @@ static const QLatin1String scStyleSheet("StyleSheet");
 static const QLatin1String scTitleColor("TitleColor");
 static const QLatin1String scWizardDefaultWidth("WizardDefaultWidth");
 static const QLatin1String scWizardDefaultHeight("WizardDefaultHeight");
+static const QLatin1String scWizardShowPageList("WizardShowPageList");
 static const QLatin1String scUrlQueryString("UrlQueryString");
 static const QLatin1String scProductUUID("ProductUUID");
 static const QLatin1String scAllUsers("AllUsers");
@@ -186,6 +187,10 @@ static const QLatin1String scStartClientShort("sc");
 static const QLatin1String scStartClientLong("start-client");
 static const QLatin1String scSquishPortShort("q");
 static const QLatin1String scSquishPortLong("squish-port");
+
+// Deprecated options, provided only for backward compatibility
+static const QLatin1String scDeprecatedUpdater("updater");
+static const QLatin1String scDeprecatedCheckUpdates("checkupdates");
 
 // Options supposed to be used without graphical interface
 static const QStringList scCommandLineInterfaceOptions = {

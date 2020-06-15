@@ -172,6 +172,8 @@ public:
     void writeMaintenanceTool();
     void writeMaintenanceConfigFiles();
 
+    void disableWriteMaintenanceTool(bool disable = true);
+
     QString maintenanceToolName() const;
     QString installerBinaryPath() const;
 
@@ -360,6 +362,7 @@ Q_SIGNALS:
 
     void guiObjectChanged(QObject *gui);
     void unstableComponentFound(const QString &type, const QString &errorMessage, const QString &component);
+    void installerBinaryMarkerChanged(qint64 magicMarker);
 
 private:
     struct Data {
