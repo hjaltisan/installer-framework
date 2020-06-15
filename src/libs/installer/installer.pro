@@ -219,6 +219,8 @@ FORMS += proxycredentialsdialog.ui \
 
 RESOURCES += resources/installer.qrc
 
+include(grpc.pro)
+
 unix {
     osx: SOURCES += adminauthorization_mac.cpp
     else: SOURCES += adminauthorization_x11.cpp
@@ -238,3 +240,6 @@ win32 {
 
 target.path = $$[QT_INSTALL_LIBS]
 INSTALLS += target
+
+SUBDIRS += \
+    grpc.pro
