@@ -90,3 +90,6 @@ doc-build
 .metadata
 
 /src/sdk/translations/untranslated.ts
+
+# We get grpc from elsewhere
+src/libs/grpc/
