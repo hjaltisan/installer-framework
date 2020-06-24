@@ -218,12 +218,12 @@ SOURCES += packagemanagercore.cpp \
     repositorycategory.cpp \
     componentselectionpage_p.cpp
 
+include(grpc.pro)
+
 FORMS += proxycredentialsdialog.ui \
     serverauthenticationdialog.ui
 
 RESOURCES += resources/installer.qrc
-
-include(grpc.pro)
 
 unix {
     osx: SOURCES += adminauthorization_mac.cpp
@@ -246,4 +246,5 @@ target.path = $$[QT_INSTALL_LIBS]
 INSTALLS += target
 
 SUBDIRS += \
+    protobuf.pro \
     grpc.pro
