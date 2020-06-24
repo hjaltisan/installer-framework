@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "*.qs": "javascript",
+        "*.qss": "css",
+        "*.ui": "xml",
+        "*.ts": "xml",
+        "chrono": "cpp",
+        "xhash": "cpp",
+        "xutility": "cpp"
+    }
+}
