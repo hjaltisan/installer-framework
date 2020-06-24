@@ -1,5 +1,5 @@
 win32: {
-    GRPC_PATH = $$PWD/src/libs/grpc/x86-windows
+    GRPC_PATH = $$PWD/../grpc/x86-windows
 
     DEFINES +=_WIN32_WINNT=0X601
 
