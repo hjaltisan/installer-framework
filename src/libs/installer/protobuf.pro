@@ -4,5 +4,5 @@ win32: {
     # Protobuf
     INCLUDEPATH += $$PROTOBUF_PATH/include
     CONFIG(release, debug|release):  LIBS += -L$$PROTOBUF_PATH/lib/ -llibprotobuf
-    else:CONFIG(debug, debug|release): LIBS += -L$$PROTOBUF_PATH/lib/ -llibprotobuf
+    else:CONFIG(debug, debug|release): LIBS += -L$$PROTOBUF_PATH/debug/lib/ -llibprotobufd
 }

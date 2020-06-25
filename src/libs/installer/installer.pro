@@ -246,5 +246,4 @@ target.path = $$[QT_INSTALL_LIBS]
 INSTALLS += target
 
 SUBDIRS += \
-    protobuf.pro \
     grpc.pro
