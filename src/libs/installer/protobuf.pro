@@ -1,5 +1,5 @@
 win32: {
-    PROTOBUF_PATH = $$PWD/../../../../install
+    PROTOBUF_PATH = $$_PRO_FILE_PWD_/../../../../install
 
     # Protobuf
     INCLUDEPATH += $$PROTOBUF_PATH/include
