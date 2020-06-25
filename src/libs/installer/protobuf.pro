@@ -1,5 +1,5 @@
 win32: {
-    PROTOBUF_PATH = $$_PRO_FILE_PWD_/../../../../install
+    PROTOBUF_PATH = $$PWD/../../../../grpc/x86-windows
 
     # Protobuf
     INCLUDEPATH += $$PROTOBUF_PATH/include
