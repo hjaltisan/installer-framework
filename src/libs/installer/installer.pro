@@ -137,7 +137,15 @@ HEADERS += packagemanagercore.h \
     lib7z_extract.h \
     lib7z_list.h \
     repositorycategory.h \
-    componentselectionpage_p.h
+    componentselectionpage_p.h \
+    eve_launcher/launcher.grpc.pb.h \
+    eve_launcher/gateway.grpc.pb.h \
+    eve_launcher/graphics.grpc.pb.h \
+    eve_launcher/launcher.pb.h \
+    eve_launcher/gateway.pb.h \
+    eve_launcher/graphics.pb.h \
+    eve_launcher/user.pb.h \
+    eve_launcher/user.grpc.pb.h
 
 SOURCES += packagemanagercore.cpp \
     packagemanagercore_p.cpp \
@@ -217,7 +225,15 @@ SOURCES += packagemanagercore.cpp \
     systeminfo.cpp \
     packagesource.cpp \
     repositorycategory.cpp \
-    componentselectionpage_p.cpp
+    componentselectionpage_p.cpp \
+    eve_launcher/launcher.grpc.pb.cc \
+    eve_launcher/gateway.grpc.pb.cc \
+    eve_launcher/graphics.grpc.pb.cc \
+    eve_launcher/launcher.pb.cc \
+    eve_launcher/gateway.pb.cc \
+    eve_launcher/graphics.pb.cc \
+    eve_launcher/user.pb.cc \
+    eve_launcher/user.grpc.pb.cc
 
 SUBDIRS += \
     grpc.pro
