@@ -11,7 +11,7 @@ win32: {
     INCLUDEPATH += $$GRPC_PATH/include
     INCLUDEPATH += $$GRPC_PATH/lib
 
-    LIBS += -llibprotobuf -lgrpc -lgrpc++ -lgpr -lzlib -llibeay32 -lssleay32 -lws32
+    LIBS += -L$$GRPC_PATH/lib/ -llibprotobuf -lgrpc -lgrpc++ -lgpr -lzlib -llibeay32 -lssleay32 -lws32
     
     DEPENDPATH += $$GRPC_PATH/lib
 
