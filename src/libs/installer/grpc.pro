@@ -8,13 +8,7 @@ win32: {
 
     DEFINES +=_WIN32_WINNT=0X601
 
-    LIBS += -L$$GRPC_PATH/lib/ -llibprotobuf
-    LIBS += -L$$GRPC_PATH/lib/ -lgrpc
-    LIBS += -L$$GRPC_PATH/lib/ -lgrpc++
-    LIBS += -L$$GRPC_PATH/lib/ -lgpr
-    LIBS += -L$$GRPC_PATH/lib/ -lzlib
-    LIBS += -L$$GRPC_PATH/lib/ -llibeay32
-    LIBS += -L$$GRPC_PATH/lib/ -lssleay32
+    LIBS += -L$$GRPC_PATH/lib/ -llibprotobuf -lgrpc -lgrpc++ -lgpr -lzlib -llibeay32 -lssleay32 -lws32
 
     INCLUDEPATH += $$GRPC_PATH/include
     INCLUDEPATH += $$GRPC_PATH/lib
