@@ -235,9 +235,6 @@ SOURCES += packagemanagercore.cpp \
     eve_launcher/user.pb.cc \
     eve_launcher/user.grpc.pb.cc
 
-SUBDIRS += \
-    grpc.pro
-
 FORMS += proxycredentialsdialog.ui \
     serverauthenticationdialog.ui
 

@@ -8,10 +8,11 @@ win32: {
 
     DEFINES +=_WIN32_WINNT=0X601
 
-    LIBS += -L$$GRPC_PATH/lib/ -llibprotobuf -lgrpc -lgrpc++ -lgpr -lzlib -llibeay32 -lssleay32 -lws32
-
     INCLUDEPATH += $$GRPC_PATH/include
     INCLUDEPATH += $$GRPC_PATH/lib
+
+    LIBS += -llibprotobuf -lgrpc -lgrpc++ -lgpr -lzlib -llibeay32 -lssleay32 -lws32
+    
     DEPENDPATH += $$GRPC_PATH/lib
 
     PRE_TARGETDEPS += $$GRPC_PATH/lib/libprotobuf.lib
