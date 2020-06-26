@@ -219,7 +219,8 @@ SOURCES += packagemanagercore.cpp \
     repositorycategory.cpp \
     componentselectionpage_p.cpp
 
-
+SUBDIRS += \
+    grpc.pro
 
 FORMS += proxycredentialsdialog.ui \
     serverauthenticationdialog.ui
@@ -245,6 +246,3 @@ win32 {
 
 target.path = $$[QT_INSTALL_LIBS]
 INSTALLS += target
-
-SUBDIRS += \
-    grpc.pro
