@@ -7,6 +7,7 @@ CONFIG += staticlib
 include(../7zip/7zip.pri)
 include(../kdtools/kdtools.pri)
 include(../../../installerfw.pri)
+include(grpc.pro)
 
 # productkeycheck API
 # call qmake "PRODUCTKEYCHECK_PRI_FILE=<your_path_to_pri_file>"
@@ -218,7 +219,7 @@ SOURCES += packagemanagercore.cpp \
     repositorycategory.cpp \
     componentselectionpage_p.cpp
 
-include(grpc.pro)
+
 
 FORMS += proxycredentialsdialog.ui \
     serverauthenticationdialog.ui
