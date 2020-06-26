@@ -8,7 +8,6 @@ win32: {
     LIBS += -L$$GRPC_PATH/lib/ -lgrpc++
     LIBS += -L$$GRPC_PATH/lib/ -lgpr
     LIBS += -L$$GRPC_PATH/lib/ -lzlib
-    LIBS += -L$$GRPC_PATH/lib/ -lws2_32
     LIBS += -L$$GRPC_PATH/lib/ -llibeay32
     LIBS += -L$$GRPC_PATH/lib/ -lssleay32
 
@@ -21,7 +20,6 @@ win32: {
     PRE_TARGETDEPS += $$GRPC_PATH/lib/grpc++.lib
     PRE_TARGETDEPS += $$GRPC_PATH/lib/gpr.lib
     PRE_TARGETDEPS += $$GRPC_PATH/lib/zlib.lib
-    PRE_TARGETDEPS += $$GRPC_PATH/lib/ws2_32.lib
     PRE_TARGETDEPS += $$GRPC_PATH/lib/libeay32.lib
     PRE_TARGETDEPS += $$GRPC_PATH/lib/ssleay32.lib
 
