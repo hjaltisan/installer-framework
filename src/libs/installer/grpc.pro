@@ -11,7 +11,7 @@ win32: {
     INCLUDEPATH += $$GRPC_PATH/include
     INCLUDEPATH += $$GRPC_PATH/lib
 
-    LIBS += -L$$GRPC_PATH/lib/ -llibprotobuf -lgrpc -lgrpc++ -lgpr -lzlibstatic -llibeay32 -lssleay32 -lws32
+    LIBS += -L$$GRPC_PATH/lib/ -llibprotobuf -lgrpc -lgrpc++ -lgpr -lzlibstatic -llibcrypto -llibssl -lws32
     
     DEPENDPATH += $$GRPC_PATH/lib
 
@@ -20,8 +20,8 @@ win32: {
     PRE_TARGETDEPS += $$GRPC_PATH/lib/grpc++.lib
     PRE_TARGETDEPS += $$GRPC_PATH/lib/gpr.lib
     PRE_TARGETDEPS += $$GRPC_PATH/lib/zlibstatic.lib
-    PRE_TARGETDEPS += $$GRPC_PATH/lib/libeay32.lib
-    PRE_TARGETDEPS += $$GRPC_PATH/lib/ssleay32.lib
+    PRE_TARGETDEPS += $$GRPC_PATH/lib/libcrypto.lib
+    PRE_TARGETDEPS += $$GRPC_PATH/lib/libssl.lib
 
     QMAKE_CXXFLAGS_WARN_ON += /wd4251 /wd4100
 }
