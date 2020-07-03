@@ -1,10 +1,6 @@
 win32: {
     
-    equals(QMAKE_HOST.arch, x86_64) {
-        GRPC_PATH = $$PWD/../../../../grpc/x64-windows
-    } else {
-        GRPC_PATH = $$PWD/../../../../grpc/x86-windows
-    }
+    GRPC_PATH = $$PWD/../../../../grpc/x64-windows
 
     DEFINES +=_WIN32_WINNT=0X601
 
