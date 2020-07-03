@@ -11,7 +11,7 @@ win32: {
     INCLUDEPATH += $$GRPC_PATH/include
     INCLUDEPATH += $$GRPC_PATH/lib
 
-    LIBS += -L$$GRPC_PATH/lib/ -llibprotobuf -lgrpc -lgrpc++ -lgpr -lzlibstatic -llibcrypto -llibssl -lws32
+    LIBS += -L$$GRPC_PATH/lib/ -llibprotobuf -lgrpc -lgrpc++ -lgpr -lzlibstatic -llibcrypto -llibssl -lws32 -lcares -lssl -lcrypto
     
     DEPENDPATH += $$GRPC_PATH/lib
 
