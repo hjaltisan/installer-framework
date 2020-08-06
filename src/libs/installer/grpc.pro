@@ -2,7 +2,7 @@ CONFIG += staticlib
 
 win32: {
     
-    LIBS_PATH = $$PWD/../../../../../libs/x86-windows
+    LIBS_PATH = C:/libs
 
     DEFINES +=_WIN32_WINNT=0X601
 
