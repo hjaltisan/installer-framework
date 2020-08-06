@@ -68,14 +68,14 @@
 #include "sysinfo.h"
 #include "updateoperationfactory.h"
 
-#include "google/protobuf/stubs/common.h"
-#include "grpc/grpc.h"
-#include "grpcpp/channel.h"
-#include "grpcpp/create_channel.h"
-#include "grpcpp/security/credentials.h"
+// #include "google/protobuf/stubs/common.h"
+// #include "grpc/grpc.h"
+// #include "grpcpp/channel.h"
+// #include "grpcpp/create_channel.h"
+// #include "grpcpp/security/credentials.h"
 
-#include <eve_launcher/gateway.grpc.pb.h>
-#include <eve_launcher/launcher.pb.h>
+// #include <eve_launcher/gateway.grpc.pb.h>
+// #include <eve_launcher/launcher.pb.h>
 
 #ifdef Q_OS_WIN
 #   include "qt_windows.h"
