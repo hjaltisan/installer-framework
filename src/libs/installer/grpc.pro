@@ -3,7 +3,7 @@ win32: {
     LIBS += -LC:/libs/x86-windows/lib/ -llibprotobuf
 
     INCLUDEPATH += C:/libs/x86-windows/include
-    DEPENDPATH += C:/libs/x86-windows/include
+    DEPENDPATH += C:/libs/x86-windows/lib
 
     PRE_TARGETDEPS += C:/libs/x86-windows/lib/libprotobuf.lib
 
