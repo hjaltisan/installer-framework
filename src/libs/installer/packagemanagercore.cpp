@@ -70,7 +70,7 @@
 
 // #include "google/protobuf/stubs/common.h"
 // #include "grpc/grpc.h"
-// #include "grpcpp/channel.h"
+#include "grpcpp/channel.h"
 // #include "grpcpp/create_channel.h"
 // #include "grpcpp/security/credentials.h"
 
