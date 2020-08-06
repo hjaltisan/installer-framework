@@ -9,16 +9,5 @@ win32: {
 
     LIBS += -L$$LIBS_PATH/lib/ -llibprotobuf -lgrpc -lgrpc++ -lgpr -lzlibstatic -llibcrypto -llibssl -lws32 -lcares -lssl -lcrypto -lgrpcpp_channelz
     
-    DEPENDPATH += $$LIBS_PATH/lib
-
-    PRE_TARGETDEPS += $$LIBS_PATH/lib/libprotobuf.lib
-    PRE_TARGETDEPS += $$LIBS_PATH/lib/grpc.lib
-    PRE_TARGETDEPS += $$LIBS_PATH/lib/grpc++.lib
-    PRE_TARGETDEPS += $$LIBS_PATH/lib/gpr.lib
-    PRE_TARGETDEPS += $$LIBS_PATH/lib/zlibstatic.lib
-    PRE_TARGETDEPS += $$LIBS_PATH/lib/libcrypto.lib
-    PRE_TARGETDEPS += $$LIBS_PATH/lib/libssl.lib
-    PRE_TARGETDEPS += $$LIBS_PATH/lib/grpcpp_channelz.lib
-
     QMAKE_CXXFLAGS_WARN_ON += /wd4251 /wd4100
 }
