@@ -1,12 +1,5 @@
 win32: {
     
-    LIBS += -LC:/libs/x86-windows/lib/ -llibprotobuf
-
-    INCLUDEPATH += C:/libs/x86-windows/include
-    DEPENDPATH += C:/libs/x86-windows/lib
-
-    PRE_TARGETDEPS += C:/libs/x86-windows/lib/libprotobuf.lib
-
     LIBS_PATH = C:/libs/x86-windows
 
     DEFINES +=_WIN32_WINNT=0X601
@@ -14,7 +7,7 @@ win32: {
     INCLUDEPATH += $$LIBS_PATH/include
     INCLUDEPATH += $$LIBS_PATH/lib
 
-    LIBS += -L$$LIBS_PATH/lib/ -lgrpc -lgrpc++ -lgpr -lzlibstatic -llibcrypto -llibssl -lws32 -lcares -lssl -lcrypto
+    LIBS += -L$$LIBS_PATH/lib/ -llibprotobuf -lgrpc -lgrpc++ -lgpr -lzlibstatic -llibcrypto -llibssl -lws32 -lcares -lssl -lcrypto
 
     DEPENDPATH += $$LIBS_PATH/lib
     
