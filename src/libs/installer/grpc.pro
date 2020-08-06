@@ -1,3 +1,5 @@
+CONFIG += staticlib
+
 win32: {
     
     LIBS_PATH = C:/libs/x86-windows
