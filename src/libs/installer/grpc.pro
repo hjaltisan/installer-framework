@@ -1,6 +1,6 @@
 win32: {
     
-    LIBS_PATH = $$PWD/../../../../../libs/x86-windows
+    LIBS_PATH = C:/libs/x86-windows
 
     DEFINES +=_WIN32_WINNT=0X601
 
