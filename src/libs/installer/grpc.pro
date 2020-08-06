@@ -7,7 +7,7 @@ win32: {
     INCLUDEPATH += $$LIBS_PATH/include
     INCLUDEPATH += $$LIBS_PATH/lib
 
-    LIBS += -L$$LIBS_PATH/lib/ -llibprotobuf -lgrpc -lgrpc++ -lgpr -lzlibstatic -llibcrypto -llibssl -lws32 -lcares -lssl -lcrypto -lgrpcpp_channelz
+    LIBS += -L$$LIBS_PATH/lib/ -lgrpc -lgrpc++ -lgpr -lzlibstatic -llibcrypto -llibssl -lws32 -lcares -lssl -lcrypto
     
     QMAKE_CXXFLAGS_WARN_ON += /wd4251 /wd4100
 }
