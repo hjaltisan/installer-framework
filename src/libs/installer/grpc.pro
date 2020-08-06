@@ -13,7 +13,7 @@ win32: {
 
     DEPENDPATH += $$LIBS_PATH/lib
 
-    PRE_TARGETDEPS += $$LIBS_PATH/lib/liblibprotobuf.lib
+    PRE_TARGETDEPS += $$LIBS_PATH/lib/libprotobuf.lib
     
     QMAKE_CXXFLAGS_WARN_ON += /wd4251 /wd4100
 }
