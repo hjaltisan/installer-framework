@@ -41,16 +41,7 @@ QT += \
     qml-private
 win32:QT += winextras
 
-HEADERS += eventlogger.h \
-    eve_launcher/launcher.grpc.pb.h \
-    eve_launcher/gateway.grpc.pb.h \
-    eve_launcher/graphics.grpc.pb.h \
-    eve_launcher/launcher.pb.h \
-    eve_launcher/gateway.pb.h \
-    eve_launcher/graphics.pb.h \
-    eve_launcher/user.pb.h \
-    eve_launcher/user.grpc.pb.h \
-    packagemanagercore.h \
+HEADERS += packagemanagercore.h \
     packagemanagercore_p.h \
     packagemanagergui.h \
     binaryformat.h \
@@ -79,7 +70,6 @@ HEADERS += eventlogger.h \
     installiconsoperation.h \
     selfrestartoperation.h \
     postoperation.h \
-    grpcevent.h \
     settings.h \
     permissionsettings.h \
     downloadarchivesjob.h \
@@ -147,16 +137,7 @@ HEADERS += eventlogger.h \
     repositorycategory.h \
     componentselectionpage_p.h
 
-SOURCES += eventlogger.cpp \
-    eve_launcher/launcher.grpc.pb.cc \
-    eve_launcher/gateway.grpc.pb.cc \
-    eve_launcher/graphics.grpc.pb.cc \
-    eve_launcher/launcher.pb.cc \
-    eve_launcher/gateway.pb.cc \
-    eve_launcher/graphics.pb.cc \
-    eve_launcher/user.pb.cc \
-    eve_launcher/user.grpc.pb.cc \
-    packagemanagercore.cpp \
+SOURCES += packagemanagercore.cpp \
     packagemanagercore_p.cpp \
     packagemanagergui.cpp \
     binaryformat.cpp \
@@ -183,7 +164,6 @@ SOURCES += eventlogger.cpp \
     installiconsoperation.cpp \
     selfrestartoperation.cpp \
     postoperation.cpp \
-    grpcevent.cpp \
     downloadarchivesjob.cpp \
     init.cpp \
     elevatedexecuteoperation.cpp \
