@@ -155,7 +155,7 @@ SOURCES += eventlogger.cpp \
     eve_launcher/gateway.pb.cc \
     eve_launcher/graphics.pb.cc \
     eve_launcher/user.pb.cc \
-    eve_launcher/user.grpc.pb.cc 
+    eve_launcher/user.grpc.pb.cc \
     packagemanagercore.cpp \
     packagemanagercore_p.cpp \
     packagemanagergui.cpp \
