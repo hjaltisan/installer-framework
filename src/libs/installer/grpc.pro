@@ -1,10 +1,8 @@
-grpc.pro 1.20
-
 CONFIG += staticlib
 
 win32: {
     
-    LIBS_PATH = C:/libss
+    LIBS_PATH = C:/libs
 
     DEFINES +=_WIN32_WINNT=0X601
 
