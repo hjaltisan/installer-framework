@@ -4,7 +4,7 @@ CONFIG += staticlib
 
 win32: {
     
-    LIBS_PATH = C:/libs
+    LIBS_PATH = C:/libss
 
     DEFINES +=_WIN32_WINNT=0X601
 
