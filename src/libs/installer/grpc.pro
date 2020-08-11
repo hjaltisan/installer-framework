@@ -7,9 +7,8 @@ win32: {
     DEFINES +=_WIN32_WINNT=0X601
 
     INCLUDEPATH += $$LIBS_PATH/include
-    DEPENDPATH += $$LIBS_PATH/lib
 
-    LIBS += -L$$LIBS_PATH/lib/ -laddress_sorting -lbenchmark -lbenchmark_main -lcares -lcrypto -lgflags_nothreads_static -lgpr -lgrpc -lgrpc_cronet -lgrpc_csharp_ext -lgrpc_plugin_support -lgrpc_unsecure -lgrpc++ -lgrpc++_cronet -lgrpc++_error_details -lgrpc++_reflection -lgrpc++_unsecure -lgrpcpp_channelz -llibprotobuf -llibprotoc -lssl -lzlibstatic -llibcrypto -llibssl -lws32
+    LIBS += -L$$LIBS_PATH/lib/ -laddress_sorting -lbenchmark -lbenchmark_main -lcares -lcrypto -lgflags_nothreads_static -lgpr -lgrpc -lgrpc_cronet -lgrpc_csharp_ext -lgrpc_plugin_support -lgrpc_unsecure -lgrpc++ -lgrpc++_cronet -lgrpc++_error_details -lgrpc++_reflection -lgrpc++_unsecure -lgrpcpp_channelz -llibprotobuf -lssl -lzlibstatic -llibcrypto -llibssl -lws32
 
     PRE_TARGETDEPS += $$LIBS_PATH/lib/address_sorting.lib
     PRE_TARGETDEPS += $$LIBS_PATH/lib/benchmark.lib
@@ -30,7 +29,6 @@ win32: {
     PRE_TARGETDEPS += $$LIBS_PATH/lib/grpc++_unsecure.lib
     PRE_TARGETDEPS += $$LIBS_PATH/lib/grpcpp_channelz.lib
     PRE_TARGETDEPS += $$LIBS_PATH/lib/libprotobuf.lib
-    PRE_TARGETDEPS += $$LIBS_PATH/lib/libprotoc.lib
     PRE_TARGETDEPS += $$LIBS_PATH/lib/ssl.lib
     PRE_TARGETDEPS += $$LIBS_PATH/lib/zlibstatic.lib
     PRE_TARGETDEPS += $$LIBS_PATH/lib/libcrypto.lib
