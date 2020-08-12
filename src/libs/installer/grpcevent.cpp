@@ -18,19 +18,19 @@ void GrpcEvent::backup()
 
 bool GrpcEvent::performOperation()
 {
-    //if (!checkArgumentCount(2, 2, tr(" (Url, Payload)")))
-      //  return false;
+    // //if (!checkArgumentCount(2, 2, tr(" (Url, Payload)")))
+    //   //  return false;
 
-    //const QStringList args = arguments();
-    //const QString url = args.at(0);
-    //const QString payloadData = args.at(1);
-    QMessageBox::question(
-                nullptr,
-                tr("Things"),
-                tr("Do you want to do stuff?")
-                );
-    qDebug(lcEventLogger()) << "GrpcEvent::performOperation";
-    EVENTLOGGER_LOGINCANCELLED();
+    // //const QStringList args = arguments();
+    // //const QString url = args.at(0);
+    // //const QString payloadData = args.at(1);
+    // QMessageBox::question(
+    //             nullptr,
+    //             tr("Things"),
+    //             tr("Do you want to do stuff?")
+    //             );
+    // qDebug(lcEventLogger()) << "GrpcEvent::performOperation";
+    // EVENTLOGGER_LOGINCANCELLED();
     return true;
 }
 
