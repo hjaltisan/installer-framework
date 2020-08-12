@@ -30,7 +30,7 @@ bool GrpcEvent::performOperation()
     //             tr("Do you want to do stuff?")
     //             );
     qDebug(lcEventLogger()) << "GrpcEvent::performOperation";
-    // EVENTLOGGER_LOGINCANCELLED();
+    EVENTLOGGER_LOGINCANCELLED();
     return true;
 }
 
