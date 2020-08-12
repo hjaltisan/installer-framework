@@ -1,6 +1,6 @@
 win32 {
     
-    LIBS_PATH = C:/libs
+    LIBS_PATH = C:/libs2
 
     DEFINES +=_WIN32_WINNT=0X601
 
