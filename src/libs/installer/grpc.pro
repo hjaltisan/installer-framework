@@ -1,3 +1,4 @@
+CONFIG += staticlib
 
 win32: {
     
