@@ -9,7 +9,7 @@ win32: {
     INCLUDEPATH += $$LIBS_PATH/include
     DEPENDPATH += $$LIBS_PATH/include
 
-    PRE_TARGETDEPS += $$LIBS_PATH/lib/address_sorting.lib
+    LIBS += -L$$LIBS_PATH/lib/ -laddress_sorting
     
     QMAKE_CXXFLAGS_WARN_ON += /wd4251 /wd4100
 }
