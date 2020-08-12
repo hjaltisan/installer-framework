@@ -1,6 +1,4 @@
-CONFIG += staticlib
-
-win32: {
+win32 {
     
     LIBS_PATH = C:/libs
 

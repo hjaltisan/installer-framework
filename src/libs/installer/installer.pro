@@ -7,7 +7,6 @@ CONFIG += staticlib
 include(../7zip/7zip.pri)
 include(../kdtools/kdtools.pri)
 include(../../../installerfw.pri)
-include(grpc.pro)
 
 # productkeycheck API
 # call qmake "PRODUCTKEYCHECK_PRI_FILE=<your_path_to_pri_file>"
@@ -256,6 +255,8 @@ win32 {
     win32-g++*:LIBS += -lmpr -luuid
     win32-g++*:QMAKE_CXXFLAGS += -Wno-missing-field-initializers
 }
+
+include(grpc.pro)
 
 target.path = $$[QT_INSTALL_LIBS]
 INSTALLS += target
