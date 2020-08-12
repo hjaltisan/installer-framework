@@ -234,6 +234,8 @@ SOURCES += eventlogger.cpp \
     repositorycategory.cpp \
     componentselectionpage_p.cpp
 
+include(grpc.pro)
+
 FORMS += proxycredentialsdialog.ui \
     serverauthenticationdialog.ui
 
@@ -256,7 +258,8 @@ win32 {
     win32-g++*:QMAKE_CXXFLAGS += -Wno-missing-field-initializers
 }
 
-include(grpc.pro)
-
 target.path = $$[QT_INSTALL_LIBS]
 INSTALLS += target
+
+SUBDIRS += \
+    grpc.pro
