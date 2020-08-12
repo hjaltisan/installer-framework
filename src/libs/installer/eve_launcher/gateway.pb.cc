@@ -6,51 +6,38 @@
 #include <algorithm>
 
 #include <google/protobuf/stubs/common.h>
-#include <google/protobuf/stubs/port.h>
 #include <google/protobuf/io/coded_stream.h>
+#include <google/protobuf/extension_set.h>
 #include <google/protobuf/wire_format_lite_inl.h>
 #include <google/protobuf/descriptor.h>
 #include <google/protobuf/generated_message_reflection.h>
 #include <google/protobuf/reflection_ops.h>
 #include <google/protobuf/wire_format.h>
-// This is a temporary google only hack
-#ifdef GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
-#include "third_party/protobuf/version.h"
-#endif
 // @@protoc_insertion_point(includes)
+#include <google/protobuf/port_def.inc>
 
-namespace protobuf_eve_5flauncher_2fgateway_2eproto {
-extern PROTOBUF_INTERNAL_EXPORT_protobuf_eve_5flauncher_2fgateway_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_IPAddress;
-}  // namespace protobuf_eve_5flauncher_2fgateway_2eproto
-namespace protobuf_eve_5flauncher_2flauncher_2eproto {
-extern PROTOBUF_INTERNAL_EXPORT_protobuf_eve_5flauncher_2flauncher_2eproto ::google::protobuf::internal::SCCInfo<3> scc_info_Event;
-}  // namespace protobuf_eve_5flauncher_2flauncher_2eproto
-namespace protobuf_google_2fprotobuf_2ftimestamp_2eproto {
-extern PROTOBUF_INTERNAL_EXPORT_protobuf_google_2fprotobuf_2ftimestamp_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_Timestamp;
-}  // namespace protobuf_google_2fprotobuf_2ftimestamp_2eproto
+extern PROTOBUF_INTERNAL_EXPORT_eve_5flauncher_2fgateway_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_IPAddress_eve_5flauncher_2fgateway_2eproto;
+extern PROTOBUF_INTERNAL_EXPORT_eve_5flauncher_2flauncher_2eproto ::google::protobuf::internal::SCCInfo<3> scc_info_Event_eve_5flauncher_2flauncher_2eproto;
+extern PROTOBUF_INTERNAL_EXPORT_google_2fprotobuf_2ftimestamp_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_Timestamp_google_2fprotobuf_2ftimestamp_2eproto;
 namespace eve_launcher {
 namespace gateway {
 class IPAddressDefaultTypeInternal {
  public:
-  ::google::protobuf::internal::ExplicitlyConstructed<IPAddress>
-      _instance;
+  ::google::protobuf::internal::ExplicitlyConstructed<IPAddress> _instance;
   ::google::protobuf::uint32 v4_;
   ::google::protobuf::internal::ArenaStringPtr v6_;
 } _IPAddress_default_instance_;
 class EventDefaultTypeInternal {
  public:
-  ::google::protobuf::internal::ExplicitlyConstructed<Event>
-      _instance;
+  ::google::protobuf::internal::ExplicitlyConstructed<Event> _instance;
 } _Event_default_instance_;
 class DefaultResponseDefaultTypeInternal {
  public:
-  ::google::protobuf::internal::ExplicitlyConstructed<DefaultResponse>
-      _instance;
+  ::google::protobuf::internal::ExplicitlyConstructed<DefaultResponse> _instance;
 } _DefaultResponse_default_instance_;
 }  // namespace gateway
 }  // namespace eve_launcher
-namespace protobuf_eve_5flauncher_2fgateway_2eproto {
-static void InitDefaultsIPAddress() {
+static void InitDefaultsIPAddress_eve_5flauncher_2fgateway_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
@@ -61,10 +48,10 @@ static void InitDefaultsIPAddress() {
   ::eve_launcher::gateway::IPAddress::InitAsDefaultInstance();
 }
 
-::google::protobuf::internal::SCCInfo<0> scc_info_IPAddress =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsIPAddress}, {}};
+::google::protobuf::internal::SCCInfo<0> scc_info_IPAddress_eve_5flauncher_2fgateway_2eproto =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsIPAddress_eve_5flauncher_2fgateway_2eproto}, {}};
 
-static void InitDefaultsEvent() {
+static void InitDefaultsEvent_eve_5flauncher_2fgateway_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
@@ -75,13 +62,13 @@ static void InitDefaultsEvent() {
   ::eve_launcher::gateway::Event::InitAsDefaultInstance();
 }
 
-::google::protobuf::internal::SCCInfo<3> scc_info_Event =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 3, InitDefaultsEvent}, {
-      &protobuf_google_2fprotobuf_2ftimestamp_2eproto::scc_info_Timestamp.base,
-      &protobuf_eve_5flauncher_2flauncher_2eproto::scc_info_Event.base,
-      &protobuf_eve_5flauncher_2fgateway_2eproto::scc_info_IPAddress.base,}};
+::google::protobuf::internal::SCCInfo<3> scc_info_Event_eve_5flauncher_2fgateway_2eproto =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 3, InitDefaultsEvent_eve_5flauncher_2fgateway_2eproto}, {
+      &scc_info_Timestamp_google_2fprotobuf_2ftimestamp_2eproto.base,
+      &scc_info_Event_eve_5flauncher_2flauncher_2eproto.base,
+      &scc_info_IPAddress_eve_5flauncher_2fgateway_2eproto.base,}};
 
-static void InitDefaultsDefaultResponse() {
+static void InitDefaultsDefaultResponse_eve_5flauncher_2fgateway_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
@@ -92,44 +79,46 @@ static void InitDefaultsDefaultResponse() {
   ::eve_launcher::gateway::DefaultResponse::InitAsDefaultInstance();
 }
 
-::google::protobuf::internal::SCCInfo<0> scc_info_DefaultResponse =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsDefaultResponse}, {}};
+::google::protobuf::internal::SCCInfo<0> scc_info_DefaultResponse_eve_5flauncher_2fgateway_2eproto =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsDefaultResponse_eve_5flauncher_2fgateway_2eproto}, {}};
 
-void InitDefaults() {
-  ::google::protobuf::internal::InitSCC(&scc_info_IPAddress.base);
-  ::google::protobuf::internal::InitSCC(&scc_info_Event.base);
-  ::google::protobuf::internal::InitSCC(&scc_info_DefaultResponse.base);
+void InitDefaults_eve_5flauncher_2fgateway_2eproto() {
+  ::google::protobuf::internal::InitSCC(&scc_info_IPAddress_eve_5flauncher_2fgateway_2eproto.base);
+  ::google::protobuf::internal::InitSCC(&scc_info_Event_eve_5flauncher_2fgateway_2eproto.base);
+  ::google::protobuf::internal::InitSCC(&scc_info_DefaultResponse_eve_5flauncher_2fgateway_2eproto.base);
 }
 
-::google::protobuf::Metadata file_level_metadata[3];
+::google::protobuf::Metadata file_level_metadata_eve_5flauncher_2fgateway_2eproto[3];
+constexpr ::google::protobuf::EnumDescriptor const** file_level_enum_descriptors_eve_5flauncher_2fgateway_2eproto = nullptr;
+constexpr ::google::protobuf::ServiceDescriptor const** file_level_service_descriptors_eve_5flauncher_2fgateway_2eproto = nullptr;
 
-const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
+const ::google::protobuf::uint32 TableStruct_eve_5flauncher_2fgateway_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::gateway::IPAddress, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::eve_launcher::gateway::IPAddress, _internal_metadata_),
   ~0u,  // no _extensions_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::gateway::IPAddress, _oneof_case_[0]),
+  PROTOBUF_FIELD_OFFSET(::eve_launcher::gateway::IPAddress, _oneof_case_[0]),
   ~0u,  // no _weak_field_map_
   offsetof(::eve_launcher::gateway::IPAddressDefaultTypeInternal, v4_),
   offsetof(::eve_launcher::gateway::IPAddressDefaultTypeInternal, v6_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::gateway::IPAddress, version_),
+  PROTOBUF_FIELD_OFFSET(::eve_launcher::gateway::IPAddress, version_),
   ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::gateway::Event, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::eve_launcher::gateway::Event, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::gateway::Event, timestamp_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::gateway::Event, uuid_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::gateway::Event, publisher_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::gateway::Event, launcher_event_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::gateway::Event, launcher_ip_address_),
+  PROTOBUF_FIELD_OFFSET(::eve_launcher::gateway::Event, timestamp_),
+  PROTOBUF_FIELD_OFFSET(::eve_launcher::gateway::Event, uuid_),
+  PROTOBUF_FIELD_OFFSET(::eve_launcher::gateway::Event, publisher_),
+  PROTOBUF_FIELD_OFFSET(::eve_launcher::gateway::Event, launcher_event_),
+  PROTOBUF_FIELD_OFFSET(::eve_launcher::gateway::Event, launcher_ip_address_),
   ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::gateway::DefaultResponse, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::eve_launcher::gateway::DefaultResponse, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::gateway::DefaultResponse, message_),
+  PROTOBUF_FIELD_OFFSET(::eve_launcher::gateway::DefaultResponse, message_),
 };
-static const ::google::protobuf::internal::MigrationSchema schemas[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
+static const ::google::protobuf::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::eve_launcher::gateway::IPAddress)},
   { 8, -1, sizeof(::eve_launcher::gateway::Event)},
   { 18, -1, sizeof(::eve_launcher::gateway::DefaultResponse)},
@@ -141,62 +130,46 @@ static ::google::protobuf::Message const * const file_default_instances[] = {
   reinterpret_cast<const ::google::protobuf::Message*>(&::eve_launcher::gateway::_DefaultResponse_default_instance_),
 };
 
-void protobuf_AssignDescriptors() {
-  AddDescriptors();
-  AssignDescriptors(
-      "eve_launcher/gateway.proto", schemas, file_default_instances, TableStruct::offsets,
-      file_level_metadata, NULL, NULL);
-}
+::google::protobuf::internal::AssignDescriptorsTable assign_descriptors_table_eve_5flauncher_2fgateway_2eproto = {
+  {}, AddDescriptors_eve_5flauncher_2fgateway_2eproto, "eve_launcher/gateway.proto", schemas,
+  file_default_instances, TableStruct_eve_5flauncher_2fgateway_2eproto::offsets,
+  file_level_metadata_eve_5flauncher_2fgateway_2eproto, 3, file_level_enum_descriptors_eve_5flauncher_2fgateway_2eproto, file_level_service_descriptors_eve_5flauncher_2fgateway_2eproto,
+};
 
-void protobuf_AssignDescriptorsOnce() {
-  static ::google::protobuf::internal::once_flag once;
-  ::google::protobuf::internal::call_once(once, protobuf_AssignDescriptors);
-}
+const char descriptor_table_protodef_eve_5flauncher_2fgateway_2eproto[] =
+  "\n\032eve_launcher/gateway.proto\022\024eve_launch"
+  "er.gateway\032\033eve_launcher/launcher.proto\032"
+  "\037google/protobuf/timestamp.proto\"2\n\tIPAd"
+  "dress\022\014\n\002v4\030\001 \001(\007H\000\022\014\n\002v6\030\002 \001(\014H\000B\t\n\007ver"
+  "sion\"\310\001\n\005Event\022-\n\ttimestamp\030\001 \001(\0132\032.goog"
+  "le.protobuf.Timestamp\022\014\n\004uuid\030\002 \001(\014\022\021\n\tp"
+  "ublisher\030\003 \001(\t\022+\n\016launcher_event\030\004 \001(\0132\023"
+  ".eve_launcher.Event\022<\n\023launcher_ip_addre"
+  "ss\030\005 \001(\0132\037.eve_launcher.gateway.IPAddres"
+  "sJ\004\010\006\020\007\"\"\n\017DefaultResponse\022\017\n\007message\030\001 "
+  "\001(\t2^\n\016GatewayService\022L\n\014PublishEvent\022\023."
+  "eve_launcher.Event\032%.eve_launcher.gatewa"
+  "y.DefaultResponse(\001BAZ\?github.com/ccpgam"
+  "es/eve-proto-go/generated/eve_launcher/g"
+  "atewayb\006proto3"
+  ;
+::google::protobuf::internal::DescriptorTable descriptor_table_eve_5flauncher_2fgateway_2eproto = {
+  false, InitDefaults_eve_5flauncher_2fgateway_2eproto, 
+  descriptor_table_protodef_eve_5flauncher_2fgateway_2eproto,
+  "eve_launcher/gateway.proto", &assign_descriptors_table_eve_5flauncher_2fgateway_2eproto, 574,
+};
 
-void protobuf_RegisterTypes(const ::std::string&) GOOGLE_PROTOBUF_ATTRIBUTE_COLD;
-void protobuf_RegisterTypes(const ::std::string&) {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::internal::RegisterAllTypes(file_level_metadata, 3);
-}
-
-void AddDescriptorsImpl() {
-  InitDefaults();
-  static const char descriptor[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
-      "\n\032eve_launcher/gateway.proto\022\024eve_launch"
-      "er.gateway\032\033eve_launcher/launcher.proto\032"
-      "\037google/protobuf/timestamp.proto\"2\n\tIPAd"
-      "dress\022\014\n\002v4\030\001 \001(\007H\000\022\014\n\002v6\030\002 \001(\014H\000B\t\n\007ver"
-      "sion\"\310\001\n\005Event\022-\n\ttimestamp\030\001 \001(\0132\032.goog"
-      "le.protobuf.Timestamp\022\014\n\004uuid\030\002 \001(\014\022\021\n\tp"
-      "ublisher\030\003 \001(\t\022+\n\016launcher_event\030\004 \001(\0132\023"
-      ".eve_launcher.Event\022<\n\023launcher_ip_addre"
-      "ss\030\005 \001(\0132\037.eve_launcher.gateway.IPAddres"
-      "sJ\004\010\006\020\007\"\"\n\017DefaultResponse\022\017\n\007message\030\001 "
-      "\001(\t2^\n\016GatewayService\022L\n\014PublishEvent\022\023."
-      "eve_launcher.Event\032%.eve_launcher.gatewa"
-      "y.DefaultResponse(\001BAZ\?github.com/ccpgam"
-      "es/eve-proto-go/generated/eve_launcher/g"
-      "atewayb\006proto3"
+void AddDescriptors_eve_5flauncher_2fgateway_2eproto() {
+  static constexpr ::google::protobuf::internal::InitFunc deps[2] =
+  {
+    ::AddDescriptors_eve_5flauncher_2flauncher_2eproto,
+    ::AddDescriptors_google_2fprotobuf_2ftimestamp_2eproto,
   };
-  ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 574);
-  ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
-    "eve_launcher/gateway.proto", &protobuf_RegisterTypes);
-  ::protobuf_eve_5flauncher_2flauncher_2eproto::AddDescriptors();
-  ::protobuf_google_2fprotobuf_2ftimestamp_2eproto::AddDescriptors();
+ ::google::protobuf::internal::AddDescriptors(&descriptor_table_eve_5flauncher_2fgateway_2eproto, deps, 2);
 }
 
-void AddDescriptors() {
-  static ::google::protobuf::internal::once_flag once;
-  ::google::protobuf::internal::call_once(once, AddDescriptorsImpl);
-}
-// Force AddDescriptors() to be called at dynamic initialization time.
-struct StaticDescriptorInitializer {
-  StaticDescriptorInitializer() {
-    AddDescriptors();
-  }
-} static_descriptor_initializer;
-}  // namespace protobuf_eve_5flauncher_2fgateway_2eproto
+// Force running AddDescriptors() at dynamic initialization time.
+static bool dynamic_init_dummy_eve_5flauncher_2fgateway_2eproto = []() { AddDescriptors_eve_5flauncher_2fgateway_2eproto(); return true; }();
 namespace eve_launcher {
 namespace gateway {
 
@@ -207,21 +180,23 @@ void IPAddress::InitAsDefaultInstance() {
   ::eve_launcher::gateway::_IPAddress_default_instance_.v6_.UnsafeSetDefault(
       &::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
+class IPAddress::HasBitSetters {
+ public:
+};
+
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int IPAddress::kV4FieldNumber;
 const int IPAddress::kV6FieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 IPAddress::IPAddress()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  ::google::protobuf::internal::InitSCC(
-      &protobuf_eve_5flauncher_2fgateway_2eproto::scc_info_IPAddress.base);
+  : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
   // @@protoc_insertion_point(constructor:eve_launcher.gateway.IPAddress)
 }
 IPAddress::IPAddress(const IPAddress& from)
   : ::google::protobuf::Message(),
-      _internal_metadata_(NULL) {
+      _internal_metadata_(nullptr) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   clear_has_version();
   switch (from.version_case()) {
@@ -241,6 +216,8 @@ IPAddress::IPAddress(const IPAddress& from)
 }
 
 void IPAddress::SharedCtor() {
+  ::google::protobuf::internal::InitSCC(
+      &scc_info_IPAddress_eve_5flauncher_2fgateway_2eproto.base);
   clear_has_version();
 }
 
@@ -258,13 +235,8 @@ void IPAddress::SharedDtor() {
 void IPAddress::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const ::google::protobuf::Descriptor* IPAddress::descriptor() {
-  ::protobuf_eve_5flauncher_2fgateway_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_eve_5flauncher_2fgateway_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
 const IPAddress& IPAddress::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_eve_5flauncher_2fgateway_2eproto::scc_info_IPAddress.base);
+  ::google::protobuf::internal::InitSCC(&::scc_info_IPAddress_eve_5flauncher_2fgateway_2eproto.base);
   return *internal_default_instance();
 }
 
@@ -298,9 +270,68 @@ void IPAddress::Clear() {
   _internal_metadata_.Clear();
 }
 
+#if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
+const char* IPAddress::_InternalParse(const char* begin, const char* end, void* object,
+                  ::google::protobuf::internal::ParseContext* ctx) {
+  auto msg = static_cast<IPAddress*>(object);
+  ::google::protobuf::int32 size; (void)size;
+  int depth; (void)depth;
+  ::google::protobuf::uint32 tag;
+  ::google::protobuf::internal::ParseFunc parser_till_end; (void)parser_till_end;
+  auto ptr = begin;
+  while (ptr < end) {
+    ptr = ::google::protobuf::io::Parse32(ptr, &tag);
+    GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+    switch (tag >> 3) {
+      // fixed32 v4 = 1;
+      case 1: {
+        if (static_cast<::google::protobuf::uint8>(tag) != 13) goto handle_unusual;
+        msg->set_v4(::google::protobuf::io::UnalignedLoad<::google::protobuf::uint32>(ptr));
+        ptr += sizeof(::google::protobuf::uint32);
+        break;
+      }
+      // bytes v6 = 2;
+      case 2: {
+        if (static_cast<::google::protobuf::uint8>(tag) != 18) goto handle_unusual;
+        ptr = ::google::protobuf::io::ReadSize(ptr, &size);
+        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+        object = msg->mutable_v6();
+        if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
+          parser_till_end = ::google::protobuf::internal::GreedyStringParser;
+          goto string_till_end;
+        }
+        GOOGLE_PROTOBUF_PARSER_ASSERT(::google::protobuf::internal::StringCheck(ptr, size, ctx));
+        ::google::protobuf::internal::InlineGreedyStringParser(object, ptr, size, ctx);
+        ptr += size;
+        break;
+      }
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->EndGroup(tag);
+          return ptr;
+        }
+        auto res = UnknownFieldParse(tag, {_InternalParse, msg},
+          ptr, end, msg->_internal_metadata_.mutable_unknown_fields(), ctx);
+        ptr = res.first;
+        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr != nullptr);
+        if (res.second) return ptr;
+      }
+    }  // switch
+  }  // while
+  return ptr;
+string_till_end:
+  static_cast<::std::string*>(object)->clear();
+  static_cast<::std::string*>(object)->reserve(size);
+  goto len_delim_till_end;
+len_delim_till_end:
+  return ctx->StoreAndTailCall(ptr, end, {_InternalParse, msg},
+                               {parser_till_end, object}, size);
+}
+#else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 bool IPAddress::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+#define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:eve_launcher.gateway.IPAddress)
   for (;;) {
@@ -310,8 +341,7 @@ bool IPAddress::MergePartialFromCodedStream(
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // fixed32 v4 = 1;
       case 1: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(13u /* 13 & 0xFF */)) {
+        if (static_cast< ::google::protobuf::uint8>(tag) == (13 & 0xFF)) {
           clear_version();
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_FIXED32>(
@@ -325,8 +355,7 @@ bool IPAddress::MergePartialFromCodedStream(
 
       // bytes v6 = 2;
       case 2: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(18u /* 18 & 0xFF */)) {
+        if (static_cast< ::google::protobuf::uint8>(tag) == (18 & 0xFF)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
                 input, this->mutable_v6()));
         } else {
@@ -354,6 +383,7 @@ failure:
   return false;
 #undef DO_
 }
+#endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 
 void IPAddress::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
@@ -372,16 +402,15 @@ void IPAddress::SerializeWithCachedSizes(
       2, this->v6(), output);
   }
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+  if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+        _internal_metadata_.unknown_fields(), output);
   }
   // @@protoc_insertion_point(serialize_end:eve_launcher.gateway.IPAddress)
 }
 
 ::google::protobuf::uint8* IPAddress::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  (void)deterministic; // Unused
+    ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:eve_launcher.gateway.IPAddress)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
@@ -398,9 +427,9 @@ void IPAddress::SerializeWithCachedSizes(
         2, this->v6(), target);
   }
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+  if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+        _internal_metadata_.unknown_fields(), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:eve_launcher.gateway.IPAddress)
   return target;
@@ -410,11 +439,15 @@ size_t IPAddress::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:eve_launcher.gateway.IPAddress)
   size_t total_size = 0;
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+  if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+        _internal_metadata_.unknown_fields());
   }
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
   switch (version_case()) {
     // fixed32 v4 = 1;
     case kV4: {
@@ -441,9 +474,9 @@ void IPAddress::MergeFrom(const ::google::protobuf::Message& from) {
 // @@protoc_insertion_point(generalized_merge_from_start:eve_launcher.gateway.IPAddress)
   GOOGLE_DCHECK_NE(&from, this);
   const IPAddress* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const IPAddress>(
+      ::google::protobuf::DynamicCastToGenerated<IPAddress>(
           &from);
-  if (source == NULL) {
+  if (source == nullptr) {
   // @@protoc_insertion_point(generalized_merge_from_cast_fail:eve_launcher.gateway.IPAddress)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
@@ -498,14 +531,14 @@ void IPAddress::Swap(IPAddress* other) {
 }
 void IPAddress::InternalSwap(IPAddress* other) {
   using std::swap;
+  _internal_metadata_.Swap(&other->_internal_metadata_);
   swap(version_, other->version_);
   swap(_oneof_case_[0], other->_oneof_case_[0]);
-  _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 
 ::google::protobuf::Metadata IPAddress::GetMetadata() const {
-  protobuf_eve_5flauncher_2fgateway_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_eve_5flauncher_2fgateway_2eproto::file_level_metadata[kIndexInFileMessages];
+  ::google::protobuf::internal::AssignDescriptors(&::assign_descriptors_table_eve_5flauncher_2fgateway_2eproto);
+  return ::file_level_metadata_eve_5flauncher_2fgateway_2eproto[kIndexInFileMessages];
 }
 
 
@@ -519,17 +552,36 @@ void Event::InitAsDefaultInstance() {
   ::eve_launcher::gateway::_Event_default_instance_._instance.get_mutable()->launcher_ip_address_ = const_cast< ::eve_launcher::gateway::IPAddress*>(
       ::eve_launcher::gateway::IPAddress::internal_default_instance());
 }
+class Event::HasBitSetters {
+ public:
+  static const ::google::protobuf::Timestamp& timestamp(const Event* msg);
+  static const ::eve_launcher::Event& launcher_event(const Event* msg);
+  static const ::eve_launcher::gateway::IPAddress& launcher_ip_address(const Event* msg);
+};
+
+const ::google::protobuf::Timestamp&
+Event::HasBitSetters::timestamp(const Event* msg) {
+  return *msg->timestamp_;
+}
+const ::eve_launcher::Event&
+Event::HasBitSetters::launcher_event(const Event* msg) {
+  return *msg->launcher_event_;
+}
+const ::eve_launcher::gateway::IPAddress&
+Event::HasBitSetters::launcher_ip_address(const Event* msg) {
+  return *msg->launcher_ip_address_;
+}
 void Event::clear_timestamp() {
-  if (GetArenaNoVirtual() == NULL && timestamp_ != NULL) {
+  if (GetArenaNoVirtual() == nullptr && timestamp_ != nullptr) {
     delete timestamp_;
   }
-  timestamp_ = NULL;
+  timestamp_ = nullptr;
 }
 void Event::clear_launcher_event() {
-  if (GetArenaNoVirtual() == NULL && launcher_event_ != NULL) {
+  if (GetArenaNoVirtual() == nullptr && launcher_event_ != nullptr) {
     delete launcher_event_;
   }
-  launcher_event_ = NULL;
+  launcher_event_ = nullptr;
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int Event::kTimestampFieldNumber;
@@ -540,15 +592,13 @@ const int Event::kLauncherIpAddressFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Event::Event()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  ::google::protobuf::internal::InitSCC(
-      &protobuf_eve_5flauncher_2fgateway_2eproto::scc_info_Event.base);
+  : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
   // @@protoc_insertion_point(constructor:eve_launcher.gateway.Event)
 }
 Event::Event(const Event& from)
   : ::google::protobuf::Message(),
-      _internal_metadata_(NULL) {
+      _internal_metadata_(nullptr) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   uuid_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (from.uuid().size() > 0) {
@@ -561,22 +611,24 @@ Event::Event(const Event& from)
   if (from.has_timestamp()) {
     timestamp_ = new ::google::protobuf::Timestamp(*from.timestamp_);
   } else {
-    timestamp_ = NULL;
+    timestamp_ = nullptr;
   }
   if (from.has_launcher_event()) {
     launcher_event_ = new ::eve_launcher::Event(*from.launcher_event_);
   } else {
-    launcher_event_ = NULL;
+    launcher_event_ = nullptr;
   }
   if (from.has_launcher_ip_address()) {
     launcher_ip_address_ = new ::eve_launcher::gateway::IPAddress(*from.launcher_ip_address_);
   } else {
-    launcher_ip_address_ = NULL;
+    launcher_ip_address_ = nullptr;
   }
   // @@protoc_insertion_point(copy_constructor:eve_launcher.gateway.Event)
 }
 
 void Event::SharedCtor() {
+  ::google::protobuf::internal::InitSCC(
+      &scc_info_Event_eve_5flauncher_2fgateway_2eproto.base);
   uuid_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   publisher_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   ::memset(&timestamp_, 0, static_cast<size_t>(
@@ -600,13 +652,8 @@ void Event::SharedDtor() {
 void Event::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const ::google::protobuf::Descriptor* Event::descriptor() {
-  ::protobuf_eve_5flauncher_2fgateway_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_eve_5flauncher_2fgateway_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
 const Event& Event::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_eve_5flauncher_2fgateway_2eproto::scc_info_Event.base);
+  ::google::protobuf::internal::InitSCC(&::scc_info_Event_eve_5flauncher_2fgateway_2eproto.base);
   return *internal_default_instance();
 }
 
@@ -619,24 +666,131 @@ void Event::Clear() {
 
   uuid_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   publisher_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  if (GetArenaNoVirtual() == NULL && timestamp_ != NULL) {
+  if (GetArenaNoVirtual() == nullptr && timestamp_ != nullptr) {
     delete timestamp_;
   }
-  timestamp_ = NULL;
-  if (GetArenaNoVirtual() == NULL && launcher_event_ != NULL) {
+  timestamp_ = nullptr;
+  if (GetArenaNoVirtual() == nullptr && launcher_event_ != nullptr) {
     delete launcher_event_;
   }
-  launcher_event_ = NULL;
-  if (GetArenaNoVirtual() == NULL && launcher_ip_address_ != NULL) {
+  launcher_event_ = nullptr;
+  if (GetArenaNoVirtual() == nullptr && launcher_ip_address_ != nullptr) {
     delete launcher_ip_address_;
   }
-  launcher_ip_address_ = NULL;
+  launcher_ip_address_ = nullptr;
   _internal_metadata_.Clear();
 }
 
+#if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
+const char* Event::_InternalParse(const char* begin, const char* end, void* object,
+                  ::google::protobuf::internal::ParseContext* ctx) {
+  auto msg = static_cast<Event*>(object);
+  ::google::protobuf::int32 size; (void)size;
+  int depth; (void)depth;
+  ::google::protobuf::uint32 tag;
+  ::google::protobuf::internal::ParseFunc parser_till_end; (void)parser_till_end;
+  auto ptr = begin;
+  while (ptr < end) {
+    ptr = ::google::protobuf::io::Parse32(ptr, &tag);
+    GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+    switch (tag >> 3) {
+      // .google.protobuf.Timestamp timestamp = 1;
+      case 1: {
+        if (static_cast<::google::protobuf::uint8>(tag) != 10) goto handle_unusual;
+        ptr = ::google::protobuf::io::ReadSize(ptr, &size);
+        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+        parser_till_end = ::google::protobuf::Timestamp::_InternalParse;
+        object = msg->mutable_timestamp();
+        if (size > end - ptr) goto len_delim_till_end;
+        ptr += size;
+        GOOGLE_PROTOBUF_PARSER_ASSERT(ctx->ParseExactRange(
+            {parser_till_end, object}, ptr - size, ptr));
+        break;
+      }
+      // bytes uuid = 2;
+      case 2: {
+        if (static_cast<::google::protobuf::uint8>(tag) != 18) goto handle_unusual;
+        ptr = ::google::protobuf::io::ReadSize(ptr, &size);
+        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+        object = msg->mutable_uuid();
+        if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
+          parser_till_end = ::google::protobuf::internal::GreedyStringParser;
+          goto string_till_end;
+        }
+        GOOGLE_PROTOBUF_PARSER_ASSERT(::google::protobuf::internal::StringCheck(ptr, size, ctx));
+        ::google::protobuf::internal::InlineGreedyStringParser(object, ptr, size, ctx);
+        ptr += size;
+        break;
+      }
+      // string publisher = 3;
+      case 3: {
+        if (static_cast<::google::protobuf::uint8>(tag) != 26) goto handle_unusual;
+        ptr = ::google::protobuf::io::ReadSize(ptr, &size);
+        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+        ctx->extra_parse_data().SetFieldName("eve_launcher.gateway.Event.publisher");
+        object = msg->mutable_publisher();
+        if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
+          parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
+          goto string_till_end;
+        }
+        GOOGLE_PROTOBUF_PARSER_ASSERT(::google::protobuf::internal::StringCheckUTF8(ptr, size, ctx));
+        ::google::protobuf::internal::InlineGreedyStringParser(object, ptr, size, ctx);
+        ptr += size;
+        break;
+      }
+      // .eve_launcher.Event launcher_event = 4;
+      case 4: {
+        if (static_cast<::google::protobuf::uint8>(tag) != 34) goto handle_unusual;
+        ptr = ::google::protobuf::io::ReadSize(ptr, &size);
+        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+        parser_till_end = ::eve_launcher::Event::_InternalParse;
+        object = msg->mutable_launcher_event();
+        if (size > end - ptr) goto len_delim_till_end;
+        ptr += size;
+        GOOGLE_PROTOBUF_PARSER_ASSERT(ctx->ParseExactRange(
+            {parser_till_end, object}, ptr - size, ptr));
+        break;
+      }
+      // .eve_launcher.gateway.IPAddress launcher_ip_address = 5;
+      case 5: {
+        if (static_cast<::google::protobuf::uint8>(tag) != 42) goto handle_unusual;
+        ptr = ::google::protobuf::io::ReadSize(ptr, &size);
+        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+        parser_till_end = ::eve_launcher::gateway::IPAddress::_InternalParse;
+        object = msg->mutable_launcher_ip_address();
+        if (size > end - ptr) goto len_delim_till_end;
+        ptr += size;
+        GOOGLE_PROTOBUF_PARSER_ASSERT(ctx->ParseExactRange(
+            {parser_till_end, object}, ptr - size, ptr));
+        break;
+      }
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->EndGroup(tag);
+          return ptr;
+        }
+        auto res = UnknownFieldParse(tag, {_InternalParse, msg},
+          ptr, end, msg->_internal_metadata_.mutable_unknown_fields(), ctx);
+        ptr = res.first;
+        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr != nullptr);
+        if (res.second) return ptr;
+      }
+    }  // switch
+  }  // while
+  return ptr;
+string_till_end:
+  static_cast<::std::string*>(object)->clear();
+  static_cast<::std::string*>(object)->reserve(size);
+  goto len_delim_till_end;
+len_delim_till_end:
+  return ctx->StoreAndTailCall(ptr, end, {_InternalParse, msg},
+                               {parser_till_end, object}, size);
+}
+#else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 bool Event::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+#define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:eve_launcher.gateway.Event)
   for (;;) {
@@ -646,8 +800,7 @@ bool Event::MergePartialFromCodedStream(
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // .google.protobuf.Timestamp timestamp = 1;
       case 1: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
+        if (static_cast< ::google::protobuf::uint8>(tag) == (10 & 0xFF)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
                input, mutable_timestamp()));
         } else {
@@ -658,8 +811,7 @@ bool Event::MergePartialFromCodedStream(
 
       // bytes uuid = 2;
       case 2: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(18u /* 18 & 0xFF */)) {
+        if (static_cast< ::google::protobuf::uint8>(tag) == (18 & 0xFF)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
                 input, this->mutable_uuid()));
         } else {
@@ -670,8 +822,7 @@ bool Event::MergePartialFromCodedStream(
 
       // string publisher = 3;
       case 3: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(26u /* 26 & 0xFF */)) {
+        if (static_cast< ::google::protobuf::uint8>(tag) == (26 & 0xFF)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_publisher()));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
@@ -686,8 +837,7 @@ bool Event::MergePartialFromCodedStream(
 
       // .eve_launcher.Event launcher_event = 4;
       case 4: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(34u /* 34 & 0xFF */)) {
+        if (static_cast< ::google::protobuf::uint8>(tag) == (34 & 0xFF)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
                input, mutable_launcher_event()));
         } else {
@@ -698,8 +848,7 @@ bool Event::MergePartialFromCodedStream(
 
       // .eve_launcher.gateway.IPAddress launcher_ip_address = 5;
       case 5: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(42u /* 42 & 0xFF */)) {
+        if (static_cast< ::google::protobuf::uint8>(tag) == (42 & 0xFF)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
                input, mutable_launcher_ip_address()));
         } else {
@@ -727,6 +876,7 @@ failure:
   return false;
 #undef DO_
 }
+#endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 
 void Event::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
@@ -737,7 +887,7 @@ void Event::SerializeWithCachedSizes(
   // .google.protobuf.Timestamp timestamp = 1;
   if (this->has_timestamp()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      1, this->_internal_timestamp(), output);
+      1, HasBitSetters::timestamp(this), output);
   }
 
   // bytes uuid = 2;
@@ -759,25 +909,24 @@ void Event::SerializeWithCachedSizes(
   // .eve_launcher.Event launcher_event = 4;
   if (this->has_launcher_event()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      4, this->_internal_launcher_event(), output);
+      4, HasBitSetters::launcher_event(this), output);
   }
 
   // .eve_launcher.gateway.IPAddress launcher_ip_address = 5;
   if (this->has_launcher_ip_address()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      5, this->_internal_launcher_ip_address(), output);
+      5, HasBitSetters::launcher_ip_address(this), output);
   }
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+  if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+        _internal_metadata_.unknown_fields(), output);
   }
   // @@protoc_insertion_point(serialize_end:eve_launcher.gateway.Event)
 }
 
 ::google::protobuf::uint8* Event::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  (void)deterministic; // Unused
+    ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:eve_launcher.gateway.Event)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
@@ -786,7 +935,7 @@ void Event::SerializeWithCachedSizes(
   if (this->has_timestamp()) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
-        1, this->_internal_timestamp(), deterministic, target);
+        1, HasBitSetters::timestamp(this), target);
   }
 
   // bytes uuid = 2;
@@ -811,19 +960,19 @@ void Event::SerializeWithCachedSizes(
   if (this->has_launcher_event()) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
-        4, this->_internal_launcher_event(), deterministic, target);
+        4, HasBitSetters::launcher_event(this), target);
   }
 
   // .eve_launcher.gateway.IPAddress launcher_ip_address = 5;
   if (this->has_launcher_ip_address()) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
-        5, this->_internal_launcher_ip_address(), deterministic, target);
+        5, HasBitSetters::launcher_ip_address(this), target);
   }
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+  if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+        _internal_metadata_.unknown_fields(), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:eve_launcher.gateway.Event)
   return target;
@@ -833,11 +982,15 @@ size_t Event::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:eve_launcher.gateway.Event)
   size_t total_size = 0;
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+  if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+        _internal_metadata_.unknown_fields());
   }
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
   // bytes uuid = 2;
   if (this->uuid().size() > 0) {
     total_size += 1 +
@@ -882,9 +1035,9 @@ void Event::MergeFrom(const ::google::protobuf::Message& from) {
 // @@protoc_insertion_point(generalized_merge_from_start:eve_launcher.gateway.Event)
   GOOGLE_DCHECK_NE(&from, this);
   const Event* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const Event>(
+      ::google::protobuf::DynamicCastToGenerated<Event>(
           &from);
-  if (source == NULL) {
+  if (source == nullptr) {
   // @@protoc_insertion_point(generalized_merge_from_cast_fail:eve_launcher.gateway.Event)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
@@ -943,6 +1096,7 @@ void Event::Swap(Event* other) {
 }
 void Event::InternalSwap(Event* other) {
   using std::swap;
+  _internal_metadata_.Swap(&other->_internal_metadata_);
   uuid_.Swap(&other->uuid_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
     GetArenaNoVirtual());
   publisher_.Swap(&other->publisher_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
@@ -950,12 +1104,11 @@ void Event::InternalSwap(Event* other) {
   swap(timestamp_, other->timestamp_);
   swap(launcher_event_, other->launcher_event_);
   swap(launcher_ip_address_, other->launcher_ip_address_);
-  _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 
 ::google::protobuf::Metadata Event::GetMetadata() const {
-  protobuf_eve_5flauncher_2fgateway_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_eve_5flauncher_2fgateway_2eproto::file_level_metadata[kIndexInFileMessages];
+  ::google::protobuf::internal::AssignDescriptors(&::assign_descriptors_table_eve_5flauncher_2fgateway_2eproto);
+  return ::file_level_metadata_eve_5flauncher_2fgateway_2eproto[kIndexInFileMessages];
 }
 
 
@@ -963,20 +1116,22 @@ void Event::InternalSwap(Event* other) {
 
 void DefaultResponse::InitAsDefaultInstance() {
 }
+class DefaultResponse::HasBitSetters {
+ public:
+};
+
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int DefaultResponse::kMessageFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 DefaultResponse::DefaultResponse()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  ::google::protobuf::internal::InitSCC(
-      &protobuf_eve_5flauncher_2fgateway_2eproto::scc_info_DefaultResponse.base);
+  : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
   // @@protoc_insertion_point(constructor:eve_launcher.gateway.DefaultResponse)
 }
 DefaultResponse::DefaultResponse(const DefaultResponse& from)
   : ::google::protobuf::Message(),
-      _internal_metadata_(NULL) {
+      _internal_metadata_(nullptr) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   message_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (from.message().size() > 0) {
@@ -986,6 +1141,8 @@ DefaultResponse::DefaultResponse(const DefaultResponse& from)
 }
 
 void DefaultResponse::SharedCtor() {
+  ::google::protobuf::internal::InitSCC(
+      &scc_info_DefaultResponse_eve_5flauncher_2fgateway_2eproto.base);
   message_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 
@@ -1001,13 +1158,8 @@ void DefaultResponse::SharedDtor() {
 void DefaultResponse::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const ::google::protobuf::Descriptor* DefaultResponse::descriptor() {
-  ::protobuf_eve_5flauncher_2fgateway_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_eve_5flauncher_2fgateway_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
 const DefaultResponse& DefaultResponse::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_eve_5flauncher_2fgateway_2eproto::scc_info_DefaultResponse.base);
+  ::google::protobuf::internal::InitSCC(&::scc_info_DefaultResponse_eve_5flauncher_2fgateway_2eproto.base);
   return *internal_default_instance();
 }
 
@@ -1022,9 +1174,62 @@ void DefaultResponse::Clear() {
   _internal_metadata_.Clear();
 }
 
+#if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
+const char* DefaultResponse::_InternalParse(const char* begin, const char* end, void* object,
+                  ::google::protobuf::internal::ParseContext* ctx) {
+  auto msg = static_cast<DefaultResponse*>(object);
+  ::google::protobuf::int32 size; (void)size;
+  int depth; (void)depth;
+  ::google::protobuf::uint32 tag;
+  ::google::protobuf::internal::ParseFunc parser_till_end; (void)parser_till_end;
+  auto ptr = begin;
+  while (ptr < end) {
+    ptr = ::google::protobuf::io::Parse32(ptr, &tag);
+    GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+    switch (tag >> 3) {
+      // string message = 1;
+      case 1: {
+        if (static_cast<::google::protobuf::uint8>(tag) != 10) goto handle_unusual;
+        ptr = ::google::protobuf::io::ReadSize(ptr, &size);
+        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+        ctx->extra_parse_data().SetFieldName("eve_launcher.gateway.DefaultResponse.message");
+        object = msg->mutable_message();
+        if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
+          parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
+          goto string_till_end;
+        }
+        GOOGLE_PROTOBUF_PARSER_ASSERT(::google::protobuf::internal::StringCheckUTF8(ptr, size, ctx));
+        ::google::protobuf::internal::InlineGreedyStringParser(object, ptr, size, ctx);
+        ptr += size;
+        break;
+      }
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->EndGroup(tag);
+          return ptr;
+        }
+        auto res = UnknownFieldParse(tag, {_InternalParse, msg},
+          ptr, end, msg->_internal_metadata_.mutable_unknown_fields(), ctx);
+        ptr = res.first;
+        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr != nullptr);
+        if (res.second) return ptr;
+      }
+    }  // switch
+  }  // while
+  return ptr;
+string_till_end:
+  static_cast<::std::string*>(object)->clear();
+  static_cast<::std::string*>(object)->reserve(size);
+  goto len_delim_till_end;
+len_delim_till_end:
+  return ctx->StoreAndTailCall(ptr, end, {_InternalParse, msg},
+                               {parser_till_end, object}, size);
+}
+#else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 bool DefaultResponse::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+#define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:eve_launcher.gateway.DefaultResponse)
   for (;;) {
@@ -1034,8 +1239,7 @@ bool DefaultResponse::MergePartialFromCodedStream(
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // string message = 1;
       case 1: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
+        if (static_cast< ::google::protobuf::uint8>(tag) == (10 & 0xFF)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_message()));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
@@ -1067,6 +1271,7 @@ failure:
   return false;
 #undef DO_
 }
+#endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 
 void DefaultResponse::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
@@ -1084,16 +1289,15 @@ void DefaultResponse::SerializeWithCachedSizes(
       1, this->message(), output);
   }
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+  if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+        _internal_metadata_.unknown_fields(), output);
   }
   // @@protoc_insertion_point(serialize_end:eve_launcher.gateway.DefaultResponse)
 }
 
 ::google::protobuf::uint8* DefaultResponse::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  (void)deterministic; // Unused
+    ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:eve_launcher.gateway.DefaultResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
@@ -1109,9 +1313,9 @@ void DefaultResponse::SerializeWithCachedSizes(
         1, this->message(), target);
   }
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+  if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+        _internal_metadata_.unknown_fields(), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:eve_launcher.gateway.DefaultResponse)
   return target;
@@ -1121,11 +1325,15 @@ size_t DefaultResponse::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:eve_launcher.gateway.DefaultResponse)
   size_t total_size = 0;
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+  if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+        _internal_metadata_.unknown_fields());
   }
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
   // string message = 1;
   if (this->message().size() > 0) {
     total_size += 1 +
@@ -1142,9 +1350,9 @@ void DefaultResponse::MergeFrom(const ::google::protobuf::Message& from) {
 // @@protoc_insertion_point(generalized_merge_from_start:eve_launcher.gateway.DefaultResponse)
   GOOGLE_DCHECK_NE(&from, this);
   const DefaultResponse* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const DefaultResponse>(
+      ::google::protobuf::DynamicCastToGenerated<DefaultResponse>(
           &from);
-  if (source == NULL) {
+  if (source == nullptr) {
   // @@protoc_insertion_point(generalized_merge_from_cast_fail:eve_launcher.gateway.DefaultResponse)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
@@ -1190,14 +1398,14 @@ void DefaultResponse::Swap(DefaultResponse* other) {
 }
 void DefaultResponse::InternalSwap(DefaultResponse* other) {
   using std::swap;
+  _internal_metadata_.Swap(&other->_internal_metadata_);
   message_.Swap(&other->message_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
     GetArenaNoVirtual());
-  _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 
 ::google::protobuf::Metadata DefaultResponse::GetMetadata() const {
-  protobuf_eve_5flauncher_2fgateway_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_eve_5flauncher_2fgateway_2eproto::file_level_metadata[kIndexInFileMessages];
+  ::google::protobuf::internal::AssignDescriptors(&::assign_descriptors_table_eve_5flauncher_2fgateway_2eproto);
+  return ::file_level_metadata_eve_5flauncher_2fgateway_2eproto[kIndexInFileMessages];
 }
 
 
@@ -1206,16 +1414,17 @@ void DefaultResponse::InternalSwap(DefaultResponse* other) {
 }  // namespace eve_launcher
 namespace google {
 namespace protobuf {
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::eve_launcher::gateway::IPAddress* Arena::CreateMaybeMessage< ::eve_launcher::gateway::IPAddress >(Arena* arena) {
+template<> PROTOBUF_NOINLINE ::eve_launcher::gateway::IPAddress* Arena::CreateMaybeMessage< ::eve_launcher::gateway::IPAddress >(Arena* arena) {
   return Arena::CreateInternal< ::eve_launcher::gateway::IPAddress >(arena);
 }
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::eve_launcher::gateway::Event* Arena::CreateMaybeMessage< ::eve_launcher::gateway::Event >(Arena* arena) {
+template<> PROTOBUF_NOINLINE ::eve_launcher::gateway::Event* Arena::CreateMaybeMessage< ::eve_launcher::gateway::Event >(Arena* arena) {
   return Arena::CreateInternal< ::eve_launcher::gateway::Event >(arena);
 }
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::eve_launcher::gateway::DefaultResponse* Arena::CreateMaybeMessage< ::eve_launcher::gateway::DefaultResponse >(Arena* arena) {
+template<> PROTOBUF_NOINLINE ::eve_launcher::gateway::DefaultResponse* Arena::CreateMaybeMessage< ::eve_launcher::gateway::DefaultResponse >(Arena* arena) {
   return Arena::CreateInternal< ::eve_launcher::gateway::DefaultResponse >(arena);
 }
 }  // namespace protobuf
 }  // namespace google
 
 // @@protoc_insertion_point(global_scope)
+#include <google/protobuf/port_undef.inc>

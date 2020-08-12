@@ -6,80 +6,63 @@
 #include <algorithm>
 
 #include <google/protobuf/stubs/common.h>
-#include <google/protobuf/stubs/port.h>
 #include <google/protobuf/io/coded_stream.h>
+#include <google/protobuf/extension_set.h>
 #include <google/protobuf/wire_format_lite_inl.h>
 #include <google/protobuf/descriptor.h>
 #include <google/protobuf/generated_message_reflection.h>
 #include <google/protobuf/reflection_ops.h>
 #include <google/protobuf/wire_format.h>
-// This is a temporary google only hack
-#ifdef GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
-#include "third_party/protobuf/version.h"
-#endif
 // @@protoc_insertion_point(includes)
+#include <google/protobuf/port_def.inc>
 
 namespace eve_launcher {
 namespace graphics {
 }  // namespace graphics
 }  // namespace eve_launcher
-namespace protobuf_eve_5flauncher_2fgraphics_2eproto {
-void InitDefaults() {
+void InitDefaults_eve_5flauncher_2fgraphics_2eproto() {
 }
 
-const ::google::protobuf::EnumDescriptor* file_level_enum_descriptors[1];
-const ::google::protobuf::uint32 TableStruct::offsets[1] = {};
-static const ::google::protobuf::internal::MigrationSchema* schemas = NULL;
-static const ::google::protobuf::Message* const* file_default_instances = NULL;
+constexpr ::google::protobuf::Metadata* file_level_metadata_eve_5flauncher_2fgraphics_2eproto = nullptr;
+const ::google::protobuf::EnumDescriptor* file_level_enum_descriptors_eve_5flauncher_2fgraphics_2eproto[1];
+constexpr ::google::protobuf::ServiceDescriptor const** file_level_service_descriptors_eve_5flauncher_2fgraphics_2eproto = nullptr;
+const ::google::protobuf::uint32 TableStruct_eve_5flauncher_2fgraphics_2eproto::offsets[1] = {};
+static constexpr ::google::protobuf::internal::MigrationSchema* schemas = nullptr;
+static constexpr ::google::protobuf::Message* const* file_default_instances = nullptr;
 
-void protobuf_AssignDescriptors() {
-  AddDescriptors();
-  AssignDescriptors(
-      "eve_launcher/graphics.proto", schemas, file_default_instances, TableStruct::offsets,
-      NULL, file_level_enum_descriptors, NULL);
-}
+::google::protobuf::internal::AssignDescriptorsTable assign_descriptors_table_eve_5flauncher_2fgraphics_2eproto = {
+  {}, AddDescriptors_eve_5flauncher_2fgraphics_2eproto, "eve_launcher/graphics.proto", schemas,
+  file_default_instances, TableStruct_eve_5flauncher_2fgraphics_2eproto::offsets,
+  file_level_metadata_eve_5flauncher_2fgraphics_2eproto, 0, file_level_enum_descriptors_eve_5flauncher_2fgraphics_2eproto, file_level_service_descriptors_eve_5flauncher_2fgraphics_2eproto,
+};
 
-void protobuf_AssignDescriptorsOnce() {
-  static ::google::protobuf::internal::once_flag once;
-  ::google::protobuf::internal::call_once(once, protobuf_AssignDescriptors);
-}
+const char descriptor_table_protodef_eve_5flauncher_2fgraphics_2eproto[] =
+  "\n\033eve_launcher/graphics.proto\022\025eve_launc"
+  "her.graphics*-\n\013DirectXMode\022\013\n\007UNKNOWN\020\000"
+  "\022\007\n\003DX9\020\001\022\010\n\004DX11\020\002BBZ@github.com/ccpgam"
+  "es/eve-proto-go/generated/eve_launcher/g"
+  "raphicsb\006proto3"
+  ;
+::google::protobuf::internal::DescriptorTable descriptor_table_eve_5flauncher_2fgraphics_2eproto = {
+  false, InitDefaults_eve_5flauncher_2fgraphics_2eproto, 
+  descriptor_table_protodef_eve_5flauncher_2fgraphics_2eproto,
+  "eve_launcher/graphics.proto", &assign_descriptors_table_eve_5flauncher_2fgraphics_2eproto, 175,
+};
 
-void protobuf_RegisterTypes(const ::std::string&) GOOGLE_PROTOBUF_ATTRIBUTE_COLD;
-void protobuf_RegisterTypes(const ::std::string&) {
-  protobuf_AssignDescriptorsOnce();
-}
-
-void AddDescriptorsImpl() {
-  InitDefaults();
-  static const char descriptor[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
-      "\n\033eve_launcher/graphics.proto\022\025eve_launc"
-      "her.graphics*-\n\013DirectXMode\022\013\n\007UNKNOWN\020\000"
-      "\022\007\n\003DX9\020\001\022\010\n\004DX11\020\002BBZ@github.com/ccpgam"
-      "es/eve-proto-go/generated/eve_launcher/g"
-      "raphicsb\006proto3"
+void AddDescriptors_eve_5flauncher_2fgraphics_2eproto() {
+  static constexpr ::google::protobuf::internal::InitFunc deps[1] =
+  {
   };
-  ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 175);
-  ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
-    "eve_launcher/graphics.proto", &protobuf_RegisterTypes);
+ ::google::protobuf::internal::AddDescriptors(&descriptor_table_eve_5flauncher_2fgraphics_2eproto, deps, 0);
 }
 
-void AddDescriptors() {
-  static ::google::protobuf::internal::once_flag once;
-  ::google::protobuf::internal::call_once(once, AddDescriptorsImpl);
-}
-// Force AddDescriptors() to be called at dynamic initialization time.
-struct StaticDescriptorInitializer {
-  StaticDescriptorInitializer() {
-    AddDescriptors();
-  }
-} static_descriptor_initializer;
-}  // namespace protobuf_eve_5flauncher_2fgraphics_2eproto
+// Force running AddDescriptors() at dynamic initialization time.
+static bool dynamic_init_dummy_eve_5flauncher_2fgraphics_2eproto = []() { AddDescriptors_eve_5flauncher_2fgraphics_2eproto(); return true; }();
 namespace eve_launcher {
 namespace graphics {
 const ::google::protobuf::EnumDescriptor* DirectXMode_descriptor() {
-  protobuf_eve_5flauncher_2fgraphics_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_eve_5flauncher_2fgraphics_2eproto::file_level_enum_descriptors[0];
+  ::google::protobuf::internal::AssignDescriptors(&assign_descriptors_table_eve_5flauncher_2fgraphics_2eproto);
+  return file_level_enum_descriptors_eve_5flauncher_2fgraphics_2eproto[0];
 }
 bool DirectXMode_IsValid(int value) {
   switch (value) {
@@ -102,3 +85,4 @@ namespace protobuf {
 }  // namespace google
 
 // @@protoc_insertion_point(global_scope)
+#include <google/protobuf/port_undef.inc>
