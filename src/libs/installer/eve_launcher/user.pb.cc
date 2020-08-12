@@ -6,25 +6,30 @@
 #include <algorithm>
 
 #include <google/protobuf/stubs/common.h>
+#include <google/protobuf/stubs/port.h>
 #include <google/protobuf/io/coded_stream.h>
-#include <google/protobuf/extension_set.h>
 #include <google/protobuf/wire_format_lite_inl.h>
 #include <google/protobuf/descriptor.h>
 #include <google/protobuf/generated_message_reflection.h>
 #include <google/protobuf/reflection_ops.h>
 #include <google/protobuf/wire_format.h>
+// This is a temporary google only hack
+#ifdef GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
+#include "third_party/protobuf/version.h"
+#endif
 // @@protoc_insertion_point(includes)
-#include <google/protobuf/port_def.inc>
 
 namespace eve_launcher {
 namespace user {
 class IdentifierDefaultTypeInternal {
  public:
-  ::google::protobuf::internal::ExplicitlyConstructed<Identifier> _instance;
+  ::google::protobuf::internal::ExplicitlyConstructed<Identifier>
+      _instance;
 } _Identifier_default_instance_;
 }  // namespace user
 }  // namespace eve_launcher
-static void InitDefaultsIdentifier_eve_5flauncher_2fuser_2eproto() {
+namespace protobuf_eve_5flauncher_2fuser_2eproto {
+static void InitDefaultsIdentifier() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
@@ -35,26 +40,24 @@ static void InitDefaultsIdentifier_eve_5flauncher_2fuser_2eproto() {
   ::eve_launcher::user::Identifier::InitAsDefaultInstance();
 }
 
-::google::protobuf::internal::SCCInfo<0> scc_info_Identifier_eve_5flauncher_2fuser_2eproto =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsIdentifier_eve_5flauncher_2fuser_2eproto}, {}};
+::google::protobuf::internal::SCCInfo<0> scc_info_Identifier =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsIdentifier}, {}};
 
-void InitDefaults_eve_5flauncher_2fuser_2eproto() {
-  ::google::protobuf::internal::InitSCC(&scc_info_Identifier_eve_5flauncher_2fuser_2eproto.base);
+void InitDefaults() {
+  ::google::protobuf::internal::InitSCC(&scc_info_Identifier.base);
 }
 
-::google::protobuf::Metadata file_level_metadata_eve_5flauncher_2fuser_2eproto[1];
-constexpr ::google::protobuf::EnumDescriptor const** file_level_enum_descriptors_eve_5flauncher_2fuser_2eproto = nullptr;
-constexpr ::google::protobuf::ServiceDescriptor const** file_level_service_descriptors_eve_5flauncher_2fuser_2eproto = nullptr;
+::google::protobuf::Metadata file_level_metadata[1];
 
-const ::google::protobuf::uint32 TableStruct_eve_5flauncher_2fuser_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
+const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::eve_launcher::user::Identifier, _internal_metadata_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::user::Identifier, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::eve_launcher::user::Identifier, sequential_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::user::Identifier, sequential_),
 };
-static const ::google::protobuf::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
+static const ::google::protobuf::internal::MigrationSchema schemas[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::eve_launcher::user::Identifier)},
 };
 
@@ -62,33 +65,49 @@ static ::google::protobuf::Message const * const file_default_instances[] = {
   reinterpret_cast<const ::google::protobuf::Message*>(&::eve_launcher::user::_Identifier_default_instance_),
 };
 
-::google::protobuf::internal::AssignDescriptorsTable assign_descriptors_table_eve_5flauncher_2fuser_2eproto = {
-  {}, AddDescriptors_eve_5flauncher_2fuser_2eproto, "eve_launcher/user.proto", schemas,
-  file_default_instances, TableStruct_eve_5flauncher_2fuser_2eproto::offsets,
-  file_level_metadata_eve_5flauncher_2fuser_2eproto, 1, file_level_enum_descriptors_eve_5flauncher_2fuser_2eproto, file_level_service_descriptors_eve_5flauncher_2fuser_2eproto,
-};
-
-const char descriptor_table_protodef_eve_5flauncher_2fuser_2eproto[] =
-  "\n\027eve_launcher/user.proto\022\021eve_launcher."
-  "user\" \n\nIdentifier\022\022\n\nsequential\030\001 \001(\rB>"
-  "Z<github.com/ccpgames/eve-proto-go/gener"
-  "ated/eve_launcher/userb\006proto3"
-  ;
-::google::protobuf::internal::DescriptorTable descriptor_table_eve_5flauncher_2fuser_2eproto = {
-  false, InitDefaults_eve_5flauncher_2fuser_2eproto, 
-  descriptor_table_protodef_eve_5flauncher_2fuser_2eproto,
-  "eve_launcher/user.proto", &assign_descriptors_table_eve_5flauncher_2fuser_2eproto, 150,
-};
-
-void AddDescriptors_eve_5flauncher_2fuser_2eproto() {
-  static constexpr ::google::protobuf::internal::InitFunc deps[1] =
-  {
-  };
- ::google::protobuf::internal::AddDescriptors(&descriptor_table_eve_5flauncher_2fuser_2eproto, deps, 0);
+void protobuf_AssignDescriptors() {
+  AddDescriptors();
+  AssignDescriptors(
+      "eve_launcher/user.proto", schemas, file_default_instances, TableStruct::offsets,
+      file_level_metadata, NULL, NULL);
 }
 
-// Force running AddDescriptors() at dynamic initialization time.
-static bool dynamic_init_dummy_eve_5flauncher_2fuser_2eproto = []() { AddDescriptors_eve_5flauncher_2fuser_2eproto(); return true; }();
+void protobuf_AssignDescriptorsOnce() {
+  static ::google::protobuf::internal::once_flag once;
+  ::google::protobuf::internal::call_once(once, protobuf_AssignDescriptors);
+}
+
+void protobuf_RegisterTypes(const ::std::string&) GOOGLE_PROTOBUF_ATTRIBUTE_COLD;
+void protobuf_RegisterTypes(const ::std::string&) {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::internal::RegisterAllTypes(file_level_metadata, 1);
+}
+
+void AddDescriptorsImpl() {
+  InitDefaults();
+  static const char descriptor[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
+      "\n\027eve_launcher/user.proto\022\021eve_launcher."
+      "user\" \n\nIdentifier\022\022\n\nsequential\030\001 \001(\rB>"
+      "Z<github.com/ccpgames/eve-proto-go/gener"
+      "ated/eve_launcher/userb\006proto3"
+  };
+  ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
+      descriptor, 150);
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
+    "eve_launcher/user.proto", &protobuf_RegisterTypes);
+}
+
+void AddDescriptors() {
+  static ::google::protobuf::internal::once_flag once;
+  ::google::protobuf::internal::call_once(once, AddDescriptorsImpl);
+}
+// Force AddDescriptors() to be called at dynamic initialization time.
+struct StaticDescriptorInitializer {
+  StaticDescriptorInitializer() {
+    AddDescriptors();
+  }
+} static_descriptor_initializer;
+}  // namespace protobuf_eve_5flauncher_2fuser_2eproto
 namespace eve_launcher {
 namespace user {
 
@@ -96,22 +115,20 @@ namespace user {
 
 void Identifier::InitAsDefaultInstance() {
 }
-class Identifier::HasBitSetters {
- public:
-};
-
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int Identifier::kSequentialFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Identifier::Identifier()
-  : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  ::google::protobuf::internal::InitSCC(
+      &protobuf_eve_5flauncher_2fuser_2eproto::scc_info_Identifier.base);
   SharedCtor();
   // @@protoc_insertion_point(constructor:eve_launcher.user.Identifier)
 }
 Identifier::Identifier(const Identifier& from)
   : ::google::protobuf::Message(),
-      _internal_metadata_(nullptr) {
+      _internal_metadata_(NULL) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   sequential_ = from.sequential_;
   // @@protoc_insertion_point(copy_constructor:eve_launcher.user.Identifier)
@@ -132,8 +149,13 @@ void Identifier::SharedDtor() {
 void Identifier::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
+const ::google::protobuf::Descriptor* Identifier::descriptor() {
+  ::protobuf_eve_5flauncher_2fuser_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_eve_5flauncher_2fuser_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
+}
+
 const Identifier& Identifier::default_instance() {
-  ::google::protobuf::internal::InitSCC(&::scc_info_Identifier_eve_5flauncher_2fuser_2eproto.base);
+  ::google::protobuf::internal::InitSCC(&protobuf_eve_5flauncher_2fuser_2eproto::scc_info_Identifier.base);
   return *internal_default_instance();
 }
 
@@ -148,46 +170,9 @@ void Identifier::Clear() {
   _internal_metadata_.Clear();
 }
 
-#if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-const char* Identifier::_InternalParse(const char* begin, const char* end, void* object,
-                  ::google::protobuf::internal::ParseContext* ctx) {
-  auto msg = static_cast<Identifier*>(object);
-  ::google::protobuf::int32 size; (void)size;
-  int depth; (void)depth;
-  ::google::protobuf::uint32 tag;
-  ::google::protobuf::internal::ParseFunc parser_till_end; (void)parser_till_end;
-  auto ptr = begin;
-  while (ptr < end) {
-    ptr = ::google::protobuf::io::Parse32(ptr, &tag);
-    GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-    switch (tag >> 3) {
-      // uint32 sequential = 1;
-      case 1: {
-        if (static_cast<::google::protobuf::uint8>(tag) != 8) goto handle_unusual;
-        msg->set_sequential(::google::protobuf::internal::ReadVarint(&ptr));
-        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        break;
-      }
-      default: {
-      handle_unusual:
-        if ((tag & 7) == 4 || tag == 0) {
-          ctx->EndGroup(tag);
-          return ptr;
-        }
-        auto res = UnknownFieldParse(tag, {_InternalParse, msg},
-          ptr, end, msg->_internal_metadata_.mutable_unknown_fields(), ctx);
-        ptr = res.first;
-        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr != nullptr);
-        if (res.second) return ptr;
-      }
-    }  // switch
-  }  // while
-  return ptr;
-}
-#else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 bool Identifier::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:eve_launcher.user.Identifier)
   for (;;) {
@@ -197,7 +182,8 @@ bool Identifier::MergePartialFromCodedStream(
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // uint32 sequential = 1;
       case 1: {
-        if (static_cast< ::google::protobuf::uint8>(tag) == (8 & 0xFF)) {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
@@ -227,7 +213,6 @@ failure:
   return false;
 #undef DO_
 }
-#endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 
 void Identifier::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
@@ -240,15 +225,16 @@ void Identifier::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->sequential(), output);
   }
 
-  if (_internal_metadata_.have_unknown_fields()) {
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        _internal_metadata_.unknown_fields(), output);
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
   }
   // @@protoc_insertion_point(serialize_end:eve_launcher.user.Identifier)
 }
 
 ::google::protobuf::uint8* Identifier::InternalSerializeWithCachedSizesToArray(
-    ::google::protobuf::uint8* target) const {
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic; // Unused
   // @@protoc_insertion_point(serialize_to_array_start:eve_launcher.user.Identifier)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
@@ -258,9 +244,9 @@ void Identifier::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->sequential(), target);
   }
 
-  if (_internal_metadata_.have_unknown_fields()) {
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields(), target);
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:eve_launcher.user.Identifier)
   return target;
@@ -270,15 +256,11 @@ size_t Identifier::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:eve_launcher.user.Identifier)
   size_t total_size = 0;
 
-  if (_internal_metadata_.have_unknown_fields()) {
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        _internal_metadata_.unknown_fields());
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
   }
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
   // uint32 sequential = 1;
   if (this->sequential() != 0) {
     total_size += 1 +
@@ -295,9 +277,9 @@ void Identifier::MergeFrom(const ::google::protobuf::Message& from) {
 // @@protoc_insertion_point(generalized_merge_from_start:eve_launcher.user.Identifier)
   GOOGLE_DCHECK_NE(&from, this);
   const Identifier* source =
-      ::google::protobuf::DynamicCastToGenerated<Identifier>(
+      ::google::protobuf::internal::DynamicCastToGenerated<const Identifier>(
           &from);
-  if (source == nullptr) {
+  if (source == NULL) {
   // @@protoc_insertion_point(generalized_merge_from_cast_fail:eve_launcher.user.Identifier)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
@@ -342,13 +324,13 @@ void Identifier::Swap(Identifier* other) {
 }
 void Identifier::InternalSwap(Identifier* other) {
   using std::swap;
-  _internal_metadata_.Swap(&other->_internal_metadata_);
   swap(sequential_, other->sequential_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 
 ::google::protobuf::Metadata Identifier::GetMetadata() const {
-  ::google::protobuf::internal::AssignDescriptors(&::assign_descriptors_table_eve_5flauncher_2fuser_2eproto);
-  return ::file_level_metadata_eve_5flauncher_2fuser_2eproto[kIndexInFileMessages];
+  protobuf_eve_5flauncher_2fuser_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_eve_5flauncher_2fuser_2eproto::file_level_metadata[kIndexInFileMessages];
 }
 
 
@@ -357,11 +339,10 @@ void Identifier::InternalSwap(Identifier* other) {
 }  // namespace eve_launcher
 namespace google {
 namespace protobuf {
-template<> PROTOBUF_NOINLINE ::eve_launcher::user::Identifier* Arena::CreateMaybeMessage< ::eve_launcher::user::Identifier >(Arena* arena) {
+template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::eve_launcher::user::Identifier* Arena::CreateMaybeMessage< ::eve_launcher::user::Identifier >(Arena* arena) {
   return Arena::CreateInternal< ::eve_launcher::user::Identifier >(arena);
 }
 }  // namespace protobuf
 }  // namespace google
 
 // @@protoc_insertion_point(global_scope)
-#include <google/protobuf/port_undef.inc>
