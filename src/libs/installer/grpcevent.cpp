@@ -33,7 +33,7 @@ bool GrpcEvent::performOperation()
     //             );
     // qDebug(lcEventLogger()) << "GrpcEvent::performOperation";
     // EVENTLOGGER_LOGINCANCELLED();
-    IsWine();
+    PDM::IsWine();
     return true;
 }
 

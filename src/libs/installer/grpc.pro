@@ -1,5 +1,6 @@
 
-PDM_PATH = C:/pdm
+# PDM_PATH = C:/pdm
+PDM_PATH = $$PWD/../pdm
 
 win32: LIBS += -L$$PDM_PATH/lib/ -lpdm
 INCLUDEPATH += $$PDM_PATH/include
