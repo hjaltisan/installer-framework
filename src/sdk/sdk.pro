@@ -112,6 +112,8 @@ win32 {
     SOURCES += console_win.cpp
 }
 
+CONFIG += staticlib
+
 # Platform Detection Module
     win32: LIBS += -L$$PWD/../libs/pdm/lib/ -lpdm
     INCLUDEPATH += $$PWD/../libs/pdm/include
