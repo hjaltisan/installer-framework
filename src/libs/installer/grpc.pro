@@ -1,3 +1,13 @@
+
+PDM_PATH = C:/pdm
+
+win32: LIBS += -L$$PDM_PATH/lib/ -lpdm
+INCLUDEPATH += $$PDM_PATH/include
+DEPENDPATH += $$PDM_PATH/include
+win32:!win32-g++: PRE_TARGETDEPS += $$PDM_PATH/lib/pdm.lib
+else:win32-g++: PRE_TARGETDEPS += $$PDM_PATH/lib/libpdm.a
+
+
 win32 {
     
     LIBS_PATH = C:/libs
