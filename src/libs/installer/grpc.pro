@@ -7,8 +7,7 @@ win32 {
     INCLUDEPATH += $$LIBS_PATH/include
     DEPENDPATH += $$LIBS_PATH/include
 
-    CONFIG(release, debug|release):  LIBS += -L$$GRPC_PATH/lib/ -llibprotobuf -lgrpc -lgrpc++ -lgpr -lzlib -lws2_32 -llibeay32 -lssleay32
-    else:CONFIG(debug, debug|release): LIBS += -L$$GRPC_PATH/debug/lib/ -llibprotobufd -lgrpc -lgrpc++ -lgpr -lzlibd -lws2_32 -llibeay32 -lssleay32
+    LIBS += $$LIBS_PATH/lib/libprotobufe.lib
     
     QMAKE_CXXFLAGS_WARN_ON += /wd4251 /wd4100
 }
