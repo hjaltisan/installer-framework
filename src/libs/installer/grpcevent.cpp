@@ -2,6 +2,8 @@
 #include "eventlogger.h"
 #include <QMessageBox>
 
+#include "pdm/pdm.h"
+
 
 using namespace QInstaller;
 
