@@ -1,14 +1,22 @@
+# Platform Detection Module
+    win32: LIBS += -L$$PWD/../pdm/lib/ -lpdm
+    INCLUDEPATH += $$PWD/../pdm/include
+    DEPENDPATH += $$PWD/../pdm/include
+    win32:!win32-g++: PRE_TARGETDEPS += $$PWD/../pdm/lib/pdm.lib
+    else:win32-g++: PRE_TARGETDEPS += $$PWD/../pdm/lib/libpdm.a
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../pdm/lib/ -lpdm
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../pdm/lib/ -lpdmd
 
-INCLUDEPATH += $$PWD/../pdm/include
-DEPENDPATH += $$PWD/../pdm/include
 
-win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../pdm/lib/libpdm.a
-else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../pdm/lib/libpdmd.a
-else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../pdm/lib/pdm.lib
-else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../pdm/lib/pdmd.lib
+#win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../pdm/lib/ -lpdm
+#else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../pdm/lib/ -lpdmd
+
+#INCLUDEPATH += $$PWD/../pdm/include
+#DEPENDPATH += $$PWD/../pdm/include
+
+#win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../pdm/lib/libpdm.a
+#else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../pdm/lib/libpdmd.a
+#else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../pdm/lib/pdm.lib
+#else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../pdm/lib/pdmd.lib
 
 
 
