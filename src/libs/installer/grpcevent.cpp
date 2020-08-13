@@ -2,7 +2,9 @@
 #include "eventlogger.h"
 #include <QMessageBox>
 
-#include "pdm/pdm.h"
+#include <pdm/pdm.h>
+#include <pdm/pdm_data.h>
+#include <pdm/version.h>
 
 
 using namespace QInstaller;
@@ -33,7 +35,7 @@ bool GrpcEvent::performOperation()
     //             );
     // qDebug(lcEventLogger()) << "GrpcEvent::performOperation";
     // EVENTLOGGER_LOGINCANCELLED();
-    PDM::IsWine();
+    bool test = PDM::IsWine();
     return true;
 }
 
