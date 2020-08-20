@@ -2,6 +2,8 @@ TEMPLATE = app
 TARGET = binarycreator
 INCLUDEPATH += . .. rcc ../common
 
+CONFIG += c++1z
+
 include(../../installerfw.pri)
 
 QT -= gui

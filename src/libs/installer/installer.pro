@@ -3,6 +3,7 @@ TARGET = installer
 INCLUDEPATH += . ..
 
 CONFIG += staticlib
+CONFIG += c++1z
 
 include(../7zip/7zip.pri)
 include(../kdtools/kdtools.pri)
