@@ -142,5 +142,7 @@ equals(TEMPLATE, app) {
 }
 
 # Platform detection module
-LIBS += -L$$PWD/../pdm/lib/ -lpdm
-INCLUDEPATH += $$PWD/../pdm/include
+LIBS += -L$$PWD/src/libs/pdm/lib/ -lpdm
+INCLUDEPATH += $$PWD/src/libs/pdm/include
+
+#$$IFW_SOURCE_TREE/src/libs/pdm
