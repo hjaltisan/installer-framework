@@ -3,7 +3,6 @@ TARGET = installer
 INCLUDEPATH += . ..
 
 CONFIG += staticlib
-CONFIG += static_runtime
 CONFIG += c++1z
 
 include(../7zip/7zip.pri)
