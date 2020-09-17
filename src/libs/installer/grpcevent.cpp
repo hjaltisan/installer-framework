@@ -5,7 +5,8 @@
 // #include <pdm/pdm.h>
 // #include <pdm/pdm_data.h>
 // #include <pdm/version.h>
-#include <protobuf/any.h>
+#include <google/protobuf/any.h>
+#include "google/protobuf/stubs/common.h"
 
 
 using namespace QInstaller;
