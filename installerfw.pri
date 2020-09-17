@@ -140,3 +140,7 @@ equals(TEMPLATE, app) {
     win32-g++*:POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a $$IFW_LIB_PATH/lib7z.a
     unix:POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a $$IFW_LIB_PATH/lib7z.a
 }
+
+# Platform detection module
+LIBS += -L$$PWD/../pdm/lib/ -lpdm
+INCLUDEPATH += $$PWD/../pdm/include
