@@ -1125,7 +1125,8 @@ QPixmap PackageManagerPage::logoPixmap() const
 QString PackageManagerPage::productName() const
 {
     int v = google::protobuf::internal::kMinHeaderVersionForLibrary;
-    return m_core->value(QLatin1String(v));
+    QString s = QString::number(i);
+    return m_core->value(QLatin1String(s));
 }
 
 /*!
