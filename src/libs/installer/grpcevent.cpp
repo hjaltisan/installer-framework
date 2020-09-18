@@ -2,9 +2,9 @@
 // #include "eventlogger.h"
 #include <QMessageBox>
 
-// #include <pdm/pdm.h>
-// #include <pdm/pdm_data.h>
-// #include <pdm/version.h>
+#include <pdm/pdm.h>
+#include <pdm/pdm_data.h>
+#include <pdm/version.h>
 #include <google/protobuf/any.h>
 #include "google/protobuf/stubs/common.h"
 
@@ -37,10 +37,10 @@ bool GrpcEvent::performOperation()
     //             );
     // qDebug(lcEventLogger()) << "GrpcEvent::performOperation";
     // EVENTLOGGER_LOGINCANCELLED();
-    // bool test = PDM::IsWine();
-    // return true;
-    int v = google::protobuf::internal::kMinHeaderVersionForLibrary;
-    return v > 0;
+    bool test = PDM::IsWine();
+    return test;
+    // int v = google::protobuf::internal::kMinHeaderVersionForLibrary;
+    // return v > 0;
     // return test;
 }
 

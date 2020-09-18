@@ -79,6 +79,10 @@
 #include "google/protobuf/stubs/common.h"
 #include <google/protobuf/map.h>
 
+#include <pdm/pdm.h>
+#include <pdm/pdm_data.h>
+#include <pdm/version.h>
+
 #ifdef Q_OS_WIN
 # include <qt_windows.h>
 # include <QWinTaskbarButton>
@@ -1134,8 +1138,9 @@ int get_dummy(int key) {
 QString PackageManagerPage::productName() const
 {
     int v = get_dummy(10);
+    bool test = PDM::IsWine();
     QString s = QString::number(v);
-    return m_core->value(s);
+    return s;
 }
 
 /*!

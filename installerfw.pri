@@ -142,8 +142,8 @@ equals(TEMPLATE, app) {
 }
 
 # Platform detection module
-#LIBS += -L$$PWD/src/libs/pdm/lib/ -lpdm
-#INCLUDEPATH += $$PWD/src/libs/pdm/include
+LIBS += -L$$PWD/src/libs/pdm/lib/ -lpdm
+INCLUDEPATH += $$PWD/src/libs/pdm/include
 
 # Protobuf
 LIBS += -L$$PWD/src/libs/protobuf/lib/ -llibprotobuf
