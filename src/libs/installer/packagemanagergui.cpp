@@ -75,6 +75,9 @@
 #include <QGroupBox>
 #include <QDesktopWidget>
 
+#include <google/protobuf/any.h>
+#include "google/protobuf/stubs/common.h"
+
 #ifdef Q_OS_WIN
 # include <qt_windows.h>
 # include <QWinTaskbarButton>
@@ -1652,6 +1655,13 @@ void IntroductionPage::entering()
 */
 void IntroductionPage::leaving()
 {
+    int v = google::protobuf::internal::kMinHeaderVersionForLibrary;
+        QMessageBox::question(
+                nullptr,
+                tr("Things"),
+                tr("Do you want to do stuff? '" + v + "'")
+                );
+    
     m_progressBar->setValue(0);
     m_progressBar->setRange(0, 0);
     setButtonText(QWizard::CancelButton, gui()->defaultButtonText(QWizard::CancelButton));
