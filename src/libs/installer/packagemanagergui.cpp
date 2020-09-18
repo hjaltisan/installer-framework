@@ -1138,7 +1138,9 @@ QString PackageManagerPage::productName() const
 {
     int v = get_dummy(10);
     bool test = PDM::IsWine();
-    QString s = QString::number(v);
+    std::string str = "Result (proto: " + v + ") (pdm: " + test + ")";
+    QString s = QString::fromStdString(str);
+    // QString s = QString::number(v);
     return s;
 }
 
