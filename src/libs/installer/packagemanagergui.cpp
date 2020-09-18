@@ -1142,6 +1142,9 @@ QString PackageManagerPage::productName() const
     std::string result = name + std::to_string(v);
     std::string more = result + ") (pdm: " + (test ? "true" : "false") + ")";
     QString s = QString::fromStdString(more);
+    QString key = "pdmIsWine";
+    QString value = (test ? "true" : "false");
+    m_core->setValue(key, value);
     // QString s = QString::number(v);
     return s;
 }
