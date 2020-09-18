@@ -37,8 +37,10 @@ bool GrpcEvent::performOperation()
     //             );
     // qDebug(lcEventLogger()) << "GrpcEvent::performOperation";
     // EVENTLOGGER_LOGINCANCELLED();
-    bool test = PDM::IsWine();
-    return true;
+    // bool test = PDM::IsWine();
+    // return true;
+    bool test = google::protobuf::internal::Is();
+    return test;
 }
 
 bool GrpcEvent::undoOperation()
