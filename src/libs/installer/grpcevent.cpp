@@ -39,7 +39,7 @@ bool GrpcEvent::performOperation()
     // EVENTLOGGER_LOGINCANCELLED();
     // bool test = PDM::IsWine();
     // return true;
-    bool v = google::protobuf::internal::kMinHeaderVersionForLibrary;
+    int v = google::protobuf::internal::kMinHeaderVersionForLibrary;
     return v > 0;
     // return test;
 }

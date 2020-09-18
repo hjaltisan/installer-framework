@@ -146,7 +146,7 @@ equals(TEMPLATE, app) {
 #INCLUDEPATH += $$PWD/src/libs/pdm/include
 
 # Protobuf
-LIBS += -L$$PWD/src/libs/protobuf/lib/ -lprotobuf
+LIBS += -L$$PWD/src/libs/protobuf/lib/ -llibprotobuf
 INCLUDEPATH += $$PWD/src/libs/protobuf/include
 
 #$$IFW_SOURCE_TREE/src/libs/pdm
