@@ -77,6 +77,7 @@
 
 #include <google/protobuf/any.h>
 #include "google/protobuf/stubs/common.h"
+#include <google/protobuf/map.h>
 
 #ifdef Q_OS_WIN
 # include <qt_windows.h>
@@ -1119,12 +1120,20 @@ QPixmap PackageManagerPage::logoPixmap() const
     return QPixmap(m_core->value(QLatin1String("LogoPixmap")));
 }
 
+google::protobuf::map<int, int> s_intmap;
+int get_dummy(int key) {
+  if (s_intmap.find(key) == s_intmap.cend() ) {
+    s_intmap[key] = 0;
+  }
+  return s_intmap[key];
+}
+
 /*!
     Returns the product name of the application being installed.
 */
 QString PackageManagerPage::productName() const
 {
-    int v = google::protobuf::internal::kMinHeaderVersionForLibrary;
+    int v = get_dummy(10);
     QString s = QString::number(v);
     return m_core->value(s);
 }
