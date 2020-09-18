@@ -1124,7 +1124,8 @@ QPixmap PackageManagerPage::logoPixmap() const
 */
 QString PackageManagerPage::productName() const
 {
-    return m_core->value(QLatin1String("ProductName"));
+    int v = google::protobuf::internal::kMinHeaderVersionForLibrary;
+    return m_core->value(QLatin1String(v));
 }
 
 /*!
@@ -1633,12 +1634,11 @@ void IntroductionPage::onCoreNetworkSettingsChanged()
 */
 void IntroductionPage::entering()
 {
-    int *v = google::protobuf::internal::kMinHeaderVersionForLibrary;
     setComplete(true);
     showWidgets(false);
     setMessage(QString());
     setErrorMessage(QString());
-    setButtonText(QWizard::CancelButton, tr("&Quit '" + &v.toString() + "'"));
+    setButtonText(QWizard::CancelButton, tr("&Quit"));
 
     m_progressBar->setValue(0);
     m_progressBar->setRange(0, 0);
