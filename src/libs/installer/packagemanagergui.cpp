@@ -1633,12 +1633,12 @@ void IntroductionPage::onCoreNetworkSettingsChanged()
 */
 void IntroductionPage::entering()
 {
-    int v = google::protobuf::internal::kMinHeaderVersionForLibrary;
+    int *v = google::protobuf::internal::kMinHeaderVersionForLibrary;
     setComplete(true);
     showWidgets(false);
     setMessage(QString());
     setErrorMessage(QString());
-    setButtonText(QWizard::CancelButton, tr("&Quit '" + v + "'"));
+    setButtonText(QWizard::CancelButton, tr("&Quit '" + &v.toString() + "'"));
 
     m_progressBar->setValue(0);
     m_progressBar->setRange(0, 0);
