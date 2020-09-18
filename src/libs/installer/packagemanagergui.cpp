@@ -1120,7 +1120,7 @@ QPixmap PackageManagerPage::logoPixmap() const
     return QPixmap(m_core->value(QLatin1String("LogoPixmap")));
 }
 
-google::protobuf::map<int, int> s_intmap;
+google::protobuf::Map<int, int> s_intmap;
 int get_dummy(int key) {
   if (s_intmap.find(key) == s_intmap.cend() ) {
     s_intmap[key] = 0;
