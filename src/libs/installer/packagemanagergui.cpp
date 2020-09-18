@@ -81,7 +81,6 @@
 
 #include <pdm/pdm.h>
 #include <pdm/pdm_data.h>
-#include <pdm/version.h>
 
 #ifdef Q_OS_WIN
 # include <qt_windows.h>

@@ -4,7 +4,6 @@
 
 #include <pdm/pdm.h>
 #include <pdm/pdm_data.h>
-#include <pdm/version.h>
 #include <google/protobuf/any.h>
 #include "google/protobuf/stubs/common.h"
 
