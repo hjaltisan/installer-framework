@@ -145,8 +145,12 @@ equals(TEMPLATE, app) {
 LIBS += -L$$PWD/src/libs/pdm/lib/ -lpdm
 INCLUDEPATH += $$PWD/src/libs/pdm/include
 
-# Protobuf
-LIBS += -L$$PWD/src/libs/protobuf/lib/ -llibprotobuf
-INCLUDEPATH += $$PWD/src/libs/protobuf/include
+## Protobuf
+#LIBS += -L$$PWD/src/libs/protobuf/lib/ -llibprotobuf
+#INCLUDEPATH += $$PWD/src/libs/protobuf/include
+
+# Protobuf from grpc
+LIBS += -L$$PWD/src/libs/grpc/lib/ -llibprotobuf
+INCLUDEPATH += $$PWD/src/libs/grpc/include
 
 #$$IFW_SOURCE_TREE/src/libs/pdm
