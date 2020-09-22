@@ -1,11 +1,11 @@
 #include "grpcevent.h"
-// #include "eventlogger.h"
+#include "eventlogger.h"
 #include <QMessageBox>
 
-#include <pdm/pdm.h>
-#include <pdm/pdm_data.h>
-#include <google/protobuf/any.h>
-#include "google/protobuf/stubs/common.h"
+// #include <pdm/pdm.h>
+// #include <pdm/pdm_data.h>
+// #include <google/protobuf/any.h>
+// #include "google/protobuf/stubs/common.h"
 
 
 using namespace QInstaller;
@@ -34,10 +34,11 @@ bool GrpcEvent::performOperation()
     //             tr("Things"),
     //             tr("Do you want to do stuff?")
     //             );
-    // qDebug(lcEventLogger()) << "GrpcEvent::performOperation";
-    // EVENTLOGGER_LOGINCANCELLED();
-    bool test = PDM::IsWine();
-    return test;
+    qDebug(lcEventLogger()) << "GrpcEvent::performOperation";
+    EVENTLOGGER_LOGINCANCELLED();
+    // bool test = PDM::IsWine();
+    // return test;
+    return true;
     // int v = google::protobuf::internal::kMinHeaderVersionForLibrary;
     // return v > 0;
     // return test;
