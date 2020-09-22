@@ -150,7 +150,11 @@ INCLUDEPATH += $$PWD/src/libs/pdm/include
 #INCLUDEPATH += $$PWD/src/libs/protobuf/include
 
 # Protobuf from grpc
-LIBS += -L$$PWD/src/libs/grpc/lib/ -llibprotobuf
+#LIBS += -L$$PWD/src/libs/grpc/lib/ -llibprotobuf
+#INCLUDEPATH += $$PWD/src/libs/grpc/include
+
+# gRPC
+LIBS += -L$$PWD/src/libs/grpc/lib/ -llibprotobuf -lgrpc -lgrpc++ -lgpr -lzlibstatic -lcrypto -lssl
 INCLUDEPATH += $$PWD/src/libs/grpc/include
 
 #$$IFW_SOURCE_TREE/src/libs/pdm
