@@ -69,6 +69,7 @@ HEADERS += packagemanagercore.h \
     environmentvariablesoperation.h \
     installiconsoperation.h \
     selfrestartoperation.h \
+    postoperation.h \
     settings.h \
     permissionsettings.h \
     downloadarchivesjob.h \
@@ -164,6 +165,7 @@ SOURCES += packagemanagercore.cpp \
     environmentvariablesoperation.cpp \
     installiconsoperation.cpp \
     selfrestartoperation.cpp \
+    postoperation.cpp \
     downloadarchivesjob.cpp \
     init.cpp \
     elevatedexecuteoperation.cpp \
