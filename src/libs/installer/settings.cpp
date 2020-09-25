@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -31,6 +31,7 @@
 #include "qinstallerglobal.h"
 #include "repository.h"
 #include "repositorycategory.h"
+#include "globals.h"
 
 #include <QtCore/QFileInfo>
 #include <QtCore/QStringList>
@@ -84,12 +85,13 @@ static void raiseError(QXmlStreamReader &reader, const QString &error, Settings:
     } else {
         QFile *xmlFile = qobject_cast<QFile*>(reader.device());
         if (xmlFile) {
-            qWarning().noquote().nospace()
+            qCWarning(QInstaller::lcInstallerInstallLog).noquote().nospace()
                     << "Ignoring following settings reader error in " << xmlFile->fileName()
                                  << ", line " << reader.lineNumber() << ", column " << reader.columnNumber()
                                  << ": " << error;
         } else {
-            qWarning("Ignoring following settings reader error: %s", qPrintable(error));
+            qCWarning(QInstaller::lcInstallerInstallLog) << "Ignoring following settings reader error: "
+                << qPrintable(error);
         }
     }
 }
@@ -287,8 +289,9 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
                 << scRunProgram << scRunProgramArguments << scRunProgramDescription
                 << scDependsOnLocalInstallerBinary
                 << scAllowSpaceInPath << scAllowNonAsciiCharacters << scDisableAuthorizationFallback
+                << scDisableCommandLineInterface
                 << scWizardStyle << scStyleSheet << scTitleColor
-                << scWizardDefaultWidth << scWizardDefaultHeight
+                << scWizardDefaultWidth << scWizardDefaultHeight << scWizardShowPageList
                 << scRepositorySettingsPageVisible << scTargetConfigurationFile
                 << scRemoteRepositories << scTranslations << scUrlQueryString << QLatin1String(scControlScript)
                 << scCreateLocalRepository << scInstallActionColumnVisible << scSupportsModify << scAllowUnstableComponents
@@ -452,12 +455,20 @@ static int lengthToInt(const QVariant &variant)
 
 int Settings::wizardDefaultWidth() const
 {
-    return lengthToInt(d->m_data.value(scWizardDefaultWidth));
+    // Add a bit more sensible default width in case the page list widget is shown
+    // as it can take quite a lot horizontal space. A vendor can always override
+    // the default value.
+    return lengthToInt(d->m_data.value(scWizardDefaultWidth, wizardShowPageList() ? 800 : 0));
 }
 
 int Settings::wizardDefaultHeight() const
 {
     return lengthToInt(d->m_data.value(scWizardDefaultHeight));
+}
+
+bool Settings::wizardShowPageList() const
+{
+    return d->m_data.value(scWizardShowPageList, true).toBool();
 }
 
 QString Settings::installerApplicationIcon() const
@@ -563,6 +574,11 @@ bool Settings::allowNonAsciiCharacters() const
 bool Settings::disableAuthorizationFallback() const
 {
     return d->m_data.value(scDisableAuthorizationFallback, false).toBool();
+}
+
+bool Settings::disableCommandLineInterface() const
+{
+    return d->m_data.value(scDisableCommandLineInterface, false).toBool();
 }
 
 bool Settings::dependsOnLocalInstallerBinary() const

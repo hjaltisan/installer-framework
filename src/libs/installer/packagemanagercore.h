@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -62,7 +62,9 @@ public:
     PackageManagerCore(qint64 magicmaker, const QList<OperationBlob> &ops,
         const QString &socketName = QString(),
         const QString &key = QLatin1String(Protocol::DefaultAuthorizationKey),
-        Protocol::Mode mode = Protocol::Mode::Production);
+        Protocol::Mode mode = Protocol::Mode::Production,
+        const QHash<QString, QString> &params = QHash<QString, QString>(),
+        const bool commandLineInstance = false);
     ~PackageManagerCore();
 
     // status
@@ -107,6 +109,9 @@ public:
 
     static bool noForceInstallation();
     static void setNoForceInstallation(bool value);
+
+    static bool noDefaultInstallation();
+    static void setNoDefaultInstallation(bool value);
 
     static bool createLocalRepositoryFromBinary();
     static void setCreateLocalRepositoryFromBinary(bool create);
@@ -160,17 +165,14 @@ public:
     Q_INVOKABLE QString value(const QString &key, const QString &defaultValue = QString()) const;
     Q_INVOKABLE QStringList values(const QString &key, const QStringList &defaultValue = QStringList()) const;
 
-    // a way to have global flags shareable from a component script to another one
-    // Deprecated since 2.0.0
-    Q_INVOKABLE bool sharedFlag(const QString &key) const;
-    Q_INVOKABLE void setSharedFlag(const QString &key, bool value = true);
-
     QString replaceVariables(const QString &str) const;
     QByteArray replaceVariables(const QByteArray &str) const;
     QStringList replaceVariables(const QStringList &str) const;
 
     void writeMaintenanceTool();
     void writeMaintenanceConfigFiles();
+
+    void disableWriteMaintenanceTool(bool disable = true);
 
     QString maintenanceToolName() const;
     QString installerBinaryPath() const;
@@ -184,12 +186,23 @@ public:
     Q_INVOKABLE void autoAcceptMessageBoxes();
     Q_INVOKABLE void autoRejectMessageBoxes();
     Q_INVOKABLE void setMessageBoxAutomaticAnswer(const QString &identifier, int button);
+    Q_INVOKABLE void acceptMessageBoxDefaultButton();
+
+    Q_INVOKABLE void setAutoAcceptLicenses();
+    Q_INVOKABLE void setFileDialogAutomaticAnswer(const QString &identifier, const QString &value);
+    Q_INVOKABLE void removeFileDialogAutomaticAnswer(const QString &identifier);
+    Q_INVOKABLE bool containsFileDialogAutomaticAnswer(const QString &identifier) const;
+    QHash<QString, QString> fileDialogAutomaticAnswers() const;
 
     quint64 size(QInstaller::Component *component, const QString &value) const;
 
     Q_INVOKABLE bool isFileExtensionRegistered(const QString &extension) const;
     Q_INVOKABLE bool fileExists(const QString &filePath) const;
     Q_INVOKABLE QString readFile(const QString &filePath, const QString &codecName) const;
+    Q_INVOKABLE QString readConsoleLine(const QString &title = QString(), qint64 maxlen = 0) const;
+
+    bool checkTargetDir(const QString &targetDirectory);
+    QString targetDirWarning(const QString &targetDirectory) const;
 
 public:
     ScriptEngine *componentScriptEngine() const;
@@ -217,9 +230,16 @@ public:
 
     ComponentModel *defaultComponentModel() const;
     ComponentModel *updaterComponentModel() const;
-    void updateComponentsSilently();
+    void listInstalledPackages();
+    void listAvailablePackages(const QString &regexp);
+    bool updateComponentsSilently(const QStringList &componentsToUpdate);
+    bool installSelectedComponentsSilently(const QStringList& components);
+    bool installDefaultComponentsSilently();
+    bool uninstallComponentsSilently(const QStringList& components);
+    bool removeInstallationSilently();
 
     // convenience
+    Q_INVOKABLE void setInstaller();
     Q_INVOKABLE bool isInstaller() const;
     Q_INVOKABLE bool isOfflineOnly() const;
 
@@ -231,6 +251,12 @@ public:
 
     Q_INVOKABLE void setPackageManager();
     Q_INVOKABLE bool isPackageManager() const;
+
+    void setUserSetBinaryMarker(qint64 magicMarker);
+    Q_INVOKABLE bool isUserSetBinaryMarker() const;
+
+    void setCommandLineInstance(bool commandLineInstance);
+    Q_INVOKABLE bool isCommandLineInstance() const;
 
     bool isMaintainer() const;
 
@@ -248,6 +274,8 @@ public:
 
     Q_INVOKABLE bool isProcessRunning(const QString &name) const;
     Q_INVOKABLE bool killProcess(const QString &absoluteFilePath) const;
+    Q_INVOKABLE void setAllowedRunningProcesses(const QStringList &processes);
+    Q_INVOKABLE QStringList allowedRunningProcesses() const;
 
     Settings &settings() const;
 
@@ -276,6 +304,7 @@ public:
     static QString checkableName(const QString &name);
     static void parseNameAndVersion(const QString &requirement, QString *name, QString *version);
     static QStringList parseNames(const QStringList &requirements);
+    void commitSessionOperations();
 
 public Q_SLOTS:
     bool runInstaller();
@@ -333,6 +362,7 @@ Q_SIGNALS:
 
     void guiObjectChanged(QObject *gui);
     void unstableComponentFound(const QString &type, const QString &errorMessage, const QString &component);
+    void installerBinaryMarkerChanged(qint64 magicMarker);
 
 private:
     struct Data {
@@ -354,10 +384,15 @@ private:
     QList<Component *> componentsMarkedForInstallation() const;
 
     bool fetchPackagesTree(const PackagesList &packages, const LocalPackagesHash installedPackages);
+    void printPackageInformation(const QString &name, const Package *update);
+    void printLocalPackageInformation(const KDUpdater::LocalPackage package) const;
+
+    bool componentUninstallableFromCommandLine(const QString &componentName);
 
 private:
     PackageManagerCorePrivate *const d;
     friend class PackageManagerCorePrivate;
+    QHash<QString, QString> m_fileDialogAutomaticAnswers;
 
 private:
     // remove once we deprecate isSelected, setSelected etc...

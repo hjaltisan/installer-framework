@@ -24,6 +24,7 @@ HEADERS += productkeycheck.h
     include($$PRODUCTKEYCHECK_PRI_FILE)
 } else {
     SOURCES += productkeycheck.cpp
+    SOURCES += commandlineparser_p.cpp
 }
 
 DESTDIR = $$IFW_LIB_PATH
@@ -145,7 +146,9 @@ HEADERS += eventlogger.h \
     lib7z_extract.h \
     lib7z_list.h \
     repositorycategory.h \
-    componentselectionpage_p.h
+    componentselectionpage_p.h \
+    commandlineparser.h \
+    commandlineparser_p.h
 
 SOURCES += eventlogger.cpp \
     eve_launcher/launcher.grpc.pb.cc \
@@ -233,7 +236,8 @@ SOURCES += eventlogger.cpp \
     systeminfo.cpp \
     packagesource.cpp \
     repositorycategory.cpp \
-    componentselectionpage_p.cpp
+    componentselectionpage_p.cpp \
+    commandlineparser.cpp
 
 include(grpc.pro)
 
