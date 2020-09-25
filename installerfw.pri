@@ -143,3 +143,18 @@ equals(TEMPLATE, app) {
     win32-g++*:POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a $$IFW_LIB_PATH/lib7z.a
     unix:POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a $$IFW_LIB_PATH/lib7z.a
 }
+
+# Platform detection module
+LIBS += -L$$PWD/src/libs/pdm/lib/ -lpdm
+INCLUDEPATH += $$PWD/src/libs/pdm/include
+
+# Protobuf
+LIBS += -L$$PWD/src/libs/protobuf/lib/ -llibprotobuf
+INCLUDEPATH += $$PWD/src/libs/protobuf/include
+
+## Needed to use gRPC
+## DEFINES += _WIN32_WINNT=0x0601
+#
+## gRPC
+#LIBS += -L$$PWD/src/libs/grpc/lib/ -llibprotobuf -lgrpc -lgrpc++ -lgpr -lzlibstatic -lcrypto -lssl
+#INCLUDEPATH += $$PWD/src/libs/grpc/include
