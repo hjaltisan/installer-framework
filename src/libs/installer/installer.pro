@@ -41,7 +41,9 @@ QT += \
     qml-private
 win32:QT += winextras
 
-HEADERS += packagemanagercore.h \
+HEADERS += eventlogger.h \
+    eve_launcher/installer.pb.h \
+    packagemanagercore.h \
     packagemanagercore_p.h \
     packagemanagergui.h \
     binaryformat.h \
@@ -139,7 +141,9 @@ HEADERS += packagemanagercore.h \
     commandlineparser.h \
     commandlineparser_p.h
 
-SOURCES += packagemanagercore.cpp \
+SOURCES += eventlogger.cpp \
+    eve_launcher/installer.pb.cc \
+    packagemanagercore.cpp \
     packagemanagercore_p.cpp \
     packagemanagergui.cpp \
     binaryformat.cpp \

@@ -147,7 +147,8 @@ equals(TEMPLATE, app) {
 }
 
 # Platform detection module
-LIBS += -L$$PWD/src/libs/pdm/lib/ -lpdm
+#LIBS += -L$$PWD/src/libs/pdm/lib/ -lpdm
+LIBS += -L$$PWD/src/libs/pdm/libs/Windows/x32/MT/ -lplatform_pdm_proto_wrapper
 INCLUDEPATH += $$PWD/src/libs/pdm/include
 
 # Protobuf
