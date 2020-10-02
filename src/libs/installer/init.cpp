@@ -48,6 +48,7 @@
 #include "settingsoperation.h"
 #include "consumeoutputoperation.h"
 #include "postoperation.h"
+#include "installereventoperation.h"
 
 #include "lib7z_facade.h"
 #include "utils.h"
@@ -167,6 +168,7 @@ void QInstaller::init()
     factory.registerUpdateOperation<ConsumeOutputOperation>(QLatin1String("ConsumeOutput"));
     factory.registerUpdateOperation<SettingsOperation>(QLatin1String("Settings"));
     factory.registerUpdateOperation<PostOperation>(QLatin1String("Post"));
+    factory.registerUpdateOperation<InstallerEventOperation>(QLatin1String("InstallerEvent"));
 
     FileDownloaderFactory::setFollowRedirects(true);
 

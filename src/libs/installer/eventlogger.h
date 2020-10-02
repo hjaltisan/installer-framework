@@ -1,42 +1,20 @@
 #ifndef EVENTLOGGER_H
 #define EVENTLOGGER_H
 
-// #ifdef CCP_LOGGING_ENABLED
+#include "httpthreadcontroller.h"
 
+#include "eve_launcher/application.pb.h"
 #include "eve_launcher/installer.pb.h"
+#include "eve_launcher/uninstaller.pb.h"
 
-#include <QFuture>
-#include <QLoggingCategory>
-#include <QMutex>
+#include <QPointer>
 #include <QObject>
-#include <QQueue>
 
-#include <memory>
-
-#define EVENTLOGGER_INSTALLERSTARTED(duration) EventLogger::instance()->started(duration)
-#define EVENTLOGGER_INSTALLERPAGEDISPLAYED(previousPage, currentPage, flow) EventLogger::instance()->pageDisplayed(previousPage, currentPage, flow)
-#define EVENTLOGGER_INSTALLERUSERCANCELLED(page, progress) EventLogger::instance()->userCancelled(page, progress)
-#define EVENTLOGGER_INSTALLERSHUTDOWN(page, state, finishButton) EventLogger::instance()->shutDown(page, state, finishButton)
-#define EVENTLOGGER_INSTALLERPREPARATIONSTARTED() EventLogger::instance()->preparationStarted()
-#define EVENTLOGGER_INSTALLERPREPARATIONFINISHED(duration) EventLogger::instance()->preparationFinished(duration)
-#define EVENTLOGGER_INSTALLERLOCATIONCHANGED(source, provider, path) EventLogger::instance()->locationChanged(source, provider, path)
-#define EVENTLOGGER_INSTALLERDETAILSVISIBILITYCHANGED(visible) EventLogger::instance()->detailsVisibilityChanged(visible)
-#define EVENTLOGGER_INSTALLERAUTORUNCHANGED(run) EventLogger::instance()->autoRunChanged(run)
-#define EVENTLOGGER_INSTALLEREULAACCEPTANCECHANGED(accept) EventLogger::instance()->eulaAcceptanceChanged(accept)
-#define EVENTLOGGER_INSTALLERREDISTSEARCHCONCLUDED(version, reason) EventLogger::instance()->redistSearchConcluded(version, reason)
-#define EVENTLOGGER_INSTALLERPROVIDEDCLIENTFOUND() EventLogger::instance()->providedClientFound()
-#define EVENTLOGGER_INSTALLERMESSAGEBOXSHOWN(messageBox) EventLogger::instance()->messageBoxShown(messageBox)
-#define EVENTLOGGER_INSTALLERMESSAGEBOXCLOSED(messageBox, messageBoxButton, timeDisplayed) EventLogger::instance()->messageBoxClosed(messageBox, messageBoxButton, timeDisplayed)
-#define EVENTLOGGER_INSTALLERSTEPEXECUTED(step, component, redistVersion, duration) EventLogger::instance()->stepExecuted(step, component, redistVersion, duration)
-#define EVENTLOGGER_INSTALLERERRORENCOUNTERED(code, page, component, redistVersion) EventLogger::instance()->errorEncountered(code, page, component, redistVersion)
-
-Q_DECLARE_LOGGING_CATEGORY(lcEventLogger)
-
-struct EventQueueEntry
-{
-    qint64 millisecondsSinceEpoch;
-    google::protobuf::Message* allocatedPayload;
-};
+static eve_launcher::application::Application_Region s_region;
+static QString s_version;
+static eve_launcher::application::Application_BuildType s_buildType;
+static bool s_provider;
+static QString s_providerName;
 
 class EventLogger : QObject
 {
@@ -45,74 +23,75 @@ class EventLogger : QObject
 public:
     static EventLogger* instance();
 
-    // what to use for the boolvalue?
-    void started(int duration);
-    void pageDisplayed(eve_launcher::installer::Page previousPage, eve_launcher::installer::Page currentPage, eve_launcher::installer::PageDisplayed_FlowDirection flow);
-    void userCancelled(eve_launcher::installer::Page page, eve_launcher::installer::UserCancelled_Progress progress);
-    void shutDown(eve_launcher::installer::Page page, eve_launcher::installer::ShutDown_State state, bool finishButton);
-    void preparationStarted();
-    void preparationFinished(int duration);
-    void locationChanged(eve_launcher::installer::LocationChanged_Source source, eve_launcher::installer::LocationChanged_Provider provider, const QString& path);
-    void detailsVisibilityChanged(bool visible);
-    void autoRunChanged(bool run);
-    void eulaAcceptanceChanged(bool accept);
-    void redistSearchConcluded(eve_launcher::installer::RedistVersion version, eve_launcher::installer::RedistSearchConcluded_RedistReason reason);
-    void providedClientFound();
-    void messageBoxShown(eve_launcher::installer::MessageBox messageBox);
-    void messageBoxClosed(eve_launcher::installer::MessageBox messageBox, eve_launcher::installer::MessageBoxClosed_MessageBoxButton messageBoxButton, int timeDisplayed);
-    void stepExecuted(eve_launcher::installer::StepExecuted_Step step, eve_launcher::installer::Component component, eve_launcher::installer::RedistVersion redistVersion, int duration);
-    void errorEncountered(eve_launcher::installer::ErrorEncountered_ErrorCode code, eve_launcher::installer::Page page, eve_launcher::installer::Component component, eve_launcher::installer::RedistVersion redistVersion);
+    // uninstaller
+    void uninstallerStarted(int duration);
+    void uninstallerPageDisplayed(eve_launcher::uninstaller::Page previousPage, eve_launcher::uninstaller::Page currentPage, eve_launcher::uninstaller::PageDisplayed_FlowDirection flow);
+    void uninstallerUserCancelled(eve_launcher::uninstaller::Page page, eve_launcher::uninstaller::UserCancelled_Progress progress);
+    void uninstallerShutDown(eve_launcher::uninstaller::Page page, eve_launcher::uninstaller::ShutDown_State state, bool finishButton);
+    void uninstallerDetailsDisplayed();
+    void uninstallerDetailsHidden();
+    void uninstallerUninstallationStarted();
+    void uninstallerUninstallationInterrupted(int duration);
+    void uninstallerUninstallationFinished(int duration);
+    void uninstallerUninstallationFailed(int duration);
+    void uninstallerErrorEncountered(eve_launcher::uninstaller::ErrorEncountered_ErrorCode code, eve_launcher::uninstaller::Page page);
+    void uninstallerAnalyticsMessageSent(const QString& message);
+
+    // installer
+    void installerStarted(int duration);
+    void installerPageDisplayed(eve_launcher::installer::Page previousPage, eve_launcher::installer::Page currentPage, eve_launcher::installer::PageDisplayed_FlowDirection flow);
+    void installerUserCancelled(eve_launcher::installer::Page page, eve_launcher::installer::UserCancelled_Progress progress);
+    void installerShutDown(eve_launcher::installer::Page page, eve_launcher::installer::ShutDown_State state, bool finishButton);
+    void installerPreparationStarted();
+    void installerPreparationFinished(int duration);
+    void installerLocationChanged(eve_launcher::installer::LocationChanged_Source source, eve_launcher::installer::LocationChanged_Provider provider, const QString& path);
+    void installerDetailsDisplayed();
+    void installerDetailsHidden();
+    void installerAutoRunEnabled();
+    void installerAutoRunDisabled();
+    void installerEulaAccepted();
+    void installerEulaDeclined();
+    void installerRedistSearchConcluded(eve_launcher::installer::RedistVersion version, eve_launcher::installer::RedistSearchConcluded_RedistReason reason);
+    void installerProvidedClientFound();
+    void installerSharedCacheMessageShown();
+    void installerSharedCacheMessageClosed(eve_launcher::installer::MessageBoxButton messageBoxButton, int timeDisplayed);
+    void installerInstallationStarted();
+    void installerInstallationInterrupted(int duration);
+    void installerInstallationFinished(int duration);
+    void installerInstallationFailed(int duration);
+    void installerUninstallerCreationStarted();
+    void installerUninstallerCreationFinished(int duration);
+    void installerComponentInitializationStarted(eve_launcher::installer::Component component, eve_launcher::installer::RedistVersion redistVersion);
+    void installerComponentInitializationFinished(eve_launcher::installer::Component component, eve_launcher::installer::RedistVersion redistVersion, int duration);
+    void installerComponentInstallationStarted(eve_launcher::installer::Component component, eve_launcher::installer::RedistVersion redistVersion);
+    void installerComponentInstallationFinished(eve_launcher::installer::Component component, eve_launcher::installer::RedistVersion redistVersion, int duration);
+    void installerComponentsInitializationStarted();
+    void installerComponentsInitializationFinished(int duration);
+    void installerComponentsInstallationStarted();
+    void installerComponentsInstallationFinished(int duration);
+    void installerErrorEncountered(eve_launcher::installer::ErrorEncountered_ErrorCode code, eve_launcher::installer::Page page, eve_launcher::installer::Component component, eve_launcher::installer::RedistVersion redistVersion);
+    void installerAnalyticsMessageSent(const QString& message);
 
     QString getSession();
-    void waitForFinished();
 
 protected:
-    void queueAllocatedEvent(::google::protobuf::Message* payload);
-
-    QByteArray prepareMessage(QJsonObject logMessage);
+    ~EventLogger();
 
     QString m_session;
     QByteArray m_sessionId;
     QByteArray m_operatingSystemUuid;
-
-    bool m_shutdownStarted;
-    bool m_shutdownEnded;
-
-    QMutex m_eventQueue_mutex;
-    QQueue<EventQueueEntry> m_eventQueue;
-    QFuture<void> m_eventQueueThread;
+    QPointer<HttpThreadController> m_httpThreadController;
 
     explicit EventLogger();
     google::protobuf::Timestamp* getTimestamp(qint64 millisecondsSinceEpoch = 0);
 
-    eve_launcher::installer::Application* getApplication();
-    eve_launcher::installer::EventMetadata* getEventMetadata();
+    eve_launcher::application::Application* getApplication();
+    eve_launcher::application::EventMetadata* getEventMetadata();
 
-    void sendQueuedEvents();
-    bool sendAllocatedEvent(const EventQueueEntry& payload);
-    std::string EventLogger::toJSON(::google::protobuf::Message* event);
+    void sendAllocatedEvent(google::protobuf::Message* payload);
+    std::string toJSON(::google::protobuf::Message* event);
+    bool replace(std::string& str, const std::string& from, const std::string& to);
 };
-
-// #else
-
-// #define EVENTLOGGER_INSTALLERSTARTED(duration)
-// #define EVENTLOGGER_INSTALLERPAGEDISPLAYED(previousPage, currentPage, flow)
-// #define EVENTLOGGER_INSTALLERUSERCANCELLED(page, progress)
-// #define EVENTLOGGER_INSTALLERSHUTDOWN(page, state, finishButton)
-// #define EVENTLOGGER_INSTALLERPREPARATIONSTARTED()
-// #define EVENTLOGGER_INSTALLERPREPARATIONFINISHED(duration)
-// #define EVENTLOGGER_INSTALLERLOCATIONCHANGED(source, provider, path)
-// #define EVENTLOGGER_INSTALLERDETAILSVISIBILITYCHANGED(visible)
-// #define EVENTLOGGER_INSTALLERAUTORUNCHANGED(run)
-// #define EVENTLOGGER_INSTALLEREULAACCEPTANCECHANGED(accept)
-// #define EVENTLOGGER_INSTALLERREDISTINFORMATION(version, reason)
-// #define EVENTLOGGER_INSTALLERCLIENTPROVIDED()
-// #define EVENTLOGGER_INSTALLERMESSAGEBOXSHOWN(messageBox)
-// #define EVENTLOGGER_INSTALLERMESSAGEBOXCLOSED(messageBox, messageBoxButton, timeDisplayed)
-// #define EVENTLOGGER_INSTALLERSTEPEXECUTED(step, component, redistVersion, duration)
-// #define EVENTLOGGER_INSTALLERERRORENCOUNTERED(code, page, component, redistVersion)
-
-// #endif // CCP_LOGGING_ENABLED
 
 #endif // EVENTLOGGER_H
 

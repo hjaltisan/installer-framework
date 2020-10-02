@@ -42,7 +42,12 @@ QT += \
 win32:QT += winextras
 
 HEADERS += eventlogger.h \
+    eve_launcher/application.pb.h \
     eve_launcher/installer.pb.h \
+    eve_launcher/uninstaller.pb.h \
+    installereventoperation.h \
+    httpthreadcontroller.h \
+    httpthreadworker.h \
     packagemanagercore.h \
     packagemanagercore_p.h \
     packagemanagergui.h \
@@ -142,7 +147,12 @@ HEADERS += eventlogger.h \
     commandlineparser_p.h
 
 SOURCES += eventlogger.cpp \
+    eve_launcher/application.pb.cc \
     eve_launcher/installer.pb.cc \
+    eve_launcher/uninstaller.pb.cc \
+    installereventoperation.cpp \
+    httpthreadcontroller.cpp \
+    httpthreadworker.cpp \
     packagemanagercore.cpp \
     packagemanagercore_p.cpp \
     packagemanagergui.cpp \
