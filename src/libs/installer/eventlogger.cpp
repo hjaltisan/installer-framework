@@ -47,6 +47,15 @@ EventLogger *EventLogger::instance()
     return &s_instance;
 }
 
+void EventLogger::initialize(eve_launcher::application::Application_Region region, const QString& version, eve_launcher::application::Application_BuildType buildType, bool provider, const QString& providerName)
+{
+    s_region = region;
+    s_version = version;
+    s_buildType = buildType;
+    s_provider = provider;
+    s_providerName = providerName;
+}
+
 void EventLogger::sendAllocatedEvent(google::protobuf::Message* payload)
 {
     // Create the event
@@ -94,7 +103,7 @@ std::string EventLogger::toJSON(google::protobuf::Message* message)
     google::protobuf::util::JsonPrintOptions options;
     // options.add_whitespace = true;
     // options.always_print_primitive_fields = true;
-    options.preserve_proto_field_names = true;
+    // options.preserve_proto_field_names = true;
     MessageToJsonString(*message, &jsonString, options);
     replace(jsonString, "type.googleapis.com", "type.evetech.net");
     return jsonString;
@@ -206,6 +215,7 @@ void EventLogger::uninstallerShutDown(eve_launcher::uninstaller::Page page, eve_
     evt->set_state(static_cast<eve_launcher::uninstaller::ShutDown_State>(state));
     evt->set_finish_button(finishButton);
     sendAllocatedEvent(evt);
+    m_httpThreadController->lastChanceToFinish();
 }
 
 void EventLogger::uninstallerDetailsDisplayed()
@@ -308,6 +318,7 @@ void EventLogger::installerShutDown(eve_launcher::installer::Page page, eve_laun
     evt->set_state(static_cast<eve_launcher::installer::ShutDown_State>(state));
     evt->set_finish_button(finishButton);
     sendAllocatedEvent(evt);
+    m_httpThreadController->lastChanceToFinish();
 }
 
 void EventLogger::installerPreparationStarted()

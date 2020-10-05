@@ -10,12 +10,6 @@
 #include <QPointer>
 #include <QObject>
 
-static eve_launcher::application::Application_Region s_region;
-static QString s_version;
-static eve_launcher::application::Application_BuildType s_buildType;
-static bool s_provider;
-static QString s_providerName;
-
 class EventLogger : QObject
 {
     Q_OBJECT
@@ -74,6 +68,7 @@ public:
 
     QString getSession();
 
+    void initialize(eve_launcher::application::Application_Region region, const QString& version, eve_launcher::application::Application_BuildType buildType, bool provider, const QString& providerName);
 protected:
     ~EventLogger();
 
@@ -91,11 +86,12 @@ protected:
     void sendAllocatedEvent(google::protobuf::Message* payload);
     std::string toJSON(::google::protobuf::Message* event);
     bool replace(std::string& str, const std::string& from, const std::string& to);
+
+    eve_launcher::application::Application_Region s_region;
+    QString s_version;
+    eve_launcher::application::Application_BuildType s_buildType;
+    bool s_provider;
+    QString s_providerName;
 };
 
 #endif // EVENTLOGGER_H
-
-
-
-
-

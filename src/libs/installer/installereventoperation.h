@@ -19,6 +19,7 @@ public:
     bool undoOperation();
     bool testOperation();
 private:
+    bool sendInit(QStringList args);
     bool sendInstallerEvent(QStringList args);
     bool sendUninstallerEvent(QStringList args);
 };

@@ -26,61 +26,72 @@ bool InstallerEventOperation::performOperation()
     const QStringList args = arguments();
     const QString action = args.at(0);
 
-    // init takes: the following parameters
-    //   1. region: "world" | "china"
-    //   2. version: "1.0.x"
-    //   3. environment: "release" | "dev"
-    //   4. provider: "none" | "A" | "B" | ...
     if(action == QString::fromLatin1("init"))
     {
-        // if (!checkArgumentCount(5, 5, tr(" ([\"init\"|message type], [\"china\"|\"world\"] (init only), version (init only))")))
-        //     return false;
-
-        // Get region
-        if (args.at(1) == QString::fromLatin1("china"))
-        {
-            s_region = eve_launcher::application::Application_Region_REGION_CHINA;
-        }
-        else
-        {
-            s_region = eve_launcher::application::Application_Region_REGION_WORLD;
-        }
-
-        // Get version
-        s_version = args.at(2);
-
-        // Get build type
-        if (args.at(3) == QString::fromLatin1("release"))
-        {
-            s_buildType = eve_launcher::application::Application_BuildType_BUILDTYPE_RELEASE;
-        }
-        else
-        {
-            s_buildType = eve_launcher::application::Application_BuildType_BUILDTYPE_DEV;
-        }
-
-        // Get provider
-        if (args.at(4) == QString::fromLatin1("none"))
-        {
-            s_provider = false;
-            s_providerName = QString::fromLatin1("");
-        }
-        else
-        {
-            s_provider = true;
-            s_providerName = args.at(4);
-        }
-
-        return true;
+        return sendInit(args);
     }
     else if(action == QString::fromLatin1("uninstaller"))
     {
         return sendUninstallerEvent(args);
     }
-    else
+    else if(action == QString::fromLatin1("installer"))
     {
         return sendInstallerEvent(args);
     }
+
+    return false;
+}
+
+// init takes: the following parameters
+//   1. region: "world" | "china"
+//   2. version: "1.0.x"
+//   3. environment: "release" | "dev"
+//   4. provider: "none" | "A" | "B" | ...
+bool InstallerEventOperation::sendInit(QStringList args)
+{
+    // if (!checkArgumentCount(5, 5, tr(" ([\"init\"|message type], [\"china\"|\"world\"] (init only), version (init only))")))
+    //     return false;
+
+    // Get region
+    eve_launcher::application::Application_Region region;
+    if (args.at(1) == QString::fromLatin1("china"))
+    {
+        region = eve_launcher::application::Application_Region_REGION_CHINA;
+    }
+    else
+    {
+        region = eve_launcher::application::Application_Region_REGION_WORLD;
+    }
+
+    // Get version
+    QString version = args.at(2);
+
+    // Get build type
+    eve_launcher::application::Application_BuildType buildType;
+    if (args.at(3) == QString::fromLatin1("release"))
+    {
+        buildType = eve_launcher::application::Application_BuildType_BUILDTYPE_RELEASE;
+    }
+    else
+    {
+        buildType = eve_launcher::application::Application_BuildType_BUILDTYPE_DEV;
+    }
+
+    // Get provider
+    bool provider;
+    QString providerName;
+    if (args.at(4) == QString::fromLatin1("none"))
+    {
+        provider = false;
+        providerName = QString::fromLatin1("");
+    }
+    else
+    {
+        provider = true;
+        providerName = args.at(4);
+    }
+
+    EventLogger::instance()->initialize(region, version, buildType, provider, providerName);
 
     return true;
 }
@@ -100,7 +111,7 @@ bool InstallerEventOperation::sendUninstallerEvent(QStringList args)
         auto flow = static_cast<eve_launcher::uninstaller::PageDisplayed_FlowDirection>(args.at(4).toInt());
         EventLogger::instance()->uninstallerPageDisplayed(previousPage, currentPage, flow);
     }
-    else if (event == QString::fromLatin1("Cancelled"))
+    else if (event == QString::fromLatin1("UserCancelled"))
     {
         auto page = static_cast<eve_launcher::uninstaller::Page>(args.at(2).toInt());
         auto progress = static_cast<eve_launcher::uninstaller::UserCancelled_Progress>(args.at(3).toInt());
@@ -140,7 +151,7 @@ bool InstallerEventOperation::sendUninstallerEvent(QStringList args)
         int duration = args.at(2).toInt();
         EventLogger::instance()->uninstallerUninstallationFailed(duration);
     }
-    else if (event == QString::fromLatin1("Error"))
+    else if (event == QString::fromLatin1("ErrorEncountered"))
     {
         auto code = static_cast<eve_launcher::uninstaller::ErrorEncountered_ErrorCode>(args.at(2).toInt());
         auto page = static_cast<eve_launcher::uninstaller::Page>(args.at(3).toInt());
@@ -167,27 +178,32 @@ bool InstallerEventOperation::sendInstallerEvent(QStringList args)
         int duration = args.at(2).toInt();
         EventLogger::instance()->installerStarted(duration);
     }
-    else if (event == QString::fromLatin1("PageDisplayed")) {
+    else if (event == QString::fromLatin1("PageDisplayed"))
+    {
         auto previousPage = static_cast<eve_launcher::installer::Page>(args.at(2).toInt());
         auto currentPage = static_cast<eve_launcher::installer::Page>(args.at(3).toInt());
         auto flow = static_cast<eve_launcher::installer::PageDisplayed_FlowDirection>(args.at(4).toInt());
         EventLogger::instance()->installerPageDisplayed(previousPage, currentPage, flow);
     }
-    else if (event == QString::fromLatin1("Cancelled")) {
+    else if (event == QString::fromLatin1("UserCancelled"))
+    {
         auto page = static_cast<eve_launcher::installer::Page>(args.at(2).toInt());
         auto progress = static_cast<eve_launcher::installer::UserCancelled_Progress>(args.at(3).toInt());
         EventLogger::instance()->installerUserCancelled(page, progress);
     }
-    else if (event == QString::fromLatin1("ShutDown")) {
+    else if (event == QString::fromLatin1("ShutDown"))
+    {
         auto page = static_cast<eve_launcher::installer::Page>(args.at(2).toInt());
         auto state = static_cast<eve_launcher::installer::ShutDown_State>(args.at(3).toInt());
         bool finishButton = QVariant(args.at(4)).toBool();
         EventLogger::instance()->installerShutDown(page, state, finishButton);
     }
-    else if (event == QString::fromLatin1("PreparationStarted")) {
+    else if (event == QString::fromLatin1("PreparationStarted"))
+    {
         EventLogger::instance()->installerPreparationStarted();
     }
-    else if (event == QString::fromLatin1("PreparationFinished")) {
+    else if (event == QString::fromLatin1("PreparationFinished"))
+    {
         int duration = args.at(2).toInt();
         EventLogger::instance()->installerPreparationFinished(duration);
     }
@@ -197,99 +213,124 @@ bool InstallerEventOperation::sendInstallerEvent(QStringList args)
         QString path = args.at(4);
         EventLogger::instance()->installerLocationChanged(source, provider, path);
     }
-    else if (event == QString::fromLatin1("DetailsDisplayed")) {
+    else if (event == QString::fromLatin1("DetailsDisplayed"))
+    {
         EventLogger::instance()->installerDetailsDisplayed();
     }
-    else if (event == QString::fromLatin1("DetailsHidden")) {
+    else if (event == QString::fromLatin1("DetailsHidden"))
+    {
         EventLogger::instance()->installerDetailsHidden();
     }
-    else if (event == QString::fromLatin1("AutoRunEnabled")) {
+    else if (event == QString::fromLatin1("AutoRunEnabled"))
+    {
         EventLogger::instance()->installerAutoRunEnabled();
     }
-    else if (event == QString::fromLatin1("AutoRunDisabled")) {
+    else if (event == QString::fromLatin1("AutoRunDisabled"))
+    {
         EventLogger::instance()->installerAutoRunDisabled();
     }
-    else if (event == QString::fromLatin1("EulaAccepted")) {
+    else if (event == QString::fromLatin1("EulaAccepted"))
+    {
         EventLogger::instance()->installerEulaAccepted();
     }
-    else if (event == QString::fromLatin1("EulaDeclined")) {
+    else if (event == QString::fromLatin1("EulaDeclined"))
+    {
         EventLogger::instance()->installerEulaDeclined();
     }
-    else if (event == QString::fromLatin1("RedistSearchConcluded")) {
+    else if (event == QString::fromLatin1("RedistSearchConcluded"))
+    {
         auto version = static_cast<eve_launcher::installer::RedistVersion>(args.at(2).toInt());
         auto reason = static_cast<eve_launcher::installer::RedistSearchConcluded_RedistReason>(args.at(3).toInt());
         EventLogger::instance()->installerRedistSearchConcluded(version, reason);
     }
-    else if (event == QString::fromLatin1("ProvidedClientFound")) {
+    else if (event == QString::fromLatin1("ProvidedClientFound"))
+    {
         EventLogger::instance()->installerProvidedClientFound();
     }
-    else if (event == QString::fromLatin1("SharedCacheMessageShown")) {
+    else if (event == QString::fromLatin1("SharedCacheMessageShown"))
+    {
         EventLogger::instance()->installerSharedCacheMessageShown();
     }
-    else if (event == QString::fromLatin1("SharedCacheMessageClosed")) {
+    else if (event == QString::fromLatin1("SharedCacheMessageClosed"))
+    {
         auto messageBoxButton = static_cast<eve_launcher::installer::MessageBoxButton>(args.at(2).toInt());
         int timeDisplayed = args.at(3).toInt();
         EventLogger::instance()->installerSharedCacheMessageClosed(messageBoxButton, timeDisplayed);
     }
-    else if (event == QString::fromLatin1("InstallationStarted")) {
+    else if (event == QString::fromLatin1("InstallationStarted"))
+    {
         EventLogger::instance()->installerInstallationStarted();
     }
-    else if (event == QString::fromLatin1("InstallationInterrupted")) {
+    else if (event == QString::fromLatin1("InstallationInterrupted"))
+    {
         int duration = args.at(2).toInt();
         EventLogger::instance()->installerInstallationInterrupted(duration);
     }
-    else if (event == QString::fromLatin1("InstallationFinished")) {
+    else if (event == QString::fromLatin1("InstallationFinished"))
+    {
         int duration = args.at(2).toInt();
         EventLogger::instance()->installerInstallationFinished(duration);
     }
-    else if (event == QString::fromLatin1("InstallationFailed")) {
+    else if (event == QString::fromLatin1("InstallationFailed"))
+    {
         int duration = args.at(2).toInt();
         EventLogger::instance()->installerInstallationFailed(duration);
     }
-    else if (event == QString::fromLatin1("UninstallerCreationStarted")) {
+    else if (event == QString::fromLatin1("UninstallerCreationStarted"))
+    {
         EventLogger::instance()->installerUninstallerCreationStarted();
     }
-    else if (event == QString::fromLatin1("UninstallerCreationFinished")) {
+    else if (event == QString::fromLatin1("UninstallerCreationFinished"))
+    {
         int duration = args.at(2).toInt();
         EventLogger::instance()->installerUninstallerCreationFinished(duration);
     }
-    else if (event == QString::fromLatin1("ComponentInitializationStarted")) {
+    else if (event == QString::fromLatin1("ComponentInitializationStarted"))
+    {
         auto component = static_cast<eve_launcher::installer::Component>(args.at(2).toInt());
         auto redistVersion = static_cast<eve_launcher::installer::RedistVersion>(args.at(3).toInt());
         EventLogger::instance()->installerComponentInitializationStarted(component, redistVersion);
     }
-    else if (event == QString::fromLatin1("ComponentInitializationFinished")) {
+    else if (event == QString::fromLatin1("ComponentInitializationFinished"))
+    {
         auto component = static_cast<eve_launcher::installer::Component>(args.at(2).toInt());
         auto redistVersion = static_cast<eve_launcher::installer::RedistVersion>(args.at(3).toInt());
         int duration = args.at(4).toInt();
         EventLogger::instance()->installerComponentInitializationFinished(component, redistVersion, duration);
     }
-    else if (event == QString::fromLatin1("ComponentInstallationStarted")) {
+    else if (event == QString::fromLatin1("ComponentInstallationStarted"))
+    {
         auto component = static_cast<eve_launcher::installer::Component>(args.at(2).toInt());
         auto redistVersion = static_cast<eve_launcher::installer::RedistVersion>(args.at(3).toInt());
         EventLogger::instance()->installerComponentInstallationStarted(component, redistVersion);
     }
-    else if (event == QString::fromLatin1("ComponentInstallationFinished")) {
+    else if (event == QString::fromLatin1("ComponentInstallationFinished"))
+    {
         auto component = static_cast<eve_launcher::installer::Component>(args.at(2).toInt());
         auto redistVersion = static_cast<eve_launcher::installer::RedistVersion>(args.at(3).toInt());
         int duration = args.at(4).toInt();
         EventLogger::instance()->installerComponentInstallationFinished(component, redistVersion, duration);
     }
-    else if (event == QString::fromLatin1("ComponentsInitializationStarted")) {
+    else if (event == QString::fromLatin1("ComponentsInitializationStarted"))
+    {
         EventLogger::instance()->installerComponentsInitializationStarted();
     }
-    else if (event == QString::fromLatin1("ComponentsInitializationFinished")) {
+    else if (event == QString::fromLatin1("ComponentsInitializationFinished"))
+    {
         int duration = args.at(2).toInt();
         EventLogger::instance()->installerComponentsInitializationFinished(duration);
     }
-    else if (event == QString::fromLatin1("ComponentsInstallationStarted")) {
+    else if (event == QString::fromLatin1("ComponentsInstallationStarted"))
+    {
         EventLogger::instance()->installerComponentsInstallationStarted();
     }
-    else if (event == QString::fromLatin1("ComponentsInstallationFinished")) {
+    else if (event == QString::fromLatin1("ComponentsInstallationFinished"))
+    {
         int duration = args.at(2).toInt();
         EventLogger::instance()->installerComponentsInstallationFinished(duration);
     }
-    else if (event == QString::fromLatin1("Error")) {
+    else if (event == QString::fromLatin1("ErrorEncountered"))
+    {
         auto code = static_cast<eve_launcher::installer::ErrorEncountered_ErrorCode>(args.at(2).toInt());
         auto page = static_cast<eve_launcher::installer::Page>(args.at(3).toInt());
         auto component = static_cast<eve_launcher::installer::Component>(args.at(4).toInt());
