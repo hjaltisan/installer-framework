@@ -41,6 +41,12 @@
 using namespace QInstaller;
 using namespace KDUpdater;
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::EnvironmentVariableOperation
+    \internal
+*/
+
 EnvironmentVariableOperation::EnvironmentVariableOperation(PackageManagerCore *core)
     : UpdateOperation(core)
 {
@@ -60,7 +66,7 @@ static void broadcastEnvironmentChange()
     LRESULT sendresult = SendMessageTimeoutW(HWND_BROADCAST, WM_SETTINGCHANGE,
         0, (LPARAM) L"Environment", SMTO_BLOCK | SMTO_ABORTIFHUNG, 5000, &aResult);
     if (sendresult == 0 || aResult != 0)
-        qCWarning(QInstaller::lcGeneral) << "Failed to broadcast the WM_SETTINGCHANGE message.";
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Failed to broadcast the WM_SETTINGCHANGE message.";
 }
 #endif
 

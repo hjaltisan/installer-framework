@@ -418,7 +418,7 @@ UpdateFinder::Private::Resolution UpdateFinder::Private::checkPriorityAndVersion
 
         if (match > 0) {
             // new package has higher version, use
-            qCDebug(QInstaller::lcGeneral).nospace() << "Remove Package 'Name: " << name
+            qCDebug(QInstaller::lcDeveloperBuild).nospace() << "Remove Package 'Name: " << name
                 << ", Version: "<< existingPackage->data(QLatin1String("Version")).toString()
                 << ", Source: " << QFileInfo(existingPackage->packageSource().url.toLocalFile()).fileName()
                 << "' found a package with higher version 'Name: "
@@ -429,7 +429,7 @@ UpdateFinder::Private::Resolution UpdateFinder::Private::checkPriorityAndVersion
 
         if ((match == 0) && (source.priority > existingPackage->packageSource().priority)) {
             // new package version equals but priority is higher, use
-            qCDebug(QInstaller::lcGeneral).nospace() << "Remove Package 'Name: " << name
+            qCDebug(QInstaller::lcDeveloperBuild).nospace() << "Remove Package 'Name: " << name
                 << ", Priority: " << existingPackage->packageSource().priority
                 << ", Source: " << QFileInfo(existingPackage->packageSource().url.toLocalFile()).fileName()
                 << "' found a package with higher priority 'Name: "
@@ -482,7 +482,7 @@ void UpdateFinder::setLocalPackageHub(std::weak_ptr<LocalPackageHub> hub)
 }
 
 /*!
-    Sets the package sources information to use when searching for applicable packages.
+    Sets the package \a sources information when searching for applicable packages.
 */
 void UpdateFinder::setPackageSources(const QSet<PackageSource> &sources)
 {
@@ -552,7 +552,7 @@ void UpdateFinder::Private::slotDownloadDone()
 /*!
    \inmodule kdupdater
 
-   This function compares two version strings \c v1 and \c v2 and returns
+   This function compares two version strings \a v1 and \a v2 and returns
    -1, 0 or +1 based on the following rule
 
     \list

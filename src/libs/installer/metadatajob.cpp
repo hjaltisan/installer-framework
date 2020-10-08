@@ -44,6 +44,44 @@ const QStringList metaElements = {QLatin1String("Script"), QLatin1String("Licens
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::Metadata
+    \internal
+*/
+
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::ArchiveMetadata
+    \internal
+*/
+
+/*!
+    \enum QInstaller::DownloadType
+
+    \value All
+    \value CompressedPackage
+    \value UpdatesXML
+*/
+
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::MetadataJob
+    \internal
+*/
+
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::UnzipArchiveTask
+    \internal
+*/
+
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::UnzipArchiveException
+    \internal
+*/
+
 static QUrl resolveUrl(const FileTaskResult &result, const QString &url)
 {
     QUrl u(url);
@@ -187,7 +225,7 @@ void MetadataJob::doStart()
     }
 }
 
-void MetadataJob::startXMLTask(const QList<FileTaskItem> items)
+void MetadataJob::startXMLTask(const QList<FileTaskItem> &items)
 {
     DownloadFileTask *const xmlTask = new DownloadFileTask(items);
     xmlTask->setProxyFactory(m_core->proxyFactory());
@@ -337,7 +375,7 @@ void MetadataJob::xmlTaskFinished()
                     update.insert(QLatin1String("replace"), qMakePair(original, replacement));
 
                     if (s.updateRepositoryCategories(update) == Settings::UpdatesApplied)
-                        qCDebug(QInstaller::lcGeneral()) << "Repository categories updated.";
+                        qCDebug(QInstaller::lcDeveloperBuild) << "Repository categories updated.";
 
                     if (s.updateDefaultRepositories(update) == Settings::UpdatesApplied
                         || s.updateUserRepositories(update) == Settings::UpdatesApplied) {
@@ -595,12 +633,19 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
         if (!checksum.isNull())
             testCheckSum = (checksum.toElement().text().toLower() == scTrue);
 
-        // If we have top level sha1 element, we have compressed all metadata inside
-        // one repository to a single 7z file. Fetch that instead of component specific
-        // meta 7z files.
+        // If we have top level sha1 and MetadataName elements, we have compressed
+        // all metadata inside one repository to a single 7z file. Fetch that
+        // instead of component specific meta 7z files.
         const QDomNode sha1 = root.firstChildElement(scSHA1);
+        QDomElement metadataNameElement = root.firstChildElement(QLatin1String("MetadataName"));
         QDomNodeList children = root.childNodes();
-        if (sha1.isNull()) {
+        if (!sha1.isNull() && !metadataNameElement.isNull()) {
+           const QString repoUrl = metadata.repository.url().toString();
+           const QString metadataName = metadataNameElement.toElement().text();
+           addFileTaskItem(QString::fromLatin1("%1/%2").arg(repoUrl, metadataName),
+               metadata.directory + QString::fromLatin1("/%1").arg(metadataName),
+               metadata, sha1.toElement().text(), QString());
+        } else {
             bool metaFound = false;
             for (int i = 0; i < children.count(); ++i) {
                 const QDomElement el = children.at(i).toElement();
@@ -624,19 +669,6 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                         }
                     }
                 }
-            }
-        } else {
-            const QString repoUrl = metadata.repository.url().toString();
-            QDomElement metadataNameElement = root.firstChildElement(QLatin1String("MetadataName"));
-            if (!metadataNameElement.isNull()) {
-                const QString metadataName = metadataNameElement.toElement().text();
-                addFileTaskItem(QString::fromLatin1("%1/%2").arg(repoUrl, metadataName),
-                    metadata.directory + QString::fromLatin1("/%1").arg(metadataName),
-                    metadata, sha1.toElement().text(), QString());
-            } else {
-                qCWarning(QInstaller::lcInstallerInstallLog) <<
-                    "Unable to find MetadataName element from Updates.xml";
-                return XmlDownloadFailure;
             }
         }
 

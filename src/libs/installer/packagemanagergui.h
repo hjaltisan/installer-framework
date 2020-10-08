@@ -113,7 +113,8 @@ public Q_SLOTS:
 protected Q_SLOTS:
     void wizardPageInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page);
     void wizardPageRemovalRequested(QWidget *widget);
-    void wizardWidgetInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page);
+    void wizardWidgetInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page,
+                                        int position);
     void wizardWidgetRemovalRequested(QWidget *widget);
     void wizardPageVisibilityChangeRequested(bool visible, int page);
     void setValidatorForCustomPageRequested(QInstaller::Component *component, const QString &name,
@@ -177,6 +178,7 @@ public:
 
     bool settingsButtonRequested() const { return m_needsSettingsButton; }
     void setSettingsButtonRequested(bool request) { m_needsSettingsButton = request; }
+    void removeCustomWidget(const QWidget *widget);
 
 signals:
     void entered();
@@ -208,6 +210,7 @@ private:
 
     PackageManagerCore *m_core;
     QInstaller::Component *validatorComponent;
+    QMultiMap<int, QWidget*> m_customWidgets;
 
     friend class PackageManagerGui;
 };
@@ -439,6 +442,7 @@ protected:
 
 public Q_SLOTS:
     void setTitleMessage(const QString& title);
+    void changeCurrentImage();
 
 Q_SIGNALS:
     void setAutomatedPageSwitchEnabled(bool request);
@@ -455,6 +459,8 @@ private Q_SLOTS:
 
 private:
     PerformInstallationForm *m_performInstallationForm;
+    QTimer m_imageChangeTimer;
+    QString m_currentImage;
 };
 
 

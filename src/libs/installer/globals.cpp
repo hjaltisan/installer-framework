@@ -30,13 +30,7 @@
 
 #include "globals.h"
 
-const char IFW_COMPONENT_CHECKER[] = "ifw.componentChecker";
-const char IFW_RESOURCES[] = "ifw.resources";
-const char IFW_TRANSLATIONS[] = "ifw.translations";
-const char IFW_NETWORK[] = "ifw.network";
 const char IFW_SERVER[] = "ifw.server";
-const char IFW_GENERAL[] = "ifw.general";
-const char IFW_INSTALLER_UNINSTALLLOG[] = "ifw.installer.uninstalllog";
 
 const char IFW_PACKAGE_DISPLAYNAME[] = "ifw.package.displayname";
 const char IFW_PACKAGE_DESCRIPTION[] = "ifw.package.description";
@@ -62,17 +56,150 @@ const char IFW_PACKAGE_LICENSES[] = "ifw.package.licenses";
 const char IFW_PACKAGE_COMPRESSEDSIZE[] = "ifw.package.compressedsize";
 const char IFW_PACKAGE_UNCOMPRESSEDSIZE[] = "ifw.package.uncompressedsize";
 const char IFW_INSTALLER_INSTALLLOG[] = "ifw.installer.installlog";
+const char IFW_DEVELOPER_BUILD[] = "ifw.developer.build";
+
+// Internal-only, hidden in --help text
+const char IFW_PROGRESS_INDICATOR[] = "ifw.progress.indicator";
 
 namespace QInstaller
 {
 
-Q_LOGGING_CATEGORY(lcComponentChecker, IFW_COMPONENT_CHECKER)
-Q_LOGGING_CATEGORY(lcResources, IFW_RESOURCES)
-Q_LOGGING_CATEGORY(lcTranslations, IFW_TRANSLATIONS)
-Q_LOGGING_CATEGORY(lcNetwork, IFW_NETWORK)
+/*!
+    \fn QInstaller::lcServer()
+    \internal
+*/
+
+/*!
+    \fn QInstaller::lcPackageDisplayname()
+    \internal
+*/
+
+/*!
+    \fn QInstaller::lcPackageDescription()
+    \internal
+*/
+
+/*!
+    \fn QInstaller::lcPackageVersion()
+    \internal
+*/
+
+/*!
+    \fn QInstaller::lcPackageInstalledVersion()
+    \internal
+*/
+
+/*!
+    \fn QInstaller::lcPackageReleasedate()
+    \internal
+*/
+
+/*!
+    \fn QInstaller::lcPackageInstallDate()
+    \internal
+*/
+
+/*!
+    \fn QInstaller::lcPackageUpdateDate()
+    \internal
+*/
+
+/*!
+    \fn QInstaller::lcPackageName()
+    \internal
+*/
+
+/*!
+    \fn QInstaller::lcPackageDependencies()
+    \internal
+*/
+
+/*!
+    \fn QInstaller::lcPackageAutodependon()
+    \internal
+*/
+
+/*!
+    \fn QInstaller::lcPackageVirtual()
+    \internal
+*/
+
+/*!
+    \fn QInstaller::lcPackageSortingpriority()
+    \internal
+*/
+
+/*!
+    \fn QInstaller::lcPackageScript()
+    \internal
+*/
+
+/*!
+    \fn QInstaller::lcPackageDefault()
+    \internal
+*/
+
+/*!
+    \fn QInstaller::lcPackageEssential()
+    \internal
+*/
+
+/*!
+    \fn QInstaller::lcPackageForcedinstallation()
+    \internal
+*/
+
+/*!
+    \fn QInstaller::lcPackageReplaces()
+    \internal
+*/
+
+/*!
+    \fn QInstaller::lcPackageDownloadableArchives()
+    \internal
+*/
+
+/*!
+    \fn QInstaller::lcPackageRequiresAdminRights()
+    \internal
+*/
+
+/*!
+    \fn QInstaller::lcPackageCheckable()
+    \internal
+*/
+
+/*!
+    \fn QInstaller::lcPackageLicenses()
+    \internal
+*/
+
+/*!
+    \fn QInstaller::lcPackageUncompressedSize()
+    \internal
+*/
+
+/*!
+    \fn QInstaller::lcPackageCompressedSize()
+    \internal
+*/
+
+/*!
+    \fn QInstaller::lcInstallerInstallLog()
+    \internal
+*/
+
+/*!
+    \fn QInstaller::lcProgressIndicator()
+    \internal
+*/
+
+/*!
+    \fn QInstaller::lcDeveloperBuild()
+    \internal
+*/
+
 Q_LOGGING_CATEGORY(lcServer, IFW_SERVER)
-Q_LOGGING_CATEGORY(lcGeneral, IFW_GENERAL)
-Q_LOGGING_CATEGORY(lcInstallerUninstallLog, IFW_INSTALLER_UNINSTALLLOG)
 
 Q_LOGGING_CATEGORY(lcPackageDisplayname, IFW_PACKAGE_DISPLAYNAME);
 Q_LOGGING_CATEGORY(lcPackageDescription, IFW_PACKAGE_DESCRIPTION)
@@ -98,15 +225,16 @@ Q_LOGGING_CATEGORY(lcPackageLicenses, IFW_PACKAGE_LICENSES)
 Q_LOGGING_CATEGORY(lcPackageUncompressedSize, IFW_PACKAGE_UNCOMPRESSEDSIZE)
 Q_LOGGING_CATEGORY(lcPackageCompressedSize, IFW_PACKAGE_COMPRESSEDSIZE)
 Q_LOGGING_CATEGORY(lcInstallerInstallLog, IFW_INSTALLER_INSTALLLOG)
+Q_LOGGING_CATEGORY(lcProgressIndicator, IFW_PROGRESS_INDICATOR)
 
+Q_LOGGING_CATEGORY(lcDeveloperBuild, IFW_DEVELOPER_BUILD)
 
+/*!
+    Returns available logging categories.
+*/
 QStringList loggingCategories()
 {
     static QStringList categories = QStringList()
-            << QLatin1String(IFW_COMPONENT_CHECKER)
-            << QLatin1String(IFW_RESOURCES)
-            << QLatin1String(IFW_TRANSLATIONS)
-            << QLatin1String(IFW_NETWORK)
             << QLatin1String(IFW_PACKAGE_DISPLAYNAME)
             << QLatin1String(IFW_PACKAGE_DESCRIPTION)
             << QLatin1String(IFW_PACKAGE_VERSION)
@@ -131,19 +259,24 @@ QStringList loggingCategories()
             << QLatin1String(IFW_PACKAGE_UNCOMPRESSEDSIZE)
             << QLatin1String(IFW_PACKAGE_COMPRESSEDSIZE)
             << QLatin1String(IFW_INSTALLER_INSTALLLOG)
-            << QLatin1String(IFW_SERVER)
-            << QLatin1String(IFW_GENERAL)
-            << QLatin1String(IFW_INSTALLER_UNINSTALLLOG);
+            << QLatin1String(IFW_SERVER);
     return categories;
 
 }
 
 Q_GLOBAL_STATIC_WITH_ARGS(QRegExp, staticCommaRegExp, (QLatin1String("(, |,)")));
+
+/*!
+    \internal
+*/
 QRegExp commaRegExp()
 {
     return *staticCommaRegExp();
 }
 
+/*!
+    Converts and returns a string \a html containing an HTML document as a plain text.
+*/
 QString htmlToString(const QString &html)
 {
     QTextDocument doc;
@@ -151,6 +284,9 @@ QString htmlToString(const QString &html)
     return doc.toPlainText();
 }
 
+/*!
+    \internal
+*/
 QString enumToString(const QMetaObject& metaObject, const char *enumerator, int key)
 {
     QString value = QString();

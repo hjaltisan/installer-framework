@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
     }
 #endif
     // increase maximum numbers of file descriptors
-#if defined (Q_OS_MACOS)
+#if defined(Q_OS_MACOS)
     QCoreApplication::setSetuidAllowed(true);
     struct rlimit rl;
     getrlimit(RLIMIT_NOFILE, &rl);
@@ -85,17 +85,29 @@ int main(int argc, char *argv[])
     QString sanityMessage;
 
     QStringList mutually;
-    if (parser.isSet(CommandLineOptions::scStartUpdaterLong))
-        mutually << CommandLineOptions::scStartUpdaterLong;
-    if (parser.isSet(CommandLineOptions::scStartPackageManagerLong))
-        mutually << CommandLineOptions::scStartPackageManagerLong;
-    if (parser.isSet(CommandLineOptions::scStartUninstallerLong))
-        mutually << CommandLineOptions::scStartUninstallerLong;
-    // IFW 3.x.x style --updater option support provided for backward compatibility
-    if (parser.isSet(CommandLineOptions::scDeprecatedUpdater))
-        mutually << CommandLineOptions::scDeprecatedUpdater;
+    mutually = QInstaller::checkMutualOptions(parser, QStringList()
+        << CommandLineOptions::scStartUpdaterLong
+        << CommandLineOptions::scStartPackageManagerLong
+        << CommandLineOptions::scStartUninstallerLong
+        << CommandLineOptions::scDeprecatedUpdater);
 
-    if (mutually.count() > 1) {
+    if (mutually.isEmpty()) {
+        mutually = QInstaller::checkMutualOptions(parser, QStringList()
+            << CommandLineOptions::scSystemProxyLong
+            << CommandLineOptions::scNoProxyLong);
+    }
+    if (mutually.isEmpty()) {
+        mutually = QInstaller::checkMutualOptions(parser, QStringList()
+            << CommandLineOptions::scAcceptMessageQueryLong
+            << CommandLineOptions::scRejectMessageQueryLong
+            << CommandLineOptions::scMessageDefaultAnswerLong);
+    }
+    if (mutually.isEmpty()) {
+        mutually = QInstaller::checkMutualOptions(parser, QStringList()
+            << CommandLineOptions::scStartServerLong
+            << CommandLineOptions::scStartClientLong);
+    }
+    if (!mutually.isEmpty()) {
         sanityMessage = QString::fromLatin1("The following options are mutually exclusive: %1.")
             .arg(mutually.join(QLatin1String(", ")));
         sanityCheck = false;
@@ -195,15 +207,22 @@ int main(int argc, char *argv[])
     }
 
     try {
-        // Check if any options requiring verbose output is set
-        bool setVerbose = parser.isSet(CommandLineOptions::scVerboseLong);
+        QStringList optionNames = parser.optionNames();
+
+        //Verbose level can be increased by setting the verbose multiple times
+        foreach (QString value, optionNames) {
+            if (value == CommandLineOptions::scVerboseShort
+                    || value == CommandLineOptions::scVerboseLong) {
+                QInstaller::setVerbose(true);
+            }
+        }
 
         foreach (const QString &option, CommandLineOptions::scCommandLineInterfaceOptions) {
-            if (setVerbose) break;
-            setVerbose = parser.positionalArguments().contains(option);
-        }
-        if (setVerbose) {
-            QInstaller::setVerbose(true);
+            bool setVerbose = parser.positionalArguments().contains(option);
+            if (setVerbose) {
+                QInstaller::setVerbose(setVerbose);
+                break;
+            }
         }
 
         const QStringList unknownOptionNames = parser.unknownOptionNames();

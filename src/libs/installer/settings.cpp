@@ -43,6 +43,19 @@
 
 using namespace QInstaller;
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::Settings
+    \internal
+*/
+
+/*!
+    \typedef QInstaller::RepoHash
+
+    Synonym for QHash<QString, QPair<Repository, Repository> >. Describes a repository
+    update with the supported key strings being \e{replace}, \e{remove}, and \e{add}.
+*/
+
 static const QLatin1String scInstallerApplicationIcon("InstallerApplicationIcon");
 static const QLatin1String scInstallerWindowIcon("InstallerWindowIcon");
 static const QLatin1String scLogo("Logo");
@@ -51,6 +64,7 @@ static const QLatin1String scWatermark("Watermark");
 static const QLatin1String scBanner("Banner");
 static const QLatin1String scProductUrl("ProductUrl");
 static const QLatin1String scBackground("Background");
+static const QLatin1String scPageListPixmap("PageListPixmap");
 static const QLatin1String scAdminTargetDir("AdminTargetDir");
 static const QLatin1String scMaintenanceToolName("MaintenanceToolName");
 static const QLatin1String scUserRepositories("UserRepositories");
@@ -284,14 +298,14 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
     elementList << scName << scVersion << scTitle << scPublisher << scProductUrl
                 << scTargetDir << scAdminTargetDir
                 << scInstallerApplicationIcon << scInstallerWindowIcon
-                << scLogo << scWatermark << scBanner << scBackground
+                << scLogo << scWatermark << scBanner << scBackground << scPageListPixmap
                 << scStartMenuDir << scMaintenanceToolName << scMaintenanceToolIniFile << scRemoveTargetDir
                 << scRunProgram << scRunProgramArguments << scRunProgramDescription
                 << scDependsOnLocalInstallerBinary
                 << scAllowSpaceInPath << scAllowNonAsciiCharacters << scDisableAuthorizationFallback
                 << scDisableCommandLineInterface
                 << scWizardStyle << scStyleSheet << scTitleColor
-                << scWizardDefaultWidth << scWizardDefaultHeight << scWizardShowPageList
+                << scWizardDefaultWidth << scWizardDefaultHeight << scWizardShowPageList << scProductImages
                 << scRepositorySettingsPageVisible << scTargetConfigurationFile
                 << scRemoteRepositories << scTranslations << scUrlQueryString << QLatin1String(scControlScript)
                 << scCreateLocalRepository << scInstallActionColumnVisible << scSupportsModify << scAllowUnstableComponents
@@ -316,6 +330,8 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
             s.setTranslations(readArgumentAttributes(reader, parseMode, QLatin1String("Translation"), true));
         } else if (name == scRunProgramArguments) {
             s.setRunProgramArguments(readArgumentAttributes(reader, parseMode, QLatin1String("Argument")));
+        } else if (name == scProductImages) {
+            s.setProductImages(readArgumentAttributes(reader, parseMode, QLatin1String("Image")));
         } else if (name == scRemoteRepositories) {
             s.addDefaultRepositories(readRepositories(reader, true, parseMode));
         } else if (name == scRepositoryCategories) {
@@ -421,6 +437,11 @@ QString Settings::background() const
     return d->absolutePathFromKey(scBackground);
 }
 
+QString Settings::pageListPixmap() const
+{
+    return d->absolutePathFromKey(scPageListPixmap);
+}
+
 QString Settings::wizardStyle() const
 {
     return d->m_data.value(scWizardStyle).toString();
@@ -471,6 +492,25 @@ bool Settings::wizardShowPageList() const
     return d->m_data.value(scWizardShowPageList, true).toBool();
 }
 
+QStringList Settings::productImages() const
+{
+    const QVariant variant = d->m_data.value(scProductImages);
+    QStringList imagePaths;
+    if (variant.canConvert<QStringList>()) {
+        foreach (const QString &imagePath, variant.value<QStringList>()) {
+            QFileInfo(imagePath).isAbsolute()
+                ? imagePaths.append(imagePath)
+                : imagePaths.append(d->m_data.value(scPrefix).toString() + QLatin1Char('/') + imagePath);
+        }
+    }
+    return imagePaths;
+}
+
+void Settings::setProductImages(const QStringList &images)
+{
+    d->m_data.insert(scProductImages, images);
+}
+
 QString Settings::installerApplicationIcon() const
 {
     return d->absolutePathFromKey(scInstallerApplicationIcon, systemIconSuffix());
@@ -514,7 +554,7 @@ QString Settings::runProgram() const
 
 QStringList Settings::runProgramArguments() const
 {
-    const QVariant variant = d->m_data.values(scRunProgramArguments);
+    const QVariant variant = d->m_data.value(scRunProgramArguments);
     if (variant.canConvert<QStringList>())
         return variant.value<QStringList>();
     return QStringList();
@@ -838,7 +878,7 @@ void Settings::setHttpProxy(const QNetworkProxy &proxy)
 
 QStringList Settings::translations() const
 {
-    const QVariant variant = d->m_data.values(scTranslations);
+    const QVariant variant = d->m_data.value(scTranslations);
     if (variant.canConvert<QStringList>())
         return variant.value<QStringList>();
     return QStringList();
