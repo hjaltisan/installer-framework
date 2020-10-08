@@ -38,6 +38,31 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::ExtractArchiveOperation
+    \internal
+*/
+
+/*!
+    \typedef QInstaller::Backup
+
+    Synonym for QPair<QString, QString>. Contains a pair
+    of an original and a generated backup filename for a file.
+*/
+
+/*!
+    \typedef QInstaller::BackupFiles
+
+    Synonym for QVector<Backup>.
+*/
+
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::WorkerThread
+    \internal
+*/
+
 ExtractArchiveOperation::ExtractArchiveOperation(PackageManagerCore *core)
     : UpdateOperation(core)
 {
@@ -216,7 +241,7 @@ bool ExtractArchiveOperation::readDataFileContents(QString &targetDir, QStringLi
     } else {
         // We should not be here. Either user has manually deleted the installer related
         // files or same component is installed several times.
-        qCWarning(QInstaller::lcGeneral) << "Cannot open file " << file.fileName() << " for reading:"
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot open file " << file.fileName() << " for reading:"
                 << file.errorString() << ". Component is already uninstalled "
                 << "or file is manually deleted.";
     }

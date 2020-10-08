@@ -252,41 +252,32 @@ public:
 */
 
 /*!
-    \fn void PackageManagerGui::interrupted()
+    \fn void QInstaller::PackageManagerGui::interrupted()
     \sa {gui::interrupted}{gui.interrupted}
 */
 
 /*!
-    \fn void PackageManagerGui::languageChanged()
+    \fn void QInstaller::PackageManagerGui::languageChanged()
     \sa {gui::languageChanged}{gui.languageChanged}
 */
 
 /*!
-    \fn void PackageManagerGui::finishButtonClicked()
+    \fn void QInstaller::PackageManagerGui::finishButtonClicked()
     \sa {gui::finishButtonClicked}{gui.finishButtonClicked}
 */
 
 /*!
-    \fn void PackageManagerGui::gotRestarted()
+    \fn void QInstaller::PackageManagerGui::gotRestarted()
     \sa {gui::gotRestarted}{gui.gotRestarted}
 */
 
 /*!
-    \fn void PackageManagerGui::settingsButtonClicked()
+    \fn void QInstaller::PackageManagerGui::settingsButtonClicked()
     \sa {gui::settingsButtonClicked}{gui.settingsButtonClicked}
 */
 
 /*!
-    \fn void PackageManagerGui::setValidatorForCustomPageRequested(QInstaller::Component *component,
-        const QString &name,
-        const QString &callbackName)
-
-    Sets a validator for the custom page specified by \a name and
-    \a callbackName requested by \a component.
-*/
-
-/*!
-    \fn void PackageManagerGui::packageManagerCore() const
+    \fn void QInstaller::PackageManagerGui::packageManagerCore() const
 
     Returns the package manager core.
 */
@@ -308,10 +299,9 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
 
 #ifndef Q_OS_MACOS
     setWindowIcon(QIcon(m_core->settings().installerWindowIcon()));
-#else
+#endif
     if (!m_core->settings().wizardShowPageList())
         setPixmap(QWizard::BackgroundPixmap, m_core->settings().background());
-#endif
 #ifdef Q_OS_LINUX
     setWizardStyle(QWizard::ModernStyle);
     setSizeGripEnabled(true);
@@ -328,11 +318,11 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
             if (sheet.open(QIODevice::ReadOnly)) {
                 setStyleSheet(QString::fromLatin1(sheet.readAll()));
             } else {
-                qCWarning(QInstaller::lcInstallerInstallLog) << "The specified style sheet file "
+                qCWarning(QInstaller::lcDeveloperBuild) << "The specified style sheet file "
                     "can not be opened.";
             }
         } else {
-            qCWarning(QInstaller::lcInstallerInstallLog) << "A style sheet file is specified, "
+            qCWarning(QInstaller::lcDeveloperBuild) << "A style sheet file is specified, "
                 "but it does not exist.";
         }
     }
@@ -342,26 +332,30 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
 
     if (m_core->settings().wizardShowPageList()) {
         QWidget *sideWidget = new QWidget(this);
+        sideWidget->setObjectName(QLatin1String("SideWidget"));
 
         m_pageListWidget = new QListWidget(sideWidget);
+        m_pageListWidget->setObjectName(QLatin1String("PageListWidget"));
         m_pageListWidget->viewport()->setAutoFillBackground(false);
         m_pageListWidget->setFrameShape(QFrame::NoFrame);
         m_pageListWidget->setMinimumWidth(200);
         // The widget should be view-only but we do not want it to be grayed out,
-        // so instead of calling setEnabled(false), do not accept keyboard focus
-        // and disable delivery of mouse events.
+        // so instead of calling setEnabled(false), do not accept focus.
         m_pageListWidget->setFocusPolicy(Qt::NoFocus);
-        m_pageListWidget->setAttribute(Qt::WA_TransparentForMouseEvents);
         m_pageListWidget->setSelectionMode(QAbstractItemView::NoSelection);
-        m_pageListWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        m_pageListWidget->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
 
-        QFrame *verticalLine = new QFrame(sideWidget);
-        verticalLine->setFrameShape(QFrame::VLine);
-        verticalLine->setFrameShadow(QFrame::Sunken);
+        QVBoxLayout *sideWidgetLayout = new QVBoxLayout(sideWidget);
 
-        QHBoxLayout *sideWidgetLayout = new QHBoxLayout(sideWidget);
+        const QString pageListPixmap = m_core->settings().pageListPixmap();
+        if (!pageListPixmap.isEmpty()) {
+            QLabel *pageListPixmapLabel = new QLabel(sideWidget);
+            pageListPixmapLabel->setObjectName(QLatin1String("PageListPixmapLabel"));
+            pageListPixmapLabel->setPixmap(pageListPixmap);
+            pageListPixmapLabel->setMinimumWidth(QPixmap(pageListPixmap).width());
+            sideWidgetLayout->addWidget(pageListPixmapLabel);
+        }
         sideWidgetLayout->addWidget(m_pageListWidget);
-        sideWidgetLayout->addWidget(verticalLine);
         sideWidget->setLayout(sideWidgetLayout);
 
         setSideWidget(sideWidget);
@@ -471,6 +465,8 @@ void PackageManagerGui::updatePageListWidget()
             QFont currentItemFont = item->font();
             currentItemFont.setBold(true);
             item->setFont(currentItemFont);
+            // Current item should be always visible on the list
+            m_pageListWidget->scrollToItem(item);
         } else if (!visitedPages().contains(id)) {
             item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
         }
@@ -545,7 +541,7 @@ void PackageManagerGui::setTextItems(QObject *object, const QStringList &items)
         return;
     }
 
-    qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot set text items on object of type"
+    qCWarning(QInstaller::lcDeveloperBuild) << "Cannot set text items on object of type"
              << object->metaObject()->className() << ".";
 }
 
@@ -602,7 +598,7 @@ void PackageManagerGui::clickButton(int wb, int delay)
     if (QAbstractButton *b = button(static_cast<QWizard::WizardButton>(wb)))
         QTimer::singleShot(delay, b, &QAbstractButton::click);
     else
-        qCWarning(QInstaller::lcInstallerInstallLog) << "Button with type: " << d->buttonType(wb) << "not found!";
+        qCWarning(QInstaller::lcDeveloperBuild) << "Button with type: " << d->buttonType(wb) << "not found!";
 }
 
 /*!
@@ -616,7 +612,7 @@ void PackageManagerGui::clickButton(const QString &objectName, int delay) const
     if (button)
         QTimer::singleShot(delay, button, &QAbstractButton::click);
     else
-        qCWarning(QInstaller::lcInstallerInstallLog) << "Button with objectname: " << objectName << "not found!";
+        qCWarning(QInstaller::lcDeveloperBuild) << "Button with objectname: " << objectName << "not found!";
 }
 
 /*!
@@ -635,7 +631,7 @@ bool PackageManagerGui::isButtonEnabled(int wb)
     if (QAbstractButton *b = button(static_cast<QWizard::WizardButton>(wb)))
         return b->isEnabled();
 
-    qCWarning(QInstaller::lcInstallerInstallLog) << "Button with type: " << d->buttonType(wb) << "not found!";
+    qCWarning(QInstaller::lcDeveloperBuild) << "Button with type: " << d->buttonType(wb) << "not found!";
     return false;
 }
 
@@ -668,7 +664,7 @@ void PackageManagerGui::loadControlScript(const QString &scriptPath)
 {
     d->m_controlScriptContext = m_core->controlScriptEngine()->loadInContext(
         QLatin1String("Controller"), scriptPath);
-    qCDebug(QInstaller::lcGeneral) << "Loaded control script" << scriptPath;
+    qCDebug(QInstaller::lcInstallerInstallLog) << "Loaded control script" << scriptPath;
 }
 
 /*!
@@ -682,7 +678,7 @@ void PackageManagerGui::callControlScriptMethod(const QString &methodName)
         const QJSValue returnValue = m_core->controlScriptEngine()->callScriptMethod(
             d->m_controlScriptContext, methodName);
         if (returnValue.isUndefined()) {
-            qCDebug(QInstaller::lcGeneral) << "Control script callback" << methodName
+            qCDebug(QInstaller::lcDeveloperBuild) << "Control script callback" << methodName
                 << "does not exist.";
             return;
         }
@@ -792,14 +788,31 @@ void PackageManagerGui::wizardPageRemovalRequested(QWidget *widget)
 }
 
 /*!
-    Requests the insertion of \a widget on \a page.
+    Requests the insertion of \a widget on \a page. Widget with lower
+    \a position number will be inserted on top.
 */
 void PackageManagerGui::wizardWidgetInsertionRequested(QWidget *widget,
-    QInstaller::PackageManagerCore::WizardPage page)
+    QInstaller::PackageManagerCore::WizardPage page, int position)
 {
     Q_ASSERT(widget);
-    if (QWizardPage *const p = QWizard::page(page)) {
-        p->layout()->addWidget(widget);
+
+    if (PackageManagerPage *p = qobject_cast<PackageManagerPage *>(QWizard::page(page))) {
+        p->m_customWidgets.insert(position, widget);
+        if (p->m_customWidgets.count() > 1 ) {
+            //Reorder the custom widgets based on their position
+            QMultiMap<int, QWidget*>::Iterator it = p->m_customWidgets.begin();
+            while (it != p->m_customWidgets.end()) {
+                p->layout()->removeWidget(it.value());
+                ++it;
+            }
+            it = p->m_customWidgets.begin();
+            while (it != p->m_customWidgets.end()) {
+                p->layout()->addWidget(it.value());
+                ++it;
+            }
+        } else {
+            p->layout()->addWidget(widget);
+        }
         packageManagerCore()->controlScriptEngine()->addToGlobalObject(p);
         packageManagerCore()->componentScriptEngine()->addToGlobalObject(p);
     }
@@ -811,6 +824,12 @@ void PackageManagerGui::wizardWidgetInsertionRequested(QWidget *widget,
 void PackageManagerGui::wizardWidgetRemovalRequested(QWidget *widget)
 {
     Q_ASSERT(widget);
+
+    const QList<int> pages = pageIds();
+    foreach (int id, pages) {
+        PackageManagerPage *managerPage = qobject_cast<PackageManagerPage *>(page(id));
+        managerPage->removeCustomWidget(widget);
+    }
     widget->setParent(nullptr);
     packageManagerCore()->controlScriptEngine()->removeFromGlobalObject(widget);
     packageManagerCore()->componentScriptEngine()->removeFromGlobalObject(widget);
@@ -854,7 +873,7 @@ QWidget *PackageManagerGui::pageByObjectName(const QString &name) const
         if (p && p->objectName() == name)
             return p;
     }
-    qCWarning(QInstaller::lcInstallerInstallLog) << "No page found for object name" << name;
+    qCDebug(QInstaller::lcDeveloperBuild) << "No page found for object name" << name;
     return nullptr;
 }
 
@@ -882,7 +901,7 @@ QWidget *PackageManagerGui::pageWidgetByObjectName(const QString &name) const
             return dp->widget();
         return p;
     }
-    qCWarning(QInstaller::lcInstallerInstallLog) << "No page found for object name" << name;
+    qCDebug(QInstaller::lcDeveloperBuild) << "No page found for object name" << name;
     return nullptr;
 }
 
@@ -1090,55 +1109,49 @@ void PackageManagerGui::currentPageChanged(int newId)
 */
 
 /*!
-    \fn PackageManagerPage::~PackageManagerPage()
+    \fn QInstaller::PackageManagerPage::~PackageManagerPage()
 
     Destructs a package manager page.
 */
 
 /*!
-    \fn PackageManagerPage::gui() const
+    \fn QInstaller::PackageManagerPage::gui() const
 
     Returns the wizard this page belongs to.
 */
 
 /*!
-    \fn PackageManagerPage::isInterruptible() const
+    \fn QInstaller::PackageManagerPage::isInterruptible() const
 
     Returns \c true if the installation can be interrupted.
 */
 
 /*!
-    \fn PackageManagerPage::setValidatePageComponent(QInstaller::Component *component)
-
-    Sets \a component as the component that validates the page.
-*/
-
-/*!
-    \fn PackageManagerPage::settingsButtonRequested() const
+    \fn QInstaller::PackageManagerPage::settingsButtonRequested() const
 
     Returns \c true if the page requests the wizard to show the \uicontrol Settings button.
 */
 
 /*!
-    \fn PackageManagerPage::setSettingsButtonRequested(bool request)
+    \fn QInstaller::PackageManagerPage::setSettingsButtonRequested(bool request)
 
     Determines that the page should request the \uicontrol Settings button if \a request is \c true.
 */
 
 /*!
-    \fn PackageManagerPage::entered()
+    \fn QInstaller::PackageManagerPage::entered()
 
     This signal is called when a page is entered.
 */
 
 /*!
-    \fn PackageManagerPage::left()
+    \fn QInstaller::PackageManagerPage::left()
 
     This signal is called when a page is left.
 */
 
 /*!
-    \fn PackageManagerPage::entering()
+    \fn QInstaller::PackageManagerPage::entering()
 
     Called when end users enter the page and the PackageManagerGui:currentPageChanged()
     signal is triggered. Supports the QWizardPage::​initializePage() function to ensure
@@ -1148,7 +1161,13 @@ void PackageManagerGui::currentPageChanged(int newId)
 */
 
 /*!
-    \fn PackageManagerPage::leaving()
+    \fn QInstaller::PackageManagerPage::showOnPageListChanged()
+
+    Called when page visibility on page list has changed and refresh is needed.
+*/
+
+/*!
+    \fn QInstaller::PackageManagerPage::leaving()
 
     Called when end users leave the page and the PackageManagerGui:currentPageChanged()
     signal is triggered.
@@ -1334,6 +1353,18 @@ bool PackageManagerPage::validatePage()
 }
 
 /*!
+    \internal
+*/
+void PackageManagerPage::removeCustomWidget(const QWidget *widget)
+{
+    for (auto it = m_customWidgets.begin(); it != m_customWidgets.end();) {
+        if (it.value() == widget)
+            it = m_customWidgets.erase(it);
+        else
+            ++it;
+    }
+}
+/*!
     Inserts \a widget at the position specified by \a offset in relation to
     another widget specified by \a siblingName. The default position is directly
     behind the sibling.
@@ -1401,7 +1432,7 @@ int PackageManagerPage::nextId() const
 */
 
 /*!
-    \fn IntroductionPage::packageManagerCoreTypeChanged()
+    \fn QInstaller::IntroductionPage::packageManagerCoreTypeChanged()
 
     This signal is emitted when the package manager core type changes.
 */
@@ -2149,9 +2180,7 @@ void ComponentSelectionPage::selectDefault()
 */
 void ComponentSelectionPage::selectComponent(const QString &id)
 {
-    const QModelIndex &idx = d->m_currentModel->indexFromComponentName(id);
-    if (idx.isValid())
-        d->m_currentModel->setData(idx, Qt::Checked, Qt::CheckStateRole);
+    d->m_core->selectComponent(id);
 }
 
 /*!
@@ -2159,9 +2188,7 @@ void ComponentSelectionPage::selectComponent(const QString &id)
 */
 void ComponentSelectionPage::deselectComponent(const QString &id)
 {
-    const QModelIndex &idx = d->m_currentModel->indexFromComponentName(id);
-    if (idx.isValid())
-        d->m_currentModel->setData(idx, Qt::Unchecked, Qt::CheckStateRole);
+    d->m_core->deselectComponent(id);
 }
 
 /*!
@@ -2188,7 +2215,7 @@ bool ComponentSelectionPage::addVirtualComponentToUninstall(const QString &name)
     if (component && component->isInstalled() && component->isVirtual()) {
         component->setCheckState(Qt::Unchecked);
         core->componentsToInstallNeedsRecalculation();
-        qCDebug(QInstaller::lcGeneral) << "Virtual component " << name << " was selected for uninstall by script.";
+        qCDebug(QInstaller::lcDeveloperBuild) << "Virtual component " << name << " was selected for uninstall by script.";
         return true;
     }
     return false;
@@ -2326,7 +2353,7 @@ void TargetDirectoryPage::initializePage()
 }
 
 /*!
-    Checks whether the target directory exists and has correct content.
+    Returns \c true if the target directory exists and has correct content.
 */
 bool TargetDirectoryPage::validatePage()
 {
@@ -2601,13 +2628,13 @@ void ReadyForInstallationPage::updatePageListTitle()
 */
 
 /*!
-    \fn PerformInstallationPage::isInterruptible() const
+    \fn QInstaller::PerformInstallationPage::isInterruptible() const
 
     Returns \c true if the installation can be interrupted.
 */
 
 /*!
-    \fn PerformInstallationPage::setAutomatedPageSwitchEnabled(bool request)
+    \fn QInstaller::PerformInstallationPage::setAutomatedPageSwitchEnabled(bool request)
 
     Enables automatic switching of pages when \a request is \c true.
 */
@@ -2625,6 +2652,7 @@ PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
     updatePageListTitle();
 
     m_performInstallationForm->setupUi(this);
+    m_imageChangeTimer.setInterval(10000);
 
     connect(ProgressCoordinator::instance(), &ProgressCoordinator::detailTextChanged,
         m_performInstallationForm, &PerformInstallationForm::appendProgressDetails);
@@ -2650,6 +2678,9 @@ PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
 
     connect(core, &PackageManagerCore::installerBinaryMarkerChanged,
             this, &PerformInstallationPage::updatePageListTitle);
+
+    connect(&m_imageChangeTimer, &QTimer::timeout,
+            this, &PerformInstallationPage::changeCurrentImage);
 
     m_performInstallationForm->setDetailsWidgetVisible(true);
 
@@ -2686,6 +2717,11 @@ void PerformInstallationPage::entering()
     m_performInstallationForm->enableDetails();
     emit setAutomatedPageSwitchEnabled(true);
 
+    changeCurrentImage();
+    // No need to start the timer if we only have one, or no images
+    if (packageManagerCore()->settings().productImages().count() > 1)
+        m_imageChangeTimer.start();
+
     if (isVerbose()) {
         m_performInstallationForm->toggleDetails();
     }
@@ -2714,6 +2750,7 @@ void PerformInstallationPage::entering()
 void PerformInstallationPage::leaving()
 {
     setButtonText(QWizard::CommitButton, gui()->defaultButtonText(QWizard::CommitButton));
+    m_imageChangeTimer.stop();
 }
 
 /*!
@@ -2738,6 +2775,27 @@ void PerformInstallationPage::updatePageListTitle()
 void PerformInstallationPage::setTitleMessage(const QString &title)
 {
     setColoredTitle(title);
+}
+
+/*!
+    Changes the currently shown product image to the next available
+    image from installer configuration.
+*/
+void PerformInstallationPage::changeCurrentImage()
+{
+    const QStringList productImages = packageManagerCore()->settings().productImages();
+    if (productImages.isEmpty())
+        return;
+
+    const QString nextImage = (m_currentImage.isEmpty() || m_currentImage == productImages.last())
+       ? productImages.first()
+       : productImages.at(productImages.indexOf(m_currentImage) + 1);
+
+    // Do not update the pixmap if there was only one image available
+    if (nextImage != m_currentImage) {
+        m_performInstallationForm->setImageFromFileName(nextImage);
+        m_currentImage = nextImage;
+    }
 }
 
 // -- private slots
@@ -2956,7 +3014,7 @@ void FinishedPage::cleanupChangedConnects()
 */
 
 /*!
-    \fn RestartPage::restart()
+    \fn QInstaller::RestartPage::restart()
 
     This signal is emitted when the installer is restarted.
 */

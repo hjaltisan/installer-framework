@@ -80,6 +80,7 @@ public:
     QString watermark() const;
     QString banner() const;
     QString background() const;
+    QString pageListPixmap() const;
     QString installerApplicationIcon() const;
     QString installerWindowIcon() const;
     QString systemIconSuffix() const;
@@ -89,6 +90,8 @@ public:
     int wizardDefaultWidth() const;
     int wizardDefaultHeight() const;
     bool wizardShowPageList() const;
+    QStringList productImages() const;
+    void setProductImages(const QStringList &images);
 
     QString applicationName() const;
     QString version() const;

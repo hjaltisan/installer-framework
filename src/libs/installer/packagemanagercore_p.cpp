@@ -79,6 +79,12 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::PackageManagerCorePrivate
+    \internal
+*/
+
 class OperationTracer
 {
 public:
@@ -176,7 +182,8 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
     if (restart) {
         //Restart with same command line arguments as first executable
         QStringList commandLineArguments = QCoreApplication::arguments();
-        batch <<  QString::fromLatin1("tmp.exec \"%1 --updater").arg(arguments[2]);
+        batch <<  QString::fromLatin1("tmp.exec \"%1 --%2")
+                  .arg(arguments[2]).arg(CommandLineOptions::scStartUpdaterLong);
         //Skip the first argument as that is executable itself
         for (int i = 1; i < commandLineArguments.count(); i++) {
             batch << QString::fromLatin1(" %1").arg(commandLineArguments.at(i));
@@ -217,10 +224,12 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     , m_remoteFileEngineHandler(nullptr)
     , m_foundEssentialUpdate(false)
     , m_commandLineInstance(false)
+    , m_defaultInstall(false)
     , m_userSetBinaryMarker(false)
     , m_checkAvailableSpace(true)
     , m_autoAcceptLicenses(false)
     , m_disableWriteMaintenanceTool(false)
+    , m_autoConfirmCommand(false)
 {
 }
 
@@ -253,10 +262,12 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_remoteFileEngineHandler(new RemoteFileEngineHandler)
     , m_foundEssentialUpdate(false)
     , m_commandLineInstance(false)
+    , m_defaultInstall(false)
     , m_userSetBinaryMarker(false)
     , m_checkAvailableSpace(true)
     , m_autoAcceptLicenses(false)
     , m_disableWriteMaintenanceTool(false)
+    , m_autoConfirmCommand(false)
 {
     foreach (const OperationBlob &operation, performedOperations) {
         QScopedPointer<QInstaller::Operation> op(KDUpdater::UpdateOperationFactory::instance()
@@ -306,7 +317,7 @@ PackageManagerCorePrivate::~PackageManagerCorePrivate()
     // delete m_gui;
 }
 
-/*!
+/*
     Return true, if a process with \a name is running. On Windows, comparison is case-insensitive.
 */
 /* static */
@@ -436,11 +447,11 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
 
         restoreCheckState();
 
-        if (m_core->isVerbose()) {
+        if (m_core->verboseLevel() > 1) {
             foreach (QInstaller::Component *component, components) {
                 const QStringList warnings = ComponentChecker::checkComponent(component);
                 foreach (const QString &warning, warnings)
-                    qCWarning(lcComponentChecker).noquote() << warning;
+                    qCWarning(lcDeveloperBuild).noquote() << warning;
             }
         }
 
@@ -510,7 +521,7 @@ void PackageManagerCorePrivate::clearUpdaterComponentLists()
     const QList<QPair<Component*, Component*> > list = m_componentsToReplaceUpdaterMode.values();
     for (int i = 0; i < list.count(); ++i) {
         if (usedComponents.contains(list.at(i).second))
-            qCWarning(QInstaller::lcGeneral) << "a replacement was already in the list - is that correct?";
+            qCWarning(QInstaller::lcDeveloperBuild) << "a replacement was already in the list - is that correct?";
         else
             usedComponents.insert(list.at(i).second);
     }
@@ -1105,7 +1116,7 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinary(QFile *const input, q
 
     QFile mt(maintenanceToolRenamedName);
     if (setDefaultFilePermissions(&mt, DefaultFilePermissions::Executable))
-        qCDebug(QInstaller::lcGeneral) << "Wrote permissions for maintenance tool.";
+        qCDebug(QInstaller::lcInstallerInstallLog) << "Wrote permissions for maintenance tool.";
     else
         qCWarning(QInstaller::lcInstallerInstallLog) << "Failed to write permissions for maintenance tool.";
 
@@ -1134,7 +1145,7 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinaryData(QFileDevice *outp
             file.remove();  // clear all possible leftovers
             m_core->setValue(QString::fromLatin1("DefaultResourceReplacement"), QString());
         } else {
-            qCWarning(QInstaller::lcGeneral) << "Cannot replace default resource with"
+            qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot replace default resource with"
                 << QDir::toNativeSeparators(newDefaultResource);
         }
     }
@@ -1349,7 +1360,7 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
         try {
             if (isInstaller()) {
                 if (QFile::exists(dataFile)) {
-                    qCWarning(QInstaller::lcGeneral) << "Found binary data file" << dataFile
+                    qCWarning(QInstaller::lcInstallerInstallLog) << "Found binary data file" << dataFile
                         << "but deliberately not used. Running as installer requires to read the "
                         "resources from the application binary.";
                 }
@@ -1432,7 +1443,7 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
         if (newBinaryWritten) {
             const bool restart = replacementExists && isUpdater() && (!statusCanceledOrFailed()) && m_needsHardRestart;
             deferredRename(maintenanceToolName() + QLatin1String(".new"), maintenanceToolName(), restart);
-            qCDebug(QInstaller::lcResources) << "Maintenance tool restart:"
+            qCDebug(QInstaller::lcInstallerInstallLog) << "Maintenance tool restart:"
                 << (restart ? "true." : "false.");
         }
     } catch (const Error &err) {
@@ -1809,7 +1820,10 @@ bool PackageManagerCorePrivate::runPackageUpdater()
 
         if (adminRightsGained)
             m_core->dropAdminRights();
-        setStatus(PackageManagerCore::Success);
+        if (m_foundEssentialUpdate)
+            setStatus(PackageManagerCore::EssentialUpdated);
+        else
+            setStatus(PackageManagerCore::Success);
         emit installationFinished();
     } catch (const Error &err) {
         if (m_core->status() != PackageManagerCore::Canceled) {
@@ -1923,7 +1937,7 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
         bool becameAdmin = false;
         if (!adminRightsGained && operation->value(QLatin1String("admin")).toBool()) {
             becameAdmin = m_core->gainAdminRights();
-            qCDebug(QInstaller::lcGeneral) << operation->name() << "as admin:" << becameAdmin;
+            qCDebug(QInstaller::lcInstallerInstallLog) << operation->name() << "as admin:" << becameAdmin;
         }
 
         connectOperationToInstaller(operation, progressOperationSize);
@@ -1965,7 +1979,7 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
         if (!ok && !ignoreError)
             throw Error(operation->errorString());
 
-        if (component->value(scEssential, scFalse) == scTrue)
+        if ((component->value(scEssential, scFalse) == scTrue) && !m_core->isCommandLineInstance())
             m_needsHardRestart = true;
     }
 
@@ -2014,6 +2028,14 @@ bool PackageManagerCorePrivate::runningProcessesFound()
         return true;
     }
     return false;
+}
+
+void PackageManagerCorePrivate::setComponentSelection(const QString &id, Qt::CheckState state)
+{
+    ComponentModel *model = m_core->isUpdater() ? m_core->updaterComponentModel() : m_core->defaultComponentModel();
+    const QModelIndex &idx = model->indexFromComponentName(id);
+    if (idx.isValid())
+        model->setData(idx, state, Qt::CheckStateRole);
 }
 
 // -- private
@@ -2538,7 +2560,9 @@ bool PackageManagerCorePrivate::calculateComponentsAndRun()
         qCDebug(QInstaller::lcInstallerInstallLog) << "Installation canceled.";
     } else if (componentsOk && acceptLicenseAgreements()) {
         qCDebug(QInstaller::lcInstallerInstallLog).noquote() << htmlToString(htmlOutput);
-        if (m_core->run()) {
+        if (!(m_autoConfirmCommand || askUserConfirmCommand())) {
+            qCDebug(QInstaller::lcInstallerInstallLog) << "Installation aborted.";
+        } else if (m_core->run()) {
             // Write maintenance tool if required
             m_core->writeMaintenanceTool();
             return true;
@@ -2582,11 +2606,7 @@ bool PackageManagerCorePrivate::askUserAcceptLicense(const QString &name, const 
         "before continuing with the installation:" << name;
 
     forever {
-        qCDebug(QInstaller::lcInstallerInstallLog) << "Accept|Reject|Show";
-
-        QTextStream stream(stdin);
-        QString input;
-        stream.readLineInto(&input);
+        const QString input = m_core->readConsoleLine(QLatin1String("Accept|Reject|Show"));
 
         if (QString::compare(input, QLatin1String("Accept"), Qt::CaseInsensitive) == 0
                 || QString::compare(input, QLatin1String("A"), Qt::CaseInsensitive) == 0) {
@@ -2603,5 +2623,68 @@ bool PackageManagerCorePrivate::askUserAcceptLicense(const QString &name, const 
     }
 }
 
+void PackageManagerCorePrivate::printPackageInformation(const QString &name, const Package *update)
+{
+    qCDebug(QInstaller::lcPackageName).noquote() << "Id:" << name;
+    qCDebug(QInstaller::lcPackageDisplayname).noquote() << "\tDisplay name:" << update->data(scDisplayName).toString();
+    qCDebug(QInstaller::lcPackageVersion).noquote() << "\tVersion:" << update->data(scVersion).toString();
+    qCDebug(QInstaller::lcPackageDescription).noquote() << "\tDescription:" <<  update->data(scDescription).toString();
+    qCDebug(QInstaller::lcPackageReleasedate).noquote() << "\tRelease date:" << update->data(scReleaseDate).toString();
+    qCDebug(QInstaller::lcPackageDependencies).noquote() << "\tDependencies:" << update->data(scDependencies).toString();
+    qCDebug(QInstaller::lcPackageAutodependon).noquote() << "\tAutodependon:" << update->data(scAutoDependOn).toString();
+    qCDebug(QInstaller::lcPackageVirtual).noquote() << "\tVirtual:" << update->data(scVirtual, false).toString();
+    qCDebug(QInstaller::lcPackageSortingpriority).noquote() << "\tSorting priority:" << update->data(scSortingPriority).toString();
+    qCDebug(QInstaller::lcPackageScript).noquote() << "\tScript:" << update->data(scScript).toString();
+    qCDebug(QInstaller::lcPackageDefault).noquote() << "\tDefault:"<< update->data(scDefault, false).toString();
+    qCDebug(QInstaller::lcPackageEssential).noquote() << "\tEssential:" << update->data(scEssential, false).toString();
+    qCDebug(QInstaller::lcPackageForcedinstallation).noquote() << "\tForced installation:" << update->data(QLatin1String("ForcedInstallation"), false).toString();
+    qCDebug(QInstaller::lcPackageReplaces).noquote() << "\tReplaces:" << update->data(scReplaces).toString();
+    qCDebug(QInstaller::lcPackageDownloadableArchives).noquote() << "\tDownloadable archives:" << update->data(scDownloadableArchives).toString();
+    qCDebug(QInstaller::lcPackageRequiresAdminRights).noquote() << "\tRequires admin rights:" << update->data(scRequiresAdminRights).toString();
+    qCDebug(QInstaller::lcPackageCheckable).noquote() << "\tCheckable:" << update->data(scCheckable).toString();
+    qCDebug(QInstaller::lcPackageLicenses).noquote() << "\tLicenses:" << update->data(QLatin1String("Licenses")).toString();
+    qCDebug(QInstaller::lcPackageCompressedSize).noquote() << "\tCompressed size:" << update->data(QLatin1String("CompressedSize")).toString();
+    qCDebug(QInstaller::lcPackageUncompressedSize).noquote() << "\tUncompressed size:" << update->data(QLatin1String("UncompressedSize")).toString();
+
+    //Check if package already installed
+    LocalPackagesHash installedPackages = this->localInstalledPackages();
+    if (installedPackages.contains(name))
+        qCDebug(QInstaller::lcPackageInstalledVersion).noquote() << "\tInstalled version:" << installedPackages.value(name).version;
+}
+
+void PackageManagerCorePrivate::printLocalPackageInformation(const KDUpdater::LocalPackage package) const
+{
+    qCDebug(QInstaller::lcPackageName).noquote() << "Id:" << package.name;
+    qCDebug(QInstaller::lcPackageDisplayname).noquote() << "\tDisplay name:" << package.title;
+    qCDebug(QInstaller::lcPackageVersion).noquote() << "\tVersion:" << package.version;
+    qCDebug(QInstaller::lcPackageDescription).noquote() << "\tDescription:" <<  package.description;
+    qCDebug(QInstaller::lcPackageDependencies).noquote() << "\tDependencies:" << package.dependencies;
+    qCDebug(QInstaller::lcPackageAutodependon).noquote() << "\tAutodependon:" << package.autoDependencies;
+    qCDebug(QInstaller::lcPackageVirtual).noquote() << "\tVirtual:" << package.virtualComp;
+    qCDebug(QInstaller::lcPackageForcedinstallation).noquote() << "\tForced installation:" << package.forcedInstallation;
+    qCDebug(QInstaller::lcPackageCheckable).noquote() << "\tCheckable:" << package.checkable;
+    qCDebug(QInstaller::lcPackageUncompressedSize).noquote() << "\tUncompressed size:" << package.uncompressedSize;
+    qCDebug(QInstaller::lcPackageInstallDate).noquote() << "\tInstalled:" << package.installDate;
+    qCDebug(QInstaller::lcPackageUpdateDate).noquote() << "\tLast updated:" << package.lastUpdateDate;
+}
+
+bool PackageManagerCorePrivate::askUserConfirmCommand() const
+{
+    qCDebug(QInstaller::lcInstallerInstallLog) << "Do you want to continue?";
+
+    forever {
+        const QString input = m_core->readConsoleLine(QLatin1String("Yes|No"));
+
+        if (QString::compare(input, QLatin1String("Yes"), Qt::CaseInsensitive) == 0
+                || QString::compare(input, QLatin1String("Y"), Qt::CaseInsensitive) == 0) {
+            return true;
+        } else if (QString::compare(input, QLatin1String("No"), Qt::CaseInsensitive) == 0
+                || QString::compare(input, QLatin1String("N"), Qt::CaseInsensitive) == 0) {
+            return false;
+        } else {
+            qCDebug(QInstaller::lcInstallerInstallLog) << "Unknown answer:" << input;
+        }
+    }
+}
 
 } // namespace QInstaller

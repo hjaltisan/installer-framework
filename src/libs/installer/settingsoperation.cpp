@@ -36,6 +36,12 @@
 
 using namespace QInstaller;
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::SettingsOperation
+    \internal
+*/
+
 SettingsOperation::SettingsOperation(PackageManagerCore *core)
     : UpdateOperation(core)
 {
@@ -179,14 +185,14 @@ bool SettingsOperation::undoOperation()
     if (cleanUp) {
         QFile settingsFile(path);
         if (!settingsFile.remove())
-            qCWarning(QInstaller::lcInstallerUninstallLog).noquote() << settingsFile.errorString();
+            qCWarning(QInstaller::lcInstallerInstallLog).noquote() << settingsFile.errorString();
         if (!value(QLatin1String("createddir")).toString().isEmpty()) {
             KDUpdater::MkdirOperation mkDirOperation(packageManager());
             mkDirOperation.setArguments(QStringList() << QFileInfo(path).absolutePath());
             mkDirOperation.setValue(QLatin1String("createddir"), value(QLatin1String("createddir")));
 
             if (!mkDirOperation.undoOperation()) {
-                qCWarning(QInstaller::lcInstallerUninstallLog).noquote() << mkDirOperation.errorString();
+                qCWarning(QInstaller::lcInstallerInstallLog).noquote() << mkDirOperation.errorString();
             }
         }
     }

@@ -73,6 +73,7 @@ void tst_Settings::loadTutorialConfig()
     QCOMPARE(settings.watermark(), QString());
     QCOMPARE(settings.banner(), QString());
     QCOMPARE(settings.background(), QString());
+    QCOMPARE(settings.pageListPixmap(), QString());
 #if defined(Q_OS_WIN)
     QCOMPARE(settings.installerApplicationIcon(), QLatin1String(":/installer.ico"));
     QCOMPARE(settings.installerWindowIcon(), QLatin1String(":/installer.ico"));
@@ -90,6 +91,7 @@ void tst_Settings::loadTutorialConfig()
     QCOMPARE(settings.wizardDefaultWidth(), settings.wizardShowPageList() ? 800 : 0);
     QCOMPARE(settings.wizardDefaultHeight(), 0);
     QCOMPARE(settings.wizardShowPageList(), true);
+    QCOMPARE(settings.productImages(), QStringList());
     QCOMPARE(settings.titleColor(), QString());
     QCOMPARE(settings.runProgram(), QString());
     QCOMPARE(settings.runProgramArguments(), QStringList());
