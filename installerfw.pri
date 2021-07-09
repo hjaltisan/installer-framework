@@ -144,7 +144,6 @@ equals(TEMPLATE, app) {
 # Library paths
 PROTOBUF_PATH = $$PWD/vendors/protobuf/v3.6.0
 PDM_PATH = $$PWD/vendors/pdm-proto
-SENTRY_PATH = $$PWD/vendors/sentry/0.4.7
 
 # Protobuf
 LIBS += -L$$PROTOBUF_PATH/lib/ -llibprotobuf
@@ -158,7 +157,8 @@ INCLUDEPATH += $$PDM_PATH/include/generated
 # These are Windows libraries needed by Sentry
 LIBS += -lwinhttp -ldbghelp
 
-# Sentry
+# Sentry Native
+SENTRY_PATH = $$PWD/vendors/sentry
 LIBS += -L$$SENTRY_PATH/lib/ -lcrashpad_client -lcrashpad_compat -lcrashpad_handler_lib -lcrashpad_minidump -lcrashpad_snapshot -lcrashpad_tools -lcrashpad_util -lcrashpad_zlib -lmini_chromium -lsentry
 INCLUDEPATH += $$SENTRY_PATH/include
 
