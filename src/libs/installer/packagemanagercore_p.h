@@ -238,6 +238,7 @@ private:
 
     void initUtils();
     void initScripts();
+    void prepareCrashpadHandler();
 
     void writeMaintenanceToolBinary(QFile *const input, qint64 size, bool writeBinaryLayout);
     void writeMaintenanceToolBinaryData(QFileDevice *output, QFile *const input,
