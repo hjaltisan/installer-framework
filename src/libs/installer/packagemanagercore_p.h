@@ -236,13 +236,6 @@ private:
     void registerMaintenanceTool();
     void unregisterMaintenanceTool();
 
-    void gatherVersionNumbers();
-    void initializeJourneyIds();
-    void initializeOsId();
-    void initializeSessionHash();
-    void initializeIds();
-    void initializeSentry();
-
     void initUtils();
     void initScripts();
 

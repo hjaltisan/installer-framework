@@ -155,6 +155,13 @@ namespace QInstaller {
     void INSTALLER_EXPORT setPartnerId(const QString& partnerId);
     QString INSTALLER_EXPORT getPartnerId();
 
+    // Init ids
+    void initializeVersions();
+    void initializeJourneyIds();
+    void initializeOsId();
+    void initializeSessionHash();
+    void INSTALLER_EXPORT initializeIds();
+
     INSTALLER_EXPORT std::ostream& operator<<(std::ostream &os, const QString &string);
 
     class INSTALLER_EXPORT VerboseWriterOutput
