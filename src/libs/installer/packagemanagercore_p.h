@@ -243,6 +243,9 @@ private:
     void initializeIds();
     void initializeSentry();
 
+    void initUtils();
+    void initScripts();
+
     void writeMaintenanceToolBinary(QFile *const input, qint64 size, bool writeBinaryLayout);
     void writeMaintenanceToolBinaryData(QFileDevice *output, QFile *const input,
         const OperationList &performed, const BinaryLayout &layout);
