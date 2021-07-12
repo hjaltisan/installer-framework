@@ -50,6 +50,7 @@
 #include "globals.h"
 #include "utils.h"
 #include "sentryhelper.h"
+#include "eventlogger.h"
 
 #include "selfrestarter.h"
 #include "filedownloaderfactory.h"
@@ -628,6 +629,9 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
 
     prepareCrashpadHandler();
     initializeSentry(QCoreApplication::arguments());
+
+    // Initialize the eventlogger
+    EventLogger::instance();
 
     if (QInstaller::isCrashAndBurnMode())
     {
