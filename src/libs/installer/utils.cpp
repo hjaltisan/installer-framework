@@ -130,6 +130,29 @@ QStringList QInstaller::localeCandidates(const QString &locale_)
     return candidates;
 }
 
+static QString installerVersion;
+
+void QInstaller::setInstallerVersion(const QString& version)
+{
+    installerVersion = version;
+}
+
+QString QInstaller::getInstallerVersion()
+{
+    return installerVersion;
+}
+
+static bool isThisAnInstaller;
+
+void QInstaller::setIsInstaller(bool installer)
+{
+    isThisAnInstaller = installer;
+}
+
+bool QInstaller::isInstaller()
+{
+    return isThisAnInstaller;
+}
 
 static bool verb = false;
 
@@ -475,6 +498,102 @@ void QInstaller::setQtIfwVersion(const QString& version)
 QString QInstaller::getQtIfwVersion()
 {
     return qtIfwVersion;
+}
+
+static QString ccpIfwVersion;
+
+void QInstaller::setCcpIfwVersion(const QString& version)
+{
+    ccpIfwVersion = version;
+}
+
+QString QInstaller::getCcpIfwVersion()
+{
+    return ccpIfwVersion;
+}
+
+static bool isThisRelease = false;
+
+void QInstaller::setReleaseBuild(bool isRelease)
+{
+    isThisRelease = isRelease;
+}
+
+bool QInstaller::isReleaseBuild()
+{
+    return isThisRelease;
+}
+
+static bool isLocalDevelopmentBuid = false;
+
+void QInstaller::setLocalDevelopmentBuild(bool isLocal)
+{
+    isLocalDevelopmentBuid = isLocal;
+}
+
+bool QInstaller::isLocalDevelopmentBuild()
+{
+    return isLocalDevelopmentBuid;
+}
+
+static QString installerRegion = QLatin1String("world");
+
+void QInstaller::setRegion(const QString& region)
+{
+    installerRegion = region;
+}
+
+QString QInstaller::getRegion()
+{
+    return installerRegion;
+}
+
+bool QInstaller::isChina()
+{
+    return QString::compare(installerRegion, QLatin1String("china"), Qt::CaseInsensitive) == 0;
+}
+
+static QString launcherVersion = QString::fromLatin1(DEV_VERSION);
+
+void QInstaller::setLauncherVersion(const QString& version)
+{
+    launcherVersion = version;
+}
+
+QString QInstaller::getLauncherVersion()
+{
+    return launcherVersion;
+}
+
+static QString installerEnvironment;
+
+void QInstaller::setEnvironment(const QString& environment)
+{
+    installerEnvironment = environment;
+}
+
+QString QInstaller::getEnvironment()
+{
+    return installerEnvironment;
+}
+
+bool QInstaller::hasPartnerId()
+{
+    return
+        isChina() &&
+        QString::compare(getPartnerId(), QLatin1String("none"), Qt::CaseInsensitive) != 0;
+}
+
+static QString installerPartnerId = QLatin1String("none");
+
+void QInstaller::setPartnerId(const QString& partnerId)
+{
+    installerPartnerId = partnerId;
+}
+
+QString QInstaller::getPartnerId()
+{
+    return installerPartnerId;
 }
 
 std::ostream &QInstaller::operator<<(std::ostream &os, const QString &string)

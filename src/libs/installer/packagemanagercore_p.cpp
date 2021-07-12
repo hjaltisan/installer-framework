@@ -205,7 +205,6 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
 #endif
 }
 
-
 // -- PackageManagerCorePrivate
 
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
@@ -307,7 +306,7 @@ PackageManagerCorePrivate::~PackageManagerCorePrivate()
     // delete m_gui;
 
     // This should be called before exiting the application
-    sentry_shutdown();
+    closeSentry();
 }
 
 /*!
@@ -633,6 +632,9 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     connect(&m_metadataJob, &Job::totalProgress, this, &PackageManagerCorePrivate::totalProgress);
     KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
 
+    QInstaller::setInstallerVersion(m_data.settings().version());
+    initUtils();
+
     gatherVersionNumbers();
     initializeIds();
     initializeSentry();
@@ -860,6 +862,76 @@ void PackageManagerCorePrivate::initializeSentry()
     sentry_set_context("Library versions", versions);
 }
 
+void PackageManagerCorePrivate::initUtils()
+{
+    if (isInstaller())
+    {
+        qDebug() << "Log type: Installer";
+    }
+    else
+    {
+        qDebug() << "Log type: Uninstaller";
+    }
+
+    QInstaller::setIsInstaller(isInstaller());
+    QInstaller::setReleaseBuild(isReleaseBuild());
+
+    // Here come the things fed into binarycreator
+
+    QString launcherVersion = getLauncherVersion();
+    if (launcherVersion == QString::fromStdString(DEV_VERSION))
+    {
+        QInstaller::setLocalDevelopmentBuild(true);
+        QInstaller::setEnvironment(QLatin1String("Local"));
+    }
+    else if (isReleaseBuild())
+    {
+        QInstaller::setEnvironment(QLatin1String("Release"));
+    }
+    else
+    {
+        QInstaller::setEnvironment(QLatin1String("Development"));
+    }
+
+    QInstaller::setLauncherVersion(launcherVersion);
+    QInstaller::setRegion(getRegion());
+    QInstaller::setPartnerId(getPartnerId());
+    QInstaller::setSentryDsn(getSentryDSN());
+
+    // Print launcher settings
+    qDebug() << "Application: ";
+    qDebug() << "-- Installer Version: " << QInstaller::getInstallerVersion();
+    qDebug() << "-- Launcher Version: " << QInstaller::getLauncherVersion();
+    qDebug() << "-- Region: " << QInstaller::getRegion();
+    if (QInstaller::hasPartnerId())
+    {
+        qDebug() << "-- Provider (China only): " << QInstaller::getPartnerId();
+    }
+    qDebug() << "-- Environment: " << QInstaller::getEnvironment();
+
+    initScripts();
+}
+
+void PackageManagerCorePrivate::initScripts()
+{
+    qDebug() << "framework | PackageManagerCorePrivate::initScripts | Expose certain values to the scripts.";
+
+    QString isChina = QLatin1String(QInstaller::isChina() ? "true" : "false");
+    m_data.setValue(QLatin1String("isChina"), replaceVariables(isChina));
+
+    QString partnerId = QInstaller::hasPartnerId() ? getPartnerId() : QLatin1String("");
+    m_data.setValue(QLatin1String("partnerId"), replaceVariables(partnerId));
+
+    QString isRelease = QLatin1String(QInstaller::isReleaseBuild() ? "true" : "false");
+    m_data.setValue(QLatin1String("isRelease"), replaceVariables(isRelease));
+
+    QString isDevelopment = QLatin1String(!QInstaller::isReleaseBuild() && !QInstaller::isLocalDevelopmentBuild() ? "true" : "false");
+    m_data.setValue(QLatin1String("isDevelopment"), replaceVariables(isDevelopment));
+
+    QString isLocal = QLatin1String(QInstaller::isLocalDevelopmentBuild() ? "true" : "false");
+    m_data.setValue(QLatin1String("isLocalDev"), replaceVariables(isLocal));
+}
+
 bool getConfigValueAsBool(const QString &key, bool defaultValue = false)
 {
     QSettings confInternal(QLatin1String(":/config/config-internal.ini"), QSettings::IniFormat);
@@ -904,10 +976,30 @@ bool PackageManagerCorePrivate::isReleaseBuild() const
     return getConfigValueAsBool(QLatin1String("releaseBuild"));
 }
 
-QString PackageManagerCorePrivate::getSentryDSN() const
+QString getConfigValueAsString(const QString &key, const QString &value)
 {
     QSettings confInternal(QLatin1String(":/config/config-internal.ini"), QSettings::IniFormat);
-    return confInternal.value(QLatin1String("sentryDsn"), QLatin1String("")).toString();
+    return confInternal.value(key, value).toString();
+}
+
+QString PackageManagerCorePrivate::getSentryDSN() const
+{
+    return getConfigValueAsString(QLatin1String("sentryDsn"), QLatin1String(""));
+}
+
+QString PackageManagerCorePrivate::getLauncherVersion() const
+{
+    return getConfigValueAsString(QLatin1String("launcherVersion"), QLatin1String("9999999"));
+}
+
+QString PackageManagerCorePrivate::getRegion() const
+{
+    return getConfigValueAsString(QLatin1String("region"), QLatin1String("world"));
+}
+
+QString PackageManagerCorePrivate::getPartnerId() const
+{
+    return getConfigValueAsString(QLatin1String("partnerId"), QLatin1String("none"));
 }
 
 QString PackageManagerCorePrivate::installerBinaryPath() const

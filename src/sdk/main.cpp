@@ -140,6 +140,7 @@ int main(int argc, char *argv[])
 
         if (parser.isSet(QLatin1String(CommandLineOptions::FrameworkVersion))) {
             std::cout << QUOTE(IFW_VERSION_STR) << std::endl;
+            std::cout << "CCP Framework Version: " << QUOTE(CCP_FRAMEWORK_STRING) << std::endl;
             return EXIT_SUCCESS;
         }
 
@@ -232,7 +233,7 @@ int main(int argc, char *argv[])
             QString fileName = QInstaller::getNewAutoLogFileName();
             QInstaller::setAutoLogFileName(fileName);
         }
-        
+
         if (parser.isSet(QLatin1String(CommandLineOptions::TelemetryEndpointShort))
             || parser.isSet(QLatin1String(CommandLineOptions::TelemetryEndpointLong)))
         {

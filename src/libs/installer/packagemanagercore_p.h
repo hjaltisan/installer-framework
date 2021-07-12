@@ -95,6 +95,9 @@ public:
     bool noDetails() const;
     bool isReleaseBuild() const;
     QString getSentryDSN() const;
+    QString getLauncherVersion() const;
+    QString getRegion() const;
+    QString getPartnerId() const;
 
     bool statusCanceledOrFailed() const;
     void setStatus(int status, const QString &error = QString());
