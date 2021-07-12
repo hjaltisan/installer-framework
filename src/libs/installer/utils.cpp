@@ -452,6 +452,18 @@ QString QInstaller::getCrashpadHandlerName()
     return crashpadHandlerName;
 }
 
+static QString sentryDsn;
+
+void QInstaller::setSentryDsn(const QString& dsn)
+{
+    sentryDsn = dsn;
+}
+
+QString QInstaller::getSentryDsn()
+{
+    return sentryDsn;
+}
+
 static QString pdmVersion;
 
 void QInstaller::setPdmVersion(const QString& version)

@@ -121,6 +121,8 @@ namespace QInstaller {
     // Sentry related
     QString INSTALLER_EXPORT getCrashDb();
     QString INSTALLER_EXPORT getCrashpadHandlerName();
+    void INSTALLER_EXPORT setSentryDsn(const QString& dsn);
+    QString INSTALLER_EXPORT getSentryDsn();
 
     // Versions
     void INSTALLER_EXPORT setPdmVersion(const QString& version);
