@@ -73,6 +73,9 @@ namespace QInstaller {
     void INSTALLER_EXPORT setVerbose(bool v);
     bool INSTALLER_EXPORT isVerbose();
 
+    void INSTALLER_EXPORT setCrashAndBurnMode(bool on);
+    bool INSTALLER_EXPORT isCrashAndBurnMode();
+
     // Log to file
     bool INSTALLER_EXPORT isLogFileEnabled();
     void INSTALLER_EXPORT setLogFileName(const QString& fileName);

@@ -166,6 +166,18 @@ bool QInstaller::isVerbose()
     return verb;
 }
 
+static bool crashModeOn = false;
+
+void QInstaller::setCrashAndBurnMode(bool on)
+{
+    crashModeOn = on;
+}
+
+bool QInstaller::isCrashAndBurnMode()
+{
+    return crashModeOn;
+}
+
 static QString logFileName;
 
 bool QInstaller::isLogFileEnabled()
